@@ -14,7 +14,7 @@ namespace GymManagement.Domain.Models
         public string Email { get; private set; }
         public string Username { get; private set; }
         public string PhoneNumber { get; private set; }
-        public byte[] Image { get; private set; } // Optional profile picture
+        public byte[] Image { get; private set; } // profile picture
 
         // Navigation Properties
         public ICollection<Class> Classes { get; private set; }
