@@ -7,7 +7,7 @@ using GymManagement.Domain.SeedWork;
 
 namespace GymManagement.Domain.Repository
 {
-    internal interface ITrainerRepository : IRepository<Trainer> 
+    public interface ITrainerRepository : IRepository<Trainer> 
     {
         Task<Trainer> GetByUsernameAsync(string username);
 
