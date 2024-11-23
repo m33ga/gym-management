@@ -71,5 +71,27 @@ namespace GymManagement.Domain.Models
             if (string.IsNullOrWhiteSpace(newPassword)) throw new ArgumentException("Password cannot be empty.", nameof(newPassword));
             Password = newPassword; // Hashing should be handled before calling this method.
         }
+
+
+        /// <summary>
+        /// Schedules a new class for the trainer.
+        /// </summary>
+        /// <param name="newClass">The class to be scheduled.</param>
+        public void ScheduleClass(Class newClass)
+        {
+            if (newClass == null) throw new ArgumentNullException(nameof(newClass), "Class cannot be null.");
+
+            // no overlap with any existing classes
+            foreach (var scheduledClass in Classes)
+            {
+                if (scheduledClass.ScheduledDate < newClass.ScheduledDate.AddMinutes(newClass.DurationInMinutes) &&
+                    newClass.ScheduledDate < scheduledClass.ScheduledDate.AddMinutes(scheduledClass.DurationInMinutes))
+                {
+                    throw new InvalidOperationException("The new class overlaps with an existing scheduled class.");
+                }
+            }
+
+            Classes.Add(newClass);
+        }
     }
 }
