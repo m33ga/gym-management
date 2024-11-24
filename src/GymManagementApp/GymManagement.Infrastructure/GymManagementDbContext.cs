@@ -83,7 +83,7 @@ namespace GymManagement.Infrastructure
 
             //Meal
             modelBuilder.Entity<Meal>()
-                .HasMany(m => m.MealIngredients)
+                .HasMany(m => m.Ingredients)
                 .WithOne(mi => mi.Meal)
                 .HasForeignKey(mi => mi.MealId);
 
