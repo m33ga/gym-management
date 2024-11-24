@@ -66,7 +66,8 @@ namespace GymManagement.Infrastructure
             modelBuilder.Entity<Bookings>
                 .HasOne(b => b.Member)
                 .WithMany(m => m.Bookings)
-                .HasForeignKey(b => b.MemberId);
+                .HasForeignKey(b => b.MemberId)
+                .IsRequired(false);
 
             //Class
             modelBuilder.Entity<Class>
@@ -79,6 +80,17 @@ namespace GymManagement.Infrastructure
                 .WithOne(r => r.Class)
                 .HasForeignKey(r => r.ReviewId)
                 .IsRequired(false);
+
+            //Meal
+            modelBuilder.Entity<Meal>
+                .HasMany(m => m.MealIngredients)
+                .WithOne(mi => mi.Meal)
+                .HasForeignKey(mi => mi.MealId);
+
+            modelBuilder.Entity<Meal>
+                .HasOne(m => m.MealPlan)
+                .WithMany(mp => mp.Meals)
+                .HasForeignKey(m => m.MealPlanId);
 
         }
 
