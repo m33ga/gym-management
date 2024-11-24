@@ -58,52 +58,69 @@ namespace GymManagement.Infrastructure
                 .IsRequired(false);
 
             //Booking
-            modelBuilder.Entity<Booking>
+            modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Class)
                 .WithMany(c => c.Bookings)
                 .HasForeignKey(b => b.ClassId);
 
-            modelBuilder.Entity<Bookings>
+            modelBuilder.Entity<Bookings>()
                 .HasOne(b => b.Member)
                 .WithMany(m => m.Bookings)
                 .HasForeignKey(b => b.MemberId)
                 .IsRequired(false);
 
             //Class
-            modelBuilder.Entity<Class>
+            modelBuilder.Entity<Class>()
                 .HasOne(c => c.Trainer)
                 .WithMany(t => t.Classes)
                 .HasForeignKey(c => c.TrainerId);
 
-            modelBuilder.Entity<Class>
+            modelBuilder.Entity<Class>()
                 .HasMany(c => c.Review)
                 .WithOne(r => r.Class)
                 .HasForeignKey(r => r.ReviewId)
                 .IsRequired(false);
 
             //Meal
-            modelBuilder.Entity<Meal>
+            modelBuilder.Entity<Meal>()
                 .HasMany(m => m.MealIngredients)
                 .WithOne(mi => mi.Meal)
                 .HasForeignKey(mi => mi.MealId);
 
-            modelBuilder.Entity<Meal>
+            modelBuilder.Entity<Meal>()
                 .HasOne(m => m.MealPlan)
                 .WithMany(mp => mp.Meals)
                 .HasForeignKey(m => m.MealPlanId);
 
             //MealPlan
-            modelBuilder.Entity<MealPlan>
+            modelBuilder.Entity<MealPlan>()
                 .HasOne(mp => mp.Trainer)
                 .WithMany(t => t.MealPlans)
                 .HasForeignKey(mp=> mp.TrainerId)
                 .IsRequired(false);
 
-            modelBuilder.Entity<MealPlan>
+            modelBuilder.Entity<MealPlan>()
                 .HasOne(mp => mp.Member)
                 .WithMany(mb => mb.MealPlans)
                 .HasForeignKey(mp => mp.MemberId)
                 .IsRequired(false);
+
+            //Member
+            modelBuilder.Entity<Member>()
+                .HasOne(mb => mb.Membership)
+                .WithMany(ms => ms.Members)
+                .HasForeignKey(mb =>  mb.MembershipId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<Member>()
+                .HasMany(mb => mb.Notifications)
+                .WithOne(n => n.Member)
+                .HasForeignKey(n => n.MemberId);
+
+            modelBuilder.Entity<Member>()
+               .HasMany(mb => mb.Reviews)
+               .WithOne(r => r.Member)
+               .HasForeignKey(r => r.MemberId);
 
         }
 
