@@ -56,6 +56,17 @@ namespace GymManagement.Infrastructure
                 .WithOne(n => n.Admin)
                 .HasForeignKey(n => n.AdminId);
 
+            //Booking
+            modelBuilder.Entity<Booking>
+                .HasOne(b => b.Class)
+                .WithMany(c => c.Bookings)
+                .HasForeignKey(b => b.ClassId)
+
+            modelBuilder.Entity<Bookings>
+                .HasOne(b => b.Member)
+                .WithMany(m => m.Bookings)
+                .HasForeignKey(b => b.MemberId)
+
         }
 
 
