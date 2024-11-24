@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure
 {
-    public class GymManagementDbContext: DbContext
+    public class GymManagementDbContext : DbContext
     {
-        public DbSet<Admin>Admins { get; set; }
+        public DbSet<Admin> Admins { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Class> Classes { get; set; }
         public DbSet<Meal> Meals { get; set; }
@@ -63,7 +63,7 @@ namespace GymManagement.Infrastructure
                 .WithMany(c => c.Bookings)
                 .HasForeignKey(b => b.ClassId);
 
-            modelBuilder.Entity<Bookings>()
+            modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Member)
                 .WithMany(m => m.Bookings)
                 .HasForeignKey(b => b.MemberId)
@@ -76,9 +76,9 @@ namespace GymManagement.Infrastructure
                 .HasForeignKey(c => c.TrainerId);
 
             modelBuilder.Entity<Class>()
-                .HasMany(c => c.Review)
+                .HasMany(c => c.Reviews)
                 .WithOne(r => r.Class)
-                .HasForeignKey(r => r.ReviewId)
+                .HasForeignKey(r => r.ClassId)
                 .IsRequired(false);
 
             //Meal
@@ -96,7 +96,7 @@ namespace GymManagement.Infrastructure
             modelBuilder.Entity<MealPlan>()
                 .HasOne(mp => mp.Trainer)
                 .WithMany(t => t.MealPlans)
-                .HasForeignKey(mp=> mp.TrainerId)
+                .HasForeignKey(mp => mp.TrainerId)
                 .IsRequired(false);
 
             modelBuilder.Entity<MealPlan>()
@@ -109,7 +109,7 @@ namespace GymManagement.Infrastructure
             modelBuilder.Entity<Member>()
                 .HasOne(mb => mb.Membership)
                 .WithMany(ms => ms.Members)
-                .HasForeignKey(mb =>  mb.MembershipId)
+                .HasForeignKey(mb => mb.MembershipId)
                 .IsRequired(false);
 
             modelBuilder.Entity<Member>()
@@ -122,8 +122,11 @@ namespace GymManagement.Infrastructure
                .WithOne(r => r.Member)
                .HasForeignKey(r => r.MemberId);
 
+            //Notification
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Trainer)
+                .WithMany(t => t.Notifications)
+                .HasForeignKey(n => n.TrainerId);
         }
-
-
     }
 }
