@@ -17,6 +17,7 @@ namespace GymManagement.Domain.Models
         public int Rating { get; private set; }
         public string Comment { get; private set; }
         public DateTime DateSubmitted { get; private set; }
+        public int TrainerId { get; set; }
 
         // Constructor
         // TODO: in application layer,
