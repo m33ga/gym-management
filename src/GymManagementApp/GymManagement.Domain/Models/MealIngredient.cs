@@ -11,6 +11,8 @@ namespace GymManagement.Domain.Models
         public string Name { get; private set; } // Ingredient name, e.g., "Chicken Breast"
         public int QuantityInGrams { get; private set; } // Quantity in grams
         public int Calories { get; private set; } // Total calories for this ingredient
+        public Meal Meal { get; private set; }
+        public int MealId { get; private set; }
 
         // Constructors
         private MealIngredient()
