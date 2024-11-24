@@ -21,5 +21,43 @@ namespace GymManagement.Infrastructure
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Trainer> Trainers { get; set; }
 
+        public string DbPath { get; }
+
+        public GymManagementDbContext()
+        {
+            var folder = Environment.SpecialFolder.LocalApplicationData;
+            var path = Environment.GetFolderPath(folder);
+            DbPath = System.IO.Path.Combine(path, "GymManagementSystem.db");
+        }
+
+        // Constructor for dependency injection and testing
+        public GymManagementDbContext(DbContextOptions<GymManagementDbContext> options)
+            : base(options)
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        => options.UseSqlite($"Data Source={DbPath}");
+
+        // Apply Fluent API configurations (to establish relationships between the entities)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //Admin
+            modelBuilder.Entity<Admin>()
+                .Property(a => a.Username)
+                .HasMaxLength(45);
+
+            modelBuilder.Entity<Admin>()
+                .Property(a => a.Password)
+                .HasMaxLength(45);
+
+            modelBuilder.Entity<Admin>()
+                .HasMany(a => a.Notifications)
+                .WithOne(n => n.Admin)
+                .HasForeignKey(n => n.AdminId);
+
+        }
+
+
     }
 }
