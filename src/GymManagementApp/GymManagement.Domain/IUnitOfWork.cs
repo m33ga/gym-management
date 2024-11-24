@@ -23,5 +23,8 @@ namespace GymManagement.Domain
         ITrainerRepository Trainers { get; }
 
         Task SaveChangesAsync();
+
+        // Optional: Expose database path
+        string GetDbPath();
     }
 }
