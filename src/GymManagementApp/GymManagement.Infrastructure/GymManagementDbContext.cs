@@ -92,6 +92,19 @@ namespace GymManagement.Infrastructure
                 .WithMany(mp => mp.Meals)
                 .HasForeignKey(m => m.MealPlanId);
 
+            //MealPlan
+            modelBuilder.Entity<MealPlan>
+                .HasOne(mp => mp.Trainer)
+                .WithMany(t => t.MealPlans)
+                .HasForeignKey(mp=> mp.TrainerId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<MealPlan>
+                .HasOne(mp => mp.Member)
+                .WithMany(mb => mb.MealPlans)
+                .HasForeignKey(mp => mp.MemberId)
+                .IsRequired(false);
+
         }
 
 
