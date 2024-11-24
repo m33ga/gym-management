@@ -21,7 +21,7 @@ namespace GymManagement.Infrastructure
             //_dbContext.Database.Migrate();
         }
 
-        // Repositories
+        // Repository Implementations
         public IAdminRepository Admins => new AdminRepository(_dbContext);
         public IBookingRepository Bookings => new BookingRepository(_dbContext);
         public IClassRepository Classes => new ClassRepository(_dbContext);
@@ -51,3 +51,4 @@ namespace GymManagement.Infrastructure
         }
     }
 }
+
