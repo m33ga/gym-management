@@ -14,6 +14,9 @@ namespace GymManagement.Domain.Models
         public int DayOfWeek { get; private set; } // 0 = Sunday, 1 = Monday, etc.
         public int TotalCalories { get; private set; } // Total calories for this meal
         public ICollection<MealIngredient> Ingredients { get; private set; }
+        public MealPlan MealPlan { get; private set; }
+        public int MealPlanId { get; private set; }
+
 
         // Constructors
         private Meal()
