@@ -43,7 +43,7 @@ namespace GymManagement.Infrastructure.Repository
 
         public async Task<bool> ExistsAsync(int id)
         {
-            // Використання AnyAsync для перевірки
+            
             return await _dbSet.AnyAsync(e => EF.Property<int>(e, "Id") == id);
         }
 
@@ -52,7 +52,7 @@ namespace GymManagement.Infrastructure.Repository
             await _dbContext.SaveChangesAsync();
         }
 
-        // Додатковий метод для "деталізованого завантаження"
+        
         public async Task<T> GetByIdWithIncludeAsync(int id, params string[] includes)
         {
             IQueryable<T> query = _dbSet;
