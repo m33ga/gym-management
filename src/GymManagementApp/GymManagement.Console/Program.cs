@@ -10,6 +10,10 @@ static async Task AddBookingAsync()
     {
         Trainer t1 = new("Test Name","password","test@gmail.com","testuser","+123456789");
         await uow.Trainers.AddTrainerAsync(t1);
+      
+        Membership mb1 = new("Test", 150, "Test Description", 15, 50);
+        await uow.Memberships.AddMembershipAsync(mb1);
+
         await uow.SaveChangesAsync();
     }
 
