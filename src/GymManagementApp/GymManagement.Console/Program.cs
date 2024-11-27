@@ -2,17 +2,18 @@
 using GymManagement.Infrastructure;
 using GymManagement.Domain;
 using GymManagement.Application;
+using GymManagement.Domain.Models;
 
-class Program
+static async Task AddBookingAsync()
 {
-    static void Main(string[] args)
+    using (var uow = new UnitOfWork())
     {
-        Console.WriteLine("Gym Management System");
-        // Initialize the database
-        using (var dbContext = new GymManagementDbContext())
-        {
-            // Test
-            Console.WriteLine("Database connected successfully!");
-        }
+        Trainer t1 = new("Test Name","password","test@gmail.com","testuser","+123456789");
+        await uow.Trainers.AddTrainerAsync(t1);
+        await uow.SaveChangesAsync();
     }
+
+
 }
+
+await AddBookingAsync();
