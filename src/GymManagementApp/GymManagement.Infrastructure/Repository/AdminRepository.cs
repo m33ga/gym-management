@@ -7,72 +7,64 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
 {
-    public class AdminRepository : IAdminRepository
+    public class AdminRepository : GenericRepository<Admin>, IAdminRepository
     {
         private readonly GymManagementDbContext _dbContext;
 
-        public AdminRepository(GymManagementDbContext dbContext)
+        public AdminRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
 
-        // IAdminRepository: specific methods
+        // Get all admins
         public async Task<IList<Admin>> GetAllAdminsAsync()
         {
             return await _dbContext.Admins.ToListAsync();
         }
 
+        // Add a new admin and save changes
         public async Task AddAdminAsync(Admin admin)
         {
             await _dbContext.Admins.AddAsync(admin);
             await _dbContext.SaveChangesAsync();
         }
 
+        // Remove an admin and save changes
         public async Task RemoveAdminAsync(Admin admin)
         {
             _dbContext.Admins.Remove(admin);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
-
-        // Base IRepository methods
-        public void Create(Admin entity)
-        {
-            _dbContext.Admins.Add(entity);
-        }
-
-        public void Update(Admin entity)
-        {
-            _dbContext.Admins.Update(entity);
-        }
-
-        public void Delete(Admin entity)
-        {
-            _dbContext.Admins.Remove(entity);
-        }
-
+        // Find an admin by ID
         public async Task<Admin> FindByIdAsync(int id)
         {
-            return await _dbContext.Admins.FindAsync(id);
+            return await _dbContext.Admins
+                .Include(a => a.Notifications) // Include notifications for the admin
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
+        // Find or create an admin (custom logic)
         public async Task<Admin> FindOrCreateAsync(Admin entity)
         {
-            var existing = await _dbContext.Admins.FirstOrDefaultAsync(a => a.Id == entity.Id);
+            var existing = await _dbContext.Admins
+                .Include(a => a.Notifications) // Include notifications
+                .FirstOrDefaultAsync(a => a.Username == entity.Username);
+
             if (existing != null)
                 return existing;
 
             await _dbContext.Admins.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<List<Admin>> FindAllAsync()
+        // Get admin by username
+        public async Task<Admin> GetAdminByUsernameAsync(string username)
         {
-            return await _dbContext.Admins.ToListAsync();
+            return await _dbContext.Admins
+                .Include(a => a.Notifications) // Include notifications
+                .FirstOrDefaultAsync(a => a.Username == username);
         }
     }
 }

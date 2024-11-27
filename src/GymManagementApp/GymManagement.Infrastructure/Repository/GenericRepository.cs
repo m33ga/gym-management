@@ -1,12 +1,11 @@
-﻿using GymManagement.Domain.SeedWork;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
 {
-    public class GenericRepository<T> where T : Entity
+    public class GenericRepository<T> : IRepository<T> where T : class
     {
         private readonly GymManagementDbContext _dbContext;
         private readonly DbSet<T> _dbSet;
@@ -17,12 +16,12 @@ namespace GymManagement.Infrastructure.Repository
             _dbSet = _dbContext.Set<T>();
         }
 
-        public async Task<T> FindByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task<List<T>> FindAllAsync()
+        public async Task<List<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
@@ -30,29 +29,38 @@ namespace GymManagement.Infrastructure.Repository
         public async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
         }
 
         public void Update(T entity)
         {
             _dbSet.Update(entity);
-            _dbContext.SaveChanges();
         }
 
         public void Delete(T entity)
         {
             _dbSet.Remove(entity);
-            _dbContext.SaveChanges();
         }
 
         public async Task<bool> ExistsAsync(int id)
         {
-            return await _dbSet.AnyAsync(e => e.Id == id);
+            
+            return await _dbSet.AnyAsync(e => EF.Property<int>(e, "Id") == id);
         }
 
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
+        }
+
+        
+        public async Task<T> GetByIdWithIncludeAsync(int id, params string[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
     }
 }

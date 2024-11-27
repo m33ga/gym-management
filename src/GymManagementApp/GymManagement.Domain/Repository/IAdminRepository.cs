@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GymManagement.Domain.Models;
 using GymManagement.Domain.SeedWork;
@@ -9,15 +7,22 @@ namespace GymManagement.Domain.Repository
 {
     public interface IAdminRepository : IRepository<Admin>
     {
-        // admin doesn't have email
+        // Get all admins
         Task<IList<Admin>> GetAllAdminsAsync();
 
+        // Add a new admin
         Task AddAdminAsync(Admin admin);
 
         // Remove an admin
         Task RemoveAdminAsync(Admin admin);
 
-        // Save changes (optional if using Unit of Work)
-        Task SaveChangesAsync();
+        // Find an admin by ID (with notifications)
+        Task<Admin> FindByIdAsync(int id);
+
+        // Find or create an admin
+        Task<Admin> FindOrCreateAsync(Admin entity);
+
+        // Get admin by username
+        Task<Admin> GetAdminByUsernameAsync(string username);
     }
 }
