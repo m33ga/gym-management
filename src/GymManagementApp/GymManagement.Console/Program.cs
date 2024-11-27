@@ -13,6 +13,7 @@ class Program
         {
             // Test
             Console.WriteLine("Database connected successfully!");
+            
         }
     }
 }
