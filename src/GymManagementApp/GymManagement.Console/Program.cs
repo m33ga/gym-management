@@ -8,7 +8,7 @@ static async Task AddBookingAsync()
 {
     using (var uow = new UnitOfWork())
     {
-        DateTime date1 = new(2024, 11, 26);
+        DateTime date1 = new(2025, 11, 26);
         Trainer t1 = new("Test Name","password","test@gmail.com","testuser","+123456789");
         await uow.Trainers.AddTrainerAsync(t1);
       
@@ -21,6 +21,8 @@ static async Task AddBookingAsync()
         Class c1 = new("TestName", "TestDescription", date1, 50, t1);
         await uow.Classes.AddClassAsync(c1);
 
+        Booking b1 = new(1, 1, date1);
+        await uow.Bookings.AddBookingAsync(b1);
         await uow.SaveChangesAsync();
     }
 
