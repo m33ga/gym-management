@@ -17,6 +17,11 @@ namespace GymManagement.Infrastructure.Repository
         }
 
         // Check if a class is already booked
+        public Task<Booking> AddBookingAsync(Booking booking)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public async Task<bool> IsClassBookedAsync(int classId)
         {
             return await _dbContext.Bookings.AnyAsync(b => b.ClassId == classId);
@@ -37,6 +42,11 @@ namespace GymManagement.Infrastructure.Repository
             return await _dbContext.Bookings
                 .Where(b => b.MemberId == memberId)
                 .ToListAsync();
+        }
+
+        public override Task<Booking> FindOrCreateAsync(Booking entity)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

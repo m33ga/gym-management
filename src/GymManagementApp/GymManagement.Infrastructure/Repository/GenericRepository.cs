@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GymManagement.Domain.Repository;
+using GymManagement.Domain.SeedWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
 {
-    public class GenericRepository<T> : IRepository<T> where T : class
+    public abstract class GenericRepository<T> : IRepository<T> where T : Entity
     {
         private readonly GymManagementDbContext _dbContext;
         private readonly DbSet<T> _dbSet;
@@ -31,6 +33,11 @@ namespace GymManagement.Infrastructure.Repository
             await _dbSet.AddAsync(entity);
         }
 
+        public void Create(T entity)
+        {
+            _dbSet.Add(entity);
+        }
+
         public void Update(T entity)
         {
             _dbSet.Update(entity);
@@ -43,16 +50,10 @@ namespace GymManagement.Infrastructure.Repository
 
         public async Task<bool> ExistsAsync(int id)
         {
-            
             return await _dbSet.AnyAsync(e => EF.Property<int>(e, "Id") == id);
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
 
-        
         public async Task<T> GetByIdWithIncludeAsync(int id, params string[] includes)
         {
             IQueryable<T> query = _dbSet;
@@ -62,5 +63,13 @@ namespace GymManagement.Infrastructure.Repository
             }
             return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
+
+        public abstract Task<T> FindOrCreateAsync(T entity);
+
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+
     }
 }

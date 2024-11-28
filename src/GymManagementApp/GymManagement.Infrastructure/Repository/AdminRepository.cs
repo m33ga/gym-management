@@ -45,7 +45,7 @@ namespace GymManagement.Infrastructure.Repository
         }
 
         // Find or create an admin (custom logic)
-        public async Task<Admin> FindOrCreateAsync(Admin entity)
+        public override async Task<Admin> FindOrCreateAsync(Admin entity)
         {
             var existing = await _dbContext.Admins
                 .Include(a => a.Notifications) // Include notifications
