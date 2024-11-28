@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
 {
-    public class MealPlanRepository : IMealPlanRepository
+    public class MealPlanRepository : GenericRepository<MealPlan>, IMealPlanRepository
     {
         private readonly GymManagementDbContext _dbContext;
 
-        public MealPlanRepository(GymManagementDbContext dbContext)
+        public MealPlanRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
@@ -44,32 +44,8 @@ namespace GymManagement.Infrastructure.Repository
                 .FirstOrDefaultAsync(mp => mp.Id == id);
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
 
-        public void Create(MealPlan entity)
-        {
-            _dbContext.MealPlans.Add(entity);
-        }
-
-        public void Update(MealPlan entity)
-        {
-            _dbContext.MealPlans.Update(entity);
-        }
-
-        public void Delete(MealPlan entity)
-        {
-            _dbContext.MealPlans.Remove(entity);
-        }
-
-        public async Task<MealPlan> FindByIdAsync(int id)
-        {
-            return await _dbContext.MealPlans.FindAsync(id);
-        }
-
-        public async Task<MealPlan> FindOrCreateAsync(MealPlan entity)
+        public override async Task<MealPlan> FindOrCreateAsync(MealPlan entity)
         {
             var existing = await _dbContext.MealPlans.FirstOrDefaultAsync(mp => mp.Id == entity.Id);
             if (existing != null)
@@ -79,9 +55,5 @@ namespace GymManagement.Infrastructure.Repository
             return entity;
         }
 
-        public async Task<List<MealPlan>> FindAllAsync()
-        {
-            return await _dbContext.MealPlans.ToListAsync();
-        }
     }
 }

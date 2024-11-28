@@ -53,22 +53,7 @@ namespace GymManagement.Infrastructure.Repository
         }
 
         // Find or create an admin (custom logic)
-        async Task<Admin> IAdminRepository.FindOrCreateAsync(Admin entity)
-        {
-            var existing = await _dbContext.Admins
-                .Include(a => a.Notifications) // Include notifications
-                .FirstOrDefaultAsync(a => a.Username == entity.Username);
-
-            if (existing != null)
-                return existing;
-
-            await _dbContext.Admins.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
-        }
-
-        // Find or create an admin (custom logic)
-        async Task<Admin> Domain.SeedWork.IRepository<Admin>.FindOrCreateAsync(Admin entity)
+        public override async Task<Admin> FindOrCreateAsync(Admin entity)
         {
             var existing = await _dbContext.Admins
                 .Include(a => a.Notifications) // Include notifications

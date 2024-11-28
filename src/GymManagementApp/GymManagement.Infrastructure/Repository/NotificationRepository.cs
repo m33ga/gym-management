@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
 {
-    public class NotificationRepository : INotificationRepository
+    public class NotificationRepository : GenericRepository<Notification>, INotificationRepository
     {
         private readonly GymManagementDbContext _dbContext;
 
-        public NotificationRepository(GymManagementDbContext dbContext)
+        public NotificationRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
@@ -47,32 +47,7 @@ namespace GymManagement.Infrastructure.Repository
             }
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public void Create(Notification entity)
-        {
-            _dbContext.Notifications.Add(entity);
-        }
-
-        public void Update(Notification entity)
-        {
-            _dbContext.Notifications.Update(entity);
-        }
-
-        public void Delete(Notification entity)
-        {
-            _dbContext.Notifications.Remove(entity);
-        }
-
-        public async Task<Notification> FindByIdAsync(int id)
-        {
-            return await _dbContext.Notifications.FindAsync(id);
-        }
-
-        public async Task<Notification> FindOrCreateAsync(Notification entity)
+        public override async Task<Notification> FindOrCreateAsync(Notification entity)
         {
             var existing = await _dbContext.Notifications.FirstOrDefaultAsync(n => n.Id == entity.Id);
             if (existing != null)
@@ -80,11 +55,6 @@ namespace GymManagement.Infrastructure.Repository
 
             await _dbContext.Notifications.AddAsync(entity);
             return entity;
-        }
-
-        public async Task<List<Notification>> FindAllAsync()
-        {
-            return await _dbContext.Notifications.ToListAsync();
         }
     }
 }

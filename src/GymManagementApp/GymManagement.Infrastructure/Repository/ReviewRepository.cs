@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
 {
-    public class ReviewRepository : IReviewRepository
+    public class ReviewRepository : GenericRepository<Review>, IReviewRepository
     {
         private readonly GymManagementDbContext _dbContext;
 
-        public ReviewRepository(GymManagementDbContext dbContext)
+        public ReviewRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
@@ -22,27 +22,7 @@ namespace GymManagement.Infrastructure.Repository
             await _dbContext.SaveChangesAsync();
         }
 
-        public void Create(Review entity)
-        {
-            _dbContext.Reviews.Add(entity);
-        }
-
-        public void Delete(Review entity)
-        {
-            _dbContext.Reviews.Remove(entity);
-        }
-
-        public async Task<List<Review>> FindAllAsync()
-        {
-            return await _dbContext.Reviews.ToListAsync();
-        }
-
-        public async Task<Review> FindByIdAsync(int id)
-        {
-            return await _dbContext.Reviews.FindAsync(id);
-        }
-
-        public async Task<Review> FindOrCreateAsync(Review entity)
+        public override async Task<Review> FindOrCreateAsync(Review entity)
         {
             var review = await _dbContext.Reviews.FindAsync(entity.Id);
             if (review == null)
@@ -64,16 +44,6 @@ namespace GymManagement.Infrastructure.Repository
             return await _dbContext.Reviews
                 .Where(r => r.TrainerId == trainerId)
                 .ToListAsync();
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public void Update(Review entity)
-        {
-            _dbContext.Reviews.Update(entity);
         }
     }
 }

@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
 {
-    public class ClassRepository : IClassRepository
+    public class ClassRepository : GenericRepository<Class>, IClassRepository
     {
         private readonly GymManagementDbContext _dbContext;
 
-        public ClassRepository(GymManagementDbContext dbContext)
+        public ClassRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
@@ -23,27 +23,8 @@ namespace GymManagement.Infrastructure.Repository
             await _dbContext.SaveChangesAsync();
         }
 
-        public void Create(Class entity)
-        {
-            _dbContext.Classes.Add(entity);
-        }
 
-        public void Delete(Class entity)
-        {
-            _dbContext.Classes.Remove(entity);
-        }
-
-        public async Task<List<Class>> FindAllAsync()
-        {
-            return await _dbContext.Classes.ToListAsync();
-        }
-
-        public async Task<Class> FindByIdAsync(int id)
-        {
-            return await _dbContext.Classes.FindAsync(id);
-        }
-
-        public async Task<Class> FindOrCreateAsync(Class entity)
+        public override async Task<Class> FindOrCreateAsync(Class entity)
         {
             var existing = await _dbContext.Classes.FirstOrDefaultAsync(c => c.Id == entity.Id);
             if (existing != null)
@@ -81,26 +62,6 @@ namespace GymManagement.Infrastructure.Repository
                 c.TrainerId == trainerId &&
                 c.ScheduledDate < endTime &&
                 startTime < c.ScheduledDate.AddMinutes(c.DurationInMinutes));
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public void Update(Class entity)
-        {
-            _dbContext.Classes.Update(entity);
-        }
-
-        public Task AddAsync(Class entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> ExistsAsync(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
 {
-    public class MemberRepository : IMemberRepository
+    public class MemberRepository : GenericRepository<Member>, IMemberRepository
     {
         private readonly GymManagementDbContext _dbContext;
 
-        public MemberRepository(GymManagementDbContext dbContext)
+        public MemberRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
@@ -50,32 +50,8 @@ namespace GymManagement.Infrastructure.Repository
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
 
-        public void Create(Member entity)
-        {
-            _dbContext.Members.Add(entity);
-        }
-
-        public void Update(Member entity)
-        {
-            _dbContext.Members.Update(entity);
-        }
-
-        public void Delete(Member entity)
-        {
-            _dbContext.Members.Remove(entity);
-        }
-
-        public async Task<Member> FindByIdAsync(int id)
-        {
-            return await _dbContext.Members.FindAsync(id);
-        }
-
-        public async Task<Member> FindOrCreateAsync(Member entity)
+        public override async Task<Member> FindOrCreateAsync(Member entity)
         {
             var existing = await _dbContext.Members.FirstOrDefaultAsync(m => m.Id == entity.Id);
             if (existing != null)
@@ -85,9 +61,5 @@ namespace GymManagement.Infrastructure.Repository
             return entity;
         }
 
-        public async Task<List<Member>> FindAllAsync()
-        {
-            return await _dbContext.Members.ToListAsync();
-        }
     }
 }

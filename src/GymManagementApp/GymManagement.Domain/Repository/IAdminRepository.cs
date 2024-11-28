@@ -19,8 +19,6 @@ namespace GymManagement.Domain.Repository
         // Find an admin by ID (with notifications)
         Task<Admin> FindByIdAsync(int id);
 
-        // Find or create an admin
-        Task<Admin> FindOrCreateAsync(Admin entity);
 
         // Get admin by username
         Task<Admin> GetAdminByUsernameAsync(string username);

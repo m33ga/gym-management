@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
 {
-    public class TrainerRepository : ITrainerRepository
+    public class TrainerRepository : GenericRepository<Trainer>, ITrainerRepository
     {
         private readonly GymManagementDbContext _dbContext;
 
-        public TrainerRepository(GymManagementDbContext dbContext)
+        public TrainerRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
@@ -45,37 +45,7 @@ namespace GymManagement.Infrastructure.Repository
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public void Create(Trainer entity)
-        {
-            _dbContext.Trainers.Add(entity);
-        }
-
-        public void Update(Trainer entity)
-        {
-            _dbContext.Trainers.Update(entity);
-        }
-
-        public void Delete(Trainer entity)
-        {
-            _dbContext.Trainers.Remove(entity);
-        }
-
-        public async Task<List<Trainer>> FindAllAsync()
-        {
-            return await _dbContext.Trainers.ToListAsync();
-        }
-
-        public async Task<Trainer> FindByIdAsync(int id)
-        {
-            return await _dbContext.Trainers.FindAsync(id);
-        }
-
-        public async Task<Trainer> FindOrCreateAsync(Trainer entity)
+        public override async Task<Trainer> FindOrCreateAsync(Trainer entity)
         {
             var trainer = await _dbContext.Trainers.FirstOrDefaultAsync(t => t.Id == entity.Id);
             if (trainer == null)

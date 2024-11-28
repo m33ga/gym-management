@@ -37,6 +37,7 @@ namespace GymManagement.Infrastructure.Repository
         {
             _dbSet.Add(entity);
         }
+
         public void Update(T entity)
         {
             _dbSet.Update(entity);
@@ -49,20 +50,10 @@ namespace GymManagement.Infrastructure.Repository
 
         public async Task<bool> ExistsAsync(int id)
         {
-            
             return await _dbSet.AnyAsync(e => EF.Property<int>(e, "Id") == id);
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
 
-        public async Task<T> FindOrCreateAsync(T entity)
-        {
-            return await _dbSet.FindAsync(entity);
-        }
-       
         public async Task<T> GetByIdWithIncludeAsync(int id, params string[] includes)
         {
             IQueryable<T> query = _dbSet;
@@ -72,5 +63,13 @@ namespace GymManagement.Infrastructure.Repository
             }
             return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
+
+        public abstract Task<T> FindOrCreateAsync(T entity);
+
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+
     }
 }
