@@ -25,15 +25,32 @@ namespace GymManagement.Domain.Models
             ClassId = classId;
             BookingDate = bookingDate;
 
-            Status = BookingStatus.Confirmed; // Default status
+            Status = BookingStatus.Not_Booked; // Default status
         }
 
         // Methods
+        public void Not_Booked()
+        {
+            if (MemberId == 0)
+            {
+                Status = BookingStatus.Not_Booked;
+            }
+            else Status = BookingStatus.Confirmed;
+        }
+        public void Confirmed()
+        {
+            if(Status == BookingStatus.Confirmed) 
+                throw new InvalidOperationException("Booking is already confirmed");
+            if (MemberId != 0)
+                Status = BookingStatus.Confirmed;
+            Status = BookingStatus.Confirmed;
+        }
         public void Cancel()
         {
             if (Status == BookingStatus.Cancelled)
                 throw new InvalidOperationException("Booking is already cancelled.");
-
+            if (ClassId == 0) 
+                Status = BookingStatus.Cancelled;
             Status = BookingStatus.Cancelled;
         }
     }
