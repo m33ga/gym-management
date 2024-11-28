@@ -7,7 +7,7 @@ namespace GymManagement.Domain.Repository
 {
     public interface IBookingRepository : IRepository<Booking>
     {
-        Task<Booking> AddBookingAsync(Booking booking);
+        Task AddBookingAsync(Booking booking);
         // Check if a class is already booked
         Task<bool> IsClassBookedAsync(int classId);
 

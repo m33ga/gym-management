@@ -17,27 +17,35 @@ namespace GymManagement.Infrastructure.Repository
         }
 
         // Get all admins
-        public async Task<IList<Admin>> GetAllAdminsAsync()
+        async Task<IList<Admin>> IAdminRepository.GetAllAdminsAsync()
         {
             return await _dbContext.Admins.ToListAsync();
         }
 
         // Add a new admin and save changes
-        public async Task AddAdminAsync(Admin admin)
+        async Task IAdminRepository.AddAdminAsync(Admin admin)
         {
             await _dbContext.Admins.AddAsync(admin);
             await _dbContext.SaveChangesAsync();
         }
 
         // Remove an admin and save changes
-        public async Task RemoveAdminAsync(Admin admin)
+        async Task IAdminRepository.RemoveAdminAsync(Admin admin)
         {
             _dbContext.Admins.Remove(admin);
             await _dbContext.SaveChangesAsync();
         }
 
         // Find an admin by ID
-        public async Task<Admin> FindByIdAsync(int id)
+        async Task<Admin> IAdminRepository.FindByIdAsync(int id)
+        {
+            return await _dbContext.Admins
+                .Include(a => a.Notifications) // Include notifications for the admin
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        // Find an admin by ID
+        async Task<Admin> Domain.SeedWork.IRepository<Admin>.FindByIdAsync(int id)
         {
             return await _dbContext.Admins
                 .Include(a => a.Notifications) // Include notifications for the admin
@@ -60,7 +68,7 @@ namespace GymManagement.Infrastructure.Repository
         }
 
         // Get admin by username
-        public async Task<Admin> GetAdminByUsernameAsync(string username)
+        async Task<Admin> IAdminRepository.GetAdminByUsernameAsync(string username)
         {
             return await _dbContext.Admins
                 .Include(a => a.Notifications) // Include notifications
