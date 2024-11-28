@@ -97,7 +97,7 @@ async Task PrintMemberShipsAsync()
     {
         Console.WriteLine($"Database path: {uow.GetDbPath()}");
 
-        var list = await uow.Memberships.GetAllAsync();
+        var list = await uow.Memberships.FindAllAsync();
         if (list.Count == 0)
         {
             Console.WriteLine("\n There are no memberships yet");
@@ -124,7 +124,7 @@ async Task PrintClassesAsync()
     {
         Console.WriteLine($"Database path: {uow.GetDbPath()}");
 
-        var list = await uow.Classes.GetAllAsync();
+        var list = await uow.Classes.FindAllAsync();
         if (list.Count == 0)
         {
             Console.WriteLine("\n There are no Members yet");
@@ -152,7 +152,7 @@ async Task PrintTrainersAsync()
     {
         Console.WriteLine($"Database path: {uow.GetDbPath()}");
 
-        var list = await uow.Trainers.GetAllAsync();
+        var list = await uow.Trainers.FindAllAsync();
         if (list.Count == 0)
         {
             Console.WriteLine("\n There are no Members yet");
@@ -180,7 +180,7 @@ async Task PrintMembersAsync()
     {
         Console.WriteLine($"Database path: {uow.GetDbPath()}");
 
-        var list = await uow.Members.GetAllAsync();
+        var list = await uow.Members.FindAllAsync();
         if (list.Count == 0)
         {
             Console.WriteLine("\n There are no Members yet");
@@ -210,7 +210,7 @@ async Task PrintBookingsAsync()
     {
         Console.WriteLine($"Database path: {uow.GetDbPath()}");
 
-        var list = await uow.Bookings.GetAllAsync();
+        var list = await uow.Bookings.FindAllAsync();
         if (list.Count == 0)
         {
             Console.WriteLine("\n There are no bookings yet");

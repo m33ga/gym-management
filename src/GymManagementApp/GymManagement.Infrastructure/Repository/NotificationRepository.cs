@@ -67,7 +67,7 @@ namespace GymManagement.Infrastructure.Repository
             _dbContext.Notifications.Remove(entity);
         }
 
-        public async Task<Notification> GetByIdAsync(int id)
+        public async Task<Notification> FindByIdAsync(int id)
         {
             return await _dbContext.Notifications.FindAsync(id);
         }
@@ -82,7 +82,7 @@ namespace GymManagement.Infrastructure.Repository
             return entity;
         }
 
-        public async Task<List<Notification>> GetAllAsync()
+        public async Task<List<Notification>> FindAllAsync()
         {
             return await _dbContext.Notifications.ToListAsync();
         }

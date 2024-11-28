@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GymManagement.Domain.Models;
@@ -15,7 +16,11 @@ namespace GymManagement.Infrastructure.Repository
         {
             _dbContext = dbContext;
         }
-
+        public async Task AddBookingAsync(Booking booking)
+        {
+            await _dbContext.Bookings.AddAsync(booking);
+            await _dbContext.SaveChangesAsync();
+        }
         // Check if a class is already booked
         public async Task<bool> IsClassBookedAsync(int classId)
         {
@@ -30,7 +35,15 @@ namespace GymManagement.Infrastructure.Repository
                 .Include(b => b.Member) // Include related Member
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
+        public async Task<Booking> FindOrCreateAsync(Booking entity)
+        {
+            var existing = await _dbContext.Bookings.FirstOrDefaultAsync(c => c.Id == entity.Id);
+            if (existing != null)
+                return existing;
 
+            await _dbContext.Bookings.AddAsync(entity);
+            return entity;
+        }
         // Get all bookings for a specific member
         public async Task<IList<Booking>> GetBookingsByMemberAsync(int memberId)
         {
@@ -38,5 +51,7 @@ namespace GymManagement.Infrastructure.Repository
                 .Where(b => b.MemberId == memberId)
                 .ToListAsync();
         }
+
+       
     }
 }

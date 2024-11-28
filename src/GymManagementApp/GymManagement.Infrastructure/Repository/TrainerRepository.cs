@@ -65,12 +65,12 @@ namespace GymManagement.Infrastructure.Repository
             _dbContext.Trainers.Remove(entity);
         }
 
-        public async Task<List<Trainer>> GetAllAsync()
+        public async Task<List<Trainer>> FindAllAsync()
         {
             return await _dbContext.Trainers.ToListAsync();
         }
 
-        public async Task<Trainer> GetByIdAsync(int id)
+        public async Task<Trainer> FindByIdAsync(int id)
         {
             return await _dbContext.Trainers.FindAsync(id);
         }
