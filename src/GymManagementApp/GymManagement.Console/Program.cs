@@ -3,7 +3,7 @@ using GymManagement.Infrastructure;
 using GymManagement.Domain;
 using GymManagement.Application;
 using GymManagement.Domain.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 Console.WriteLine("Testing GymManagement");
 var exit = false;
 
@@ -15,7 +15,7 @@ do
     
     Console.WriteLine("1. Create Booking");
     Console.WriteLine("2. Create Member");
-    Console.WriteLine("3. Create Trainer");
+    Console.WriteLine("3. Create Trainer"); 
     Console.WriteLine("4. Create Class");
     Console.WriteLine("5. Create Membership");
     Console.WriteLine("6. Print Bookings");
@@ -23,6 +23,9 @@ do
     Console.WriteLine("8. Print Trainers");
     Console.WriteLine("9. Print Classes");
     Console.WriteLine("a. Print Memberships");
+    Console.WriteLine("b. Delete Member");
+    Console.WriteLine("c. Update Member");
+
     Console.WriteLine("0. exit");
     var option = Console.ReadLine();
     switch (option)
@@ -78,6 +81,14 @@ do
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
             break;
+
+        case "b":
+            await DeleteMemberAsync();
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+            break;
+
+
         case "0":
             exit = true;
             Console.WriteLine("Press any key to continue");
@@ -278,12 +289,12 @@ static async Task AddBookingAsync()
     using (var uow = new UnitOfWork())
     {
         DateTime date1 = new(2025, 11, 26);
-        Trainer t1 = new("Test Name","password","test@gmail.com","testuser","+123456789");
+        Trainer t1 = new("Test Name", "password", "test@gmail.com", "testuser", "+123456789");
         await uow.Trainers.AddTrainerAsync(t1);
-      
+
         Membership mb1 = new("Test", 150, "Test Description", 15, 50);
         await uow.Memberships.AddMembershipAsync(mb1);
-        
+
         Member m1 = new("TestName", "test@gmail.com", "password", "testuser1", "+123456789", 82.1F, 1.91F, 15, mb1);
         await uow.Members.AddMemberAsync(m1);
 
@@ -297,4 +308,33 @@ static async Task AddBookingAsync()
 
 
 }
+
+
+async Task DeleteMemberAsync()
+{
+    using (var uow = new UnitOfWork())
+    {
+        Console.WriteLine("Enter Member ID to delete:");
+        if (int.TryParse(Console.ReadLine(), out int memberId))
+        {
+            var member = await uow.Members.FindByIdAsync(memberId);
+            if (member == null)
+            {
+                Console.WriteLine("Member not found.");
+                return;
+            }
+
+            uow.Members.Delete(member);
+            await uow.SaveChangesAsync();
+            Console.WriteLine("Member deleted successfully.");
+        }
+        else
+        {
+            Console.WriteLine("Invalid ID entered.");
+        }
+    }
+}
+
+
+
 
