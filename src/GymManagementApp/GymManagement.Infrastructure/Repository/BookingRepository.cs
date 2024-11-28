@@ -27,10 +27,6 @@ namespace GymManagement.Infrastructure.Repository
             return await _dbContext.Bookings.AnyAsync(b => b.ClassId == classId);
         }
 
-        public Task<Booking> AddBookingAsync(Booking booking)
-        {
-            throw new System.NotImplementedException();
-        }
 
         // Retrieve booking by ID, including related navigation properties
         public async Task<Booking> GetByIdWithDetailsAsync(int id)
@@ -40,7 +36,7 @@ namespace GymManagement.Infrastructure.Repository
                 .Include(b => b.Member) // Include related Member
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
-        public async Task<Booking> FindOrCreateAsync(Booking entity)
+        public override async Task<Booking> FindOrCreateAsync(Booking entity)
         {
             var existing = await _dbContext.Bookings.FirstOrDefaultAsync(c => c.Id == entity.Id);
             if (existing != null)
@@ -57,9 +53,5 @@ namespace GymManagement.Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public override Task<Booking> FindOrCreateAsync(Booking entity)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
