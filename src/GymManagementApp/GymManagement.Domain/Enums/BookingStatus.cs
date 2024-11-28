@@ -6,6 +6,7 @@ namespace GymManagement.Domain.Enums
 {
     public enum BookingStatus
     {
+        Not_Booked,
         Confirmed,
         Cancelled
     }
