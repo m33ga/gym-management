@@ -33,12 +33,12 @@ namespace GymManagement.Infrastructure.Repository
             _dbContext.Classes.Remove(entity);
         }
 
-        public async Task<List<Class>> FindAllAsync()
+        public async Task<List<Class>> GetAllAsync()
         {
             return await _dbContext.Classes.ToListAsync();
         }
 
-        public async Task<Class> FindByIdAsync(int id)
+        public async Task<Class> GetByIdAsync(int id)
         {
             return await _dbContext.Classes.FindAsync(id);
         }
@@ -91,6 +91,16 @@ namespace GymManagement.Infrastructure.Repository
         public void Update(Class entity)
         {
             _dbContext.Classes.Update(entity);
+        }
+
+        public Task AddAsync(Class entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ExistsAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

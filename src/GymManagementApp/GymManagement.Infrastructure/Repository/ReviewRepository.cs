@@ -32,12 +32,12 @@ namespace GymManagement.Infrastructure.Repository
             _dbContext.Reviews.Remove(entity);
         }
 
-        public async Task<List<Review>> FindAllAsync()
+        public async Task<List<Review>> GetAllAsync()
         {
             return await _dbContext.Reviews.ToListAsync();
         }
 
-        public async Task<Review> FindByIdAsync(int id)
+        public async Task<Review> GetByIdAsync(int id)
         {
             return await _dbContext.Reviews.FindAsync(id);
         }

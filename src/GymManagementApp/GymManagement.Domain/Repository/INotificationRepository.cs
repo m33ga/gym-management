@@ -19,6 +19,6 @@ namespace GymManagement.Domain.Repository
 
         Task MarkAsReadAsync(int notificationId);
 
-        Task SaveChangesAsync();
+        
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GymManagement.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repository
