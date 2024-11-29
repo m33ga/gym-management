@@ -1,6 +1,7 @@
 ﻿using GymManagement.ConsoleUtilities;
 using GymManagement.Domain.Models;
 using GymManagement.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Threading.Tasks;
@@ -41,11 +42,77 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "8":
                     await PrintUpcomingClassesForAllMembers();
                     break;
+                case "9":
+                    await GetReviewsByTrainerAsync();
+                    break;
+                case "10":
+                    await AddReviewForClass();
+                    break;
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
             }
             return false;
+        }
+
+        private static async Task AddReviewForClass()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                System.Console.WriteLine($"Database path: {uow.GetDbPath()}");
+                
+                var list = await uow.Classes.FindAllAsync();
+                
+                if (list.Count == 0)
+                {
+                    System.Console.WriteLine("\n There are no Classes yet");
+                }
+                else
+                {
+                    
+                    System.Console.WriteLine("\n Classes:");
+                    foreach (var classes in list)
+                    {
+                        System.Console.WriteLine($"{classes.Id} Class: {classes.Name}, Date: {classes.ScheduledDate}, Is Available:{classes.IsAvailable}");
+                        
+                    }
+                    
+                }
+                System.Console.WriteLine("Choose needed class");
+                int input = int.Parse(System.Console.ReadLine());
+                var n_class = await uow.Classes.FindByIdAsync(input);
+                
+                Review r1 = new(1, input, 5, "TestReview", n_class.TrainerId);
+                await uow.Reviews.AddReviewAsync(r1);
+                await uow.SaveChangesAsync();
+            }
+        }
+
+        private static async Task GetReviewsByTrainerAsync()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                System.Console.WriteLine($"Database path: {uow.GetDbPath()}");
+                System.Console.WriteLine("Enter trainer ID");
+                int input = int.Parse(System.Console.ReadLine());
+                var list = await uow.Reviews.GetTrainerRatingAsync(input);
+
+                if (list.Count == 0)
+                {
+                    System.Console.WriteLine("\n There are no rating for trainer yet");
+                }
+                else
+                {
+                    System.Console.WriteLine("\n Rating:");
+                    var collect = 0;
+                        foreach (var rating in list)
+                        {
+                            collect += rating.Rating;
+                        }
+                    var rate = collect / list.Count;
+                    System.Console.WriteLine(rate);
+                }
+            }
         }
 
         private static async Task FindAvailableClasses()

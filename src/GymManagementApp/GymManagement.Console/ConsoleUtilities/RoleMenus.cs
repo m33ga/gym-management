@@ -45,6 +45,8 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("6. Create Unbooked Booking (Unhandled exception)"); // Handle exception
                         System.Console.WriteLine("7. Find Available Classes");
                         System.Console.WriteLine("8. Print Upcoming Classes for Member");
+                        System.Console.WriteLine("9. Print Trainer Rating");
+                        System.Console.WriteLine("10. Create review for class");
                         System.Console.WriteLine("0. Logout");
                         break;
                 }

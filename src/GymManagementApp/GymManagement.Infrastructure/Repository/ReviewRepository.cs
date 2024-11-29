@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GymManagement.Domain.Models;
@@ -44,6 +45,11 @@ namespace GymManagement.Infrastructure.Repository
             return await _dbContext.Reviews
                 .Where(r => r.TrainerId == trainerId)
                 .ToListAsync();
+        }
+
+        public async Task<IList<Review>> GetTrainerRatingAsync(int trainerId)
+        {
+            return await GetReviewsByTrainerAsync(trainerId);            
         }
     }
 }

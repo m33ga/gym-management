@@ -16,7 +16,7 @@ namespace GymManagement.Domain.Repository
 
         // get a specific review by member and class
         Task<Review> GetReviewByMemberAndClassAsync(int memberId, int classId);
-
+        Task<IList<Review>> GetTrainerRatingAsync(int trainerId);
         Task SaveChangesAsync();
     }
 }
