@@ -33,7 +33,8 @@ namespace GymManagement.Console.ConsoleUtilities
 
                     case "Trainer":
                         System.Console.WriteLine("1. Create Class");
-                        System.Console.WriteLine("2. Print My Classes (not yet available)");
+                        System.Console.WriteLine("2. Print Upcoming Classes(booked by someone) for each Trainer");
+                        System.Console.WriteLine("3. Print All Classes for each Trainer");
                         System.Console.WriteLine("0. Logout");
                         break;
 
@@ -43,7 +44,9 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("3. Print Bookings");
                         System.Console.WriteLine("4. Delete Member");
                         System.Console.WriteLine("5. Update Member (not yet available)");
-                        System.Console.WriteLine("6. Create Unbooked Booking");
+                        System.Console.WriteLine("6. Create Unbooked Booking (Unhandled exception)"); // handle exception
+                        System.Console.WriteLine("7. Print Upcoming Classes for each member ");
+                        System.Console.WriteLine("8. Print All Available Classes");
                         System.Console.WriteLine("0. Logout");
                         break;
                 }
