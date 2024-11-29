@@ -23,9 +23,35 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "4":
                     await DeleteMemberAsync();
                     break;
+                case "6":
+                    await AddUnbookedBookingAsync();
+                    break;
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
+            }
+        }
+
+        private static async Task AddUnbookedBookingAsync()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                DateTime date1 = DateTime.Now.AddDays(1);
+                Trainer t1 = new("Test Name", "password", "test@gmail.com", "testuser", "+123456789");
+
+                Membership mb1 = new("Test", 150, "Test Description", 15, 50);
+
+                Member m1 = new("TestName", "test@gmail.com", "password", "testuser1", "+123456789", 82.1F, 1.91F, 15, mb1);
+
+                Class c1 = new("TestName", "TestDescription", date1, 50, t1);
+
+                Booking b1 = new(null, 5, date1);
+                if (b1.MemberId == null)
+                {
+                    b1.Cancel();
+                }
+                await uow.Bookings.AddBookingAsync(b1);
+                await uow.SaveChangesAsync();
             }
         }
 
@@ -82,7 +108,7 @@ namespace GymManagement.Console.ConsoleUtilities
 
                 Class c1 = new("TestName", "TestDescription", date1, 50, t1);
 
-                Booking b1 = new(null, 3, date1);
+                Booking b1 = new(1, 3, date1);
                 if (b1.MemberId == null)
                 {
                     b1.Cancel();

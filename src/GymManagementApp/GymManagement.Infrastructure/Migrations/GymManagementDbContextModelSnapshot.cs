@@ -23,7 +23,8 @@ namespace GymManagement.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(45);
 
                     b.Property<string>("Password")
                         .HasColumnType("TEXT")
