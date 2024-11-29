@@ -1,9 +1,6 @@
 ﻿using GymManagement.Domain.Models;
 using GymManagement.Infrastructure;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GymManagement.Console.ConsoleUtilities
@@ -15,7 +12,7 @@ namespace GymManagement.Console.ConsoleUtilities
             switch (input)
             {
                 case "1":
-                    await MemberActions.AddBookingAsync();
+                    await AddBookingAsync();
                     break;
                 case "2":
                     await MembershipActions.AddMemberShipAsync();
@@ -66,8 +63,7 @@ namespace GymManagement.Console.ConsoleUtilities
                             $"Member Phone Number{member.PhoneNumber}," +
                             $" Member Weight: {member.Weight}kg, " +
                             $"Member Height: {member.Height}cm, " +
-                            $"Member Reamining workouts: {member.RemainingWorkouts}");
-
+                            $"Member Remaining workouts: {member.RemainingWorkouts}");
                     }
                 }
             }
@@ -93,8 +89,8 @@ namespace GymManagement.Console.ConsoleUtilities
                 }
                 await uow.Bookings.AddBookingAsync(b1);
                 await uow.SaveChangesAsync();
-
             }
+        }
 
         public static async Task PrintBookingsAsync()
         {
@@ -115,11 +111,9 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine($"Booking: {booking.BookingDate}, " +
                             $"Class ID: {booking.ClassId}, " +
                             $"Member ID: {booking.MemberId}");
-
                     }
                 }
             }
-
         }
 
         public static async Task DeleteMemberAsync()
@@ -146,6 +140,5 @@ namespace GymManagement.Console.ConsoleUtilities
                 }
             }
         }
-
     }
 }
