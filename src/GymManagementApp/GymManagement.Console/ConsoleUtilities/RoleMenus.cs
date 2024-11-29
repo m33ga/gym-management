@@ -59,11 +59,19 @@ namespace GymManagement.Console.ConsoleUtilities
                 switch (role)
                 {
                     case "Admin":
-                        await AdminActions.HandleAdminActionsAsync(input);
+                        bool shouldExit1 = await AdminActions.HandleAdminActionsAsync(input);
+                        if (shouldExit1 || input == "0")
+                        {
+                            exit = true; // Exit the loop
+                        }
                         break;
 
                     case "Trainer":
-                        await TrainerActions.HandleTrainerActionsAsync(input);
+                        bool shouldExit2 = await TrainerActions.HandleTrainerActionsAsync(input);
+                        if (shouldExit2 || input == "0")
+                        {
+                            exit = true; // Exit the loop
+                        }
                         break;
 
                     case "Member":

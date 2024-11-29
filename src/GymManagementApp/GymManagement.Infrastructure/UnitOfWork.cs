@@ -17,6 +17,7 @@ namespace GymManagement.Infrastructure
 
             // Ensure database is created
             _dbContext.Database.EnsureCreated();
+            _dbContext.SeedData();
 
             // Optionally apply migrations
             //_dbContext.Database.Migrate();

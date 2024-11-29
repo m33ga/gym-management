@@ -10,7 +10,7 @@ namespace GymManagement.Console.ConsoleUtilities
 {
     public static class AdminActions
     {
-        public static async Task HandleAdminActionsAsync(string input)
+        public static async Task<bool> HandleAdminActionsAsync(string input)
         {
             switch (input)
             {
@@ -52,6 +52,7 @@ namespace GymManagement.Console.ConsoleUtilities
                     System.Console.WriteLine("Invalid Option.");
                     break;
             }
+            return false;
         }
 
         private static async Task AddNotificationAsync()
