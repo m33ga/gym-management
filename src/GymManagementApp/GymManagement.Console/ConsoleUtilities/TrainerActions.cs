@@ -11,7 +11,7 @@ namespace GymManagement.Console.ConsoleUtilities
 {
     public static class TrainerActions
     {
-        public static async Task HandleTrainerActionsAsync(string input)
+        public static async Task<bool> HandleTrainerActionsAsync(string input)
         {
             switch (input)
             {
@@ -28,6 +28,7 @@ namespace GymManagement.Console.ConsoleUtilities
                     System.Console.WriteLine("Invalid Option.");
                     break;
             }
+            return false;
         }
 
         public static async Task AddTrainerAsync()
