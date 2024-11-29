@@ -8,7 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GymManagement.Domain\GymManagement.Domain.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.32">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GymManagement.Application\GymManagement.Application.csproj" />
     <ProjectReference Include="..\GymManagement.Infrastructure\GymManagement.Infrastructure.csproj" />
   </ItemGroup>
 

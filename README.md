@@ -1,5 +1,44 @@
 # Gym Management App
 
+## Disclaimer (for part II of project)
+- **This is a development environment! The console app is just a way to test some functionalities, it does not represent in a total way the userflow. Many exceptions are thrown and are not handled since this will be handled in presentation layer. Some data is hardcoded for now to make testing easier :)**
+
+#### To make it easier, we seeded some data in the database, therefore we have the following default data:
+
+1. admin:
+- email: admin@ex.com
+- password: admin
+2. members:
+- email: alice@ex.com
+- password: password3
+- email: bob@ex.com
+- password: password4
+3. trainers:
+- email: john@ex.com
+- password: password1
+- email: jane@ex.com
+- password: password2
+4. some classes(trainings) and memberships are also created to populate the database
+
+#### Features that have been tested in console until now:
+1. Create Users and other simple entities
+2. Retrieve simple information
+3. Search User by email
+4. Hash user passwords
+5. Update user details
+6. Delete entities
+7. Find Available classes
+8. Find Classes booked by a member
+9. Find All classes created by a Trainer
+10. Find All classes created by a Trainer which have been booked by a User
+11. Book a Class
+12. Add a review to a class
+13. Find rating of a Trainer
+14. Add a notification for a user
+15. Mark notification as read
+
+
+
 ## Overview
 
 The Gym Management App is a Universal Windows Platform (UWP) application developed in C# to streamline gym operations and provide a seamless experience for members and trainers. Members can book workout sessions, receive customized meal plans, and track their training history. Trainers manage their availability and create tailored meal plans based on each member’s fitness goals. The app includes a range of functionalities, such as notifications, reviews, and leaderboard tracking for trainers.
