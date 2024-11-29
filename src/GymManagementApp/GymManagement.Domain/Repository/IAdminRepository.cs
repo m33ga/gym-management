@@ -19,8 +19,10 @@ namespace GymManagement.Domain.Repository
         // Find an admin by ID (with notifications)
         Task<Admin> FindByIdAsync(int id);
 
-
         // Get admin by username
         Task<Admin> GetAdminByUsernameAsync(string username);
+
+        // Get Admin by Email
+        Task<Admin> GetAdminByEmailAsync(string email);
     }
 }
