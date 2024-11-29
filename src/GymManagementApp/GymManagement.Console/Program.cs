@@ -23,6 +23,9 @@ do
     Console.WriteLine("8. Print Trainers");
     Console.WriteLine("9. Print Classes");
     Console.WriteLine("a. Print Memberships");
+    Console.WriteLine("z. Print Upcoming Classes for each Member");
+    Console.WriteLine("y. Print All Classes for each Trainer");
+    Console.WriteLine("x. Print Booked Classes for each Trainer");
     Console.WriteLine("0. exit");
     var option = Console.ReadLine();
     switch (option)
@@ -75,6 +78,21 @@ do
             break;
         case "a":
             await PrintMemberShipsAsync();
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+            break;
+        case "z":
+            await PrintUpcomingClassesForAllMembers();
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+            break;
+        case "y":
+            await PrintClassesByTrainer();
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+            break;
+        case "x":
+            await PrintAllBookedClassesByTrainer();
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
             break;
@@ -290,7 +308,7 @@ static async Task AddBookingAsync()
         Class c1 = new("TestName", "TestDescription", date1, 50, t1);
         await uow.Classes.AddClassAsync(c1);
 
-        Booking b1 = new(1, 1, date1);
+        Booking b1 = new(m1.Id, c1.Id, DateTime.Now);
         await uow.Bookings.AddBookingAsync(b1);
         await uow.SaveChangesAsync();
     }
@@ -298,3 +316,53 @@ static async Task AddBookingAsync()
 
 }
 
+async Task PrintUpcomingClassesForAllMembers()
+{
+    using (var uow = new UnitOfWork())
+    {
+        var members = await uow.Members.FindAllAsync();
+        foreach (var member in members)
+        {
+            var classes = await uow.Bookings.GetClassesByMemberAsync(member.Id);
+            Console.WriteLine($"Member: {member.FullName}");
+            foreach (var c in classes)
+            {
+                Console.WriteLine($"Class: {c.Name}, Date: {c.ScheduledDate}");
+            }
+        }
+    }
+}
+
+async Task PrintClassesByTrainer()
+{
+    using (var uow = new UnitOfWork())
+    {
+        var trainers = await uow.Trainers.FindAllAsync();
+        foreach (var trainer in trainers)
+        {
+            var classes = await uow.Classes.GetClassesByTrainerAsync(trainer.Id);
+            Console.WriteLine($"Trainer: {trainer.FullName}");
+            foreach (var c in classes)
+            {
+                Console.WriteLine($"Class: {c.Name}, Date: {c.ScheduledDate}");
+            }
+        }
+    }
+}
+
+async Task PrintAllBookedClassesByTrainer()
+{
+    using (var uow = new UnitOfWork())
+    {
+        var trainers = await uow.Trainers.FindAllAsync();
+        foreach (var trainer in trainers)
+        {
+            var classes = await uow.Classes.GetBookedClassesByTrainerAsync(trainer.Id);
+            Console.WriteLine($"Trainer: {trainer.FullName}");
+            foreach (var c in classes)
+            {
+                Console.WriteLine($"Class: {c.Name}, Date: {c.ScheduledDate}");
+            }
+        }
+    }
+}
