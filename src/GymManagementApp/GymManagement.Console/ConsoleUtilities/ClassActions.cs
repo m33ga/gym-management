@@ -12,13 +12,15 @@ namespace GymManagement.Console.ConsoleUtilities
     {
         public static async Task AddClassAsync()
         {
+            System.Console.WriteLine("Adding a random class:");
             using (var uow = new UnitOfWork())
             {
-                DateTime date1 = new(2025, 11, 26);
-                Trainer t1 = new("Test Name", "password", "test@gmail.com", "testuser", "+123456789");
-                Class c1 = new("TestName", "TestDescription", date1, 50, t1);
+                DateTime date1 = DateTime.Now.AddDays(10).AddHours(10);
+                Trainer t1 = await uow.Trainers.FindByIdAsync(1);
+                Class c1 = new("TestName", "TestDescription", date1, 60, t1);
                 await uow.Classes.AddClassAsync(c1);
                 await uow.SaveChangesAsync();
+                System.Console.WriteLine("Class added successfully");
             }
 
         }
@@ -32,11 +34,11 @@ namespace GymManagement.Console.ConsoleUtilities
                 var list = await uow.Classes.FindAllAsync();
                 if (list.Count == 0)
                 {
-                    System.Console.WriteLine("\n There are no Members yet");
+                    System.Console.WriteLine("\n There are no classes yet");
                 }
                 else
                 {
-                    System.Console.WriteLine("\n Members:");
+                    System.Console.WriteLine("\n Classes:");
                     foreach (var classi in list)
                     {
                         System.Console.WriteLine($"class: {classi.Id}, " +
@@ -59,20 +61,19 @@ namespace GymManagement.Console.ConsoleUtilities
                 var list = await uow.Classes.GetAvailableClassesAsync();
                 if (list.Count == 0)
                 {
-                    System.Console.WriteLine("\n There are no available classes yet");
+                    System.Console.WriteLine("\n There are no available classes");
                 }
                 else
                 {
-                    System.Console.WriteLine("\n Members:");
                     foreach (var classi in list)
                     {
-                        System.Console.WriteLine($"class: {classi.Id}, " +
+                        System.Console.WriteLine($"class ID: {classi.Id}, " +
                                                  $"class Name: {classi.Name}, " +
                                                  $"class Description: {classi.Description}, " +
                                                  $"class Date: {classi.ScheduledDate}, " +
                                                  $"class Duration: {classi.DurationInMinutes}min, " +
                                                  $"class Trainer ID: {classi.TrainerId}, " +
-                                                 $"Class Availability: {classi.IsAvailable}, ");
+                                                 $"class Availability: {classi.IsAvailable}, ");
                     }
                 }
             }

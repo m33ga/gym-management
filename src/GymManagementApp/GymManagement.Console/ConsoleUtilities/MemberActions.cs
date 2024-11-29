@@ -54,11 +54,11 @@ namespace GymManagement.Console.ConsoleUtilities
            
                 if (list.Count == 0)
                 {
-                    System.Console.WriteLine("\n There are no Members yet");
+                    System.Console.WriteLine("\n There are no available classes");
                 }
                 else
                 {
-                    System.Console.WriteLine("\n Members:");
+                    System.Console.WriteLine("\n Classes:");
                     foreach (var AvailableClass in list)
                     {
                         var t = AvailableClass.TrainerId;
@@ -74,7 +74,7 @@ namespace GymManagement.Console.ConsoleUtilities
         }
         
 
-        private static async Task AddUnbookedBookingAsync()
+        private static async Task AddUnbookedBookingAsync() //wtf is this for?
         {
             using (var uow = new UnitOfWork())
             {
@@ -141,22 +141,59 @@ namespace GymManagement.Console.ConsoleUtilities
         {
             using (var uow = new UnitOfWork())
             {
-                DateTime date1 = DateTime.Now.AddDays(1);
-                Trainer t1 = new("Test Name", "password", "test@gmail.com", "testuser", "+123456789");
+                //DateTime date1 = DateTime.Now.AddDays(1);
+                //Trainer t1 = new("Test Name", "password", "test@gmail.com", "testuser", "+123456789");
 
-                Membership mb1 = new("Test", 150, "Test Description", 15, 50);
+                //Membership mb1 = new("Test", 150, "Test Description", 15, 50);
 
-                Member m1 = new("TestName", "test@gmail.com", "password", "testuser1", "+123456789", 82.1F, 1.91F, 15, mb1);
+                //Member m1 = new("TestName", "test@gmail.com", "password", "testuser1", "+123456789", 82.1F, 1.91F, 15, mb1);
 
-                Class c1 = new("TestName", "TestDescription", date1, 50, t1);
+                //Class c1 = new("TestName", "TestDescription", date1, 50, t1);
 
-                Booking b1 = new(1, 1, date1);
-                if (b1.MemberId == null)
+                //Booking b1 = new(1, 1, date1);
+                //if (b1.MemberId == null)
+                //{
+                //    b1.Cancel();
+                //}
+
+                System.Console.WriteLine("Available Classes:");
+                await ClassActions.PrintAvailableClasses();
+                System.Console.WriteLine("Enter Class ID to book:");
+                if (int.TryParse(System.Console.ReadLine(), out int classId))
                 {
-                    b1.Cancel();
+                    var c = await uow.Classes.FindByIdAsync(classId);
+                    if (c == null)
+                    {
+                        System.Console.WriteLine("Class not found.");
+                        return;
+                    }
+
+                    System.Console.WriteLine("Member List:");
+                    await PrintMembersAsync();
+                    System.Console.WriteLine("Enter Member ID who is booking:");
+                    if (int.TryParse(System.Console.ReadLine(), out int memberId))
+                    {
+                        var m = await uow.Members.FindByIdAsync(memberId);
+                        if (m == null)
+                        {
+                            System.Console.WriteLine("Member not found.");
+                            return;
+                        }
+
+                        Booking b = new Booking(memberId, classId, DateTime.Now);
+                        await uow.Bookings.AddBookingAsync(b);
+                        await uow.SaveChangesAsync();
+                        System.Console.WriteLine("Booking added successfully.");
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("Invalid Member ID entered.");
+                    }
                 }
-                await uow.Bookings.AddBookingAsync(b1);
-                await uow.SaveChangesAsync();
+                else
+                {
+                    System.Console.WriteLine("Invalid Class ID entered.");
+                }
             }
         }
 

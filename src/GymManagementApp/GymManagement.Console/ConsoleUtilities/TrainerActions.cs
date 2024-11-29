@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GymManagement.ConsoleUtilities;
 
 namespace GymManagement.Console.ConsoleUtilities
 {
@@ -34,6 +35,18 @@ namespace GymManagement.Console.ConsoleUtilities
             using (var uow = new UnitOfWork())
             {
                 Trainer t1 = new("Test Name", "password", "test@gmail.com", "testuser", "+123456789");
+
+                //System.Console.WriteLine("Enter Trainer Name:");
+                //string name = System.Console.ReadLine();
+                //System.Console.WriteLine("Enter Trainer Email:");
+                //string email = System.Console.ReadLine();
+                //System.Console.WriteLine("Enter Trainer Username:");
+                //string username = System.Console.ReadLine();
+                //System.Console.WriteLine("Enter Trainer Password:");
+                //string password = System.Console.ReadLine();
+                //System.Console.WriteLine("Enter Trainer Phone Number:");
+                //string phoneNumber = System.Console.ReadLine();
+                //Trainer tr = new(name, PasswordUtils.HashPassword(password), email, username, phoneNumber);
                 await uow.Trainers.AddTrainerAsync(t1);
                 await uow.SaveChangesAsync();
             }
@@ -48,11 +61,11 @@ namespace GymManagement.Console.ConsoleUtilities
                 var list = await uow.Trainers.FindAllAsync();
                 if (list.Count == 0)
                 {
-                    System.Console.WriteLine("\n There are no Members yet");
+                    System.Console.WriteLine("\n There are no Trainers yet");
                 }
                 else
                 {
-                    System.Console.WriteLine("\n Members:");
+                    System.Console.WriteLine("\n Trainer:");
                     foreach (var trainer in list)
                     {
                         System.Console.WriteLine($"Trainer: {trainer.Id}, " +

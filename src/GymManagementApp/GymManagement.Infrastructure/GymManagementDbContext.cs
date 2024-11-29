@@ -4,6 +4,8 @@ using System.Text;
 using GymManagement.Domain.Models;
 using GymManagement.Domain.SeedWork;
 using Microsoft.EntityFrameworkCore;
+using GymManagement.Infrastructure.PasswordUtils;
+using System.Linq;
 
 namespace GymManagement.Infrastructure
 {
@@ -130,6 +132,59 @@ namespace GymManagement.Infrastructure
                 .HasOne(n => n.Trainer)
                 .WithMany(t => t.Notifications)
                 .HasForeignKey(n => n.TrainerId);
+
+            //seed some data in our DB
+            base.OnModelCreating(modelBuilder);
+
+        }
+
+        public void SeedData()
+        {
+            if (!Trainers.Any())
+            {
+                var trainer1 = new Trainer("John Doe", PasswordUtils.PasswordUtils.HashPassword("password1"), "john@ex.com",
+                     "johndoe", "+123456789");
+                var trainer2 = new Trainer("Jane Smith", PasswordUtils.PasswordUtils.HashPassword("password2"), "jane@ex.com",
+                     "janesmith", "+987654321");
+
+                Trainers.AddRange(trainer1, trainer2);
+                SaveChanges();
+            }
+
+            if (!Memberships.Any())
+            {
+                var mb1 = new Membership("Test-tier", 150, "Test Description", 15, 50);
+                Memberships.Add(mb1);
+                SaveChanges();
+            }
+            if (!Members.Any())
+            {
+                var mb1 = Memberships.First();
+                var member1 = new Member("Alice Johnson", "alice@ex.com", PasswordUtils.PasswordUtils.HashPassword("password3"), "alicejohnson", "+111222333", 70, 1.75f, 10, mb1);
+                var member2 = new Member("Bob Brown", "bob@ex.com", PasswordUtils.PasswordUtils.HashPassword("password4"), "bobbrown", "+444555666", 80, 1.80f, 15, mb1);
+
+                Members.AddRange(member1, member2);
+                SaveChanges();
+            }
+
+            if (!Admins.Any())
+            {
+                var admin1 = new Admin("admin", "admin@ex.com", PasswordUtils.PasswordUtils.HashPassword("admin"));
+                Admins.Add(admin1);
+                SaveChanges();
+            }
+
+            if (!Classes.Any())
+            {
+                var trainer1 = Trainers.First();
+                var trainer2 = Trainers.Skip(1).First();
+                var class1 = new Class("Yoga", "Morning Yoga Training", DateTime.Now.AddDays(1), 60, trainer1);
+                var class2 = new Class("Pilates", "Evening Pilates Training", DateTime.Now.AddDays(1), 60, trainer2);
+                var class3 = new Class("Zumba", "Afternoon Zumba Training", DateTime.Now.AddDays(2), 60, trainer1);
+                var class4 = new Class("Crossfit", "Morning Crossfit Training", DateTime.Now.AddDays(2), 60, trainer2);
+                Classes.AddRange(class1, class2, class3, class4);
+                SaveChanges();
+            }
         }
     }
 }
