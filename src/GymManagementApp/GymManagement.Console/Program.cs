@@ -577,7 +577,7 @@ static async Task AddBookingAsync()
         Class c1 = new("TestName", "TestDescription", date1, 50, t1);
         
 
-        Booking b1 = new(null, 3, date1);
+        Booking b1 = new(1, 4, date1);
         if (b1.MemberId == null)
         {
             b1.Cancel();
