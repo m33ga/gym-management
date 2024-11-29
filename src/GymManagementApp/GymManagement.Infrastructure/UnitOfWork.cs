@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using GymManagement.Domain;
 using GymManagement.Domain.Repository;
 using GymManagement.Infrastructure.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure
 {
@@ -42,6 +43,16 @@ namespace GymManagement.Infrastructure
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task ApplyMigrationsAsync()
+        {
+            await _dbContext.Database.MigrateAsync();
+        }
+
+        public async Task EnsureDatabaseCreatedAsync()
+        {
+            await _dbContext.Database.EnsureCreatedAsync();
         }
 
         // Method to expose the database path for debugging or logging purposes

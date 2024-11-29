@@ -41,11 +41,43 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "9":
                     await FindMemberByEmail();
                     break;
+                case "10":
+                    await InitializeDatabaseAsync();
+                    break;
+
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
             }
         }
+
+
+        private static async Task InitializeDatabaseAsync()
+        {
+            try
+            {
+                System.Console.WriteLine("Initializing database...");
+
+                using (var uow = new UnitOfWork())
+                {
+                    
+                    string dbPath = uow.GetDbPath();
+                    System.Console.WriteLine($"Database Path: {dbPath}");
+
+                    
+                    await uow.ApplyMigrationsAsync();
+
+                    System.Console.WriteLine("Database initialized successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine($"Error during database initialization: {ex.Message}");
+            }
+        }
+
+
+
 
         private static async Task FindMemberByEmail()
         {
