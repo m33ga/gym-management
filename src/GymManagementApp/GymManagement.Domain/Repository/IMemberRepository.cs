@@ -10,7 +10,7 @@ namespace GymManagement.Domain.Repository
     public interface IMemberRepository : IRepository<Member>
     {
         // get a member by email
-        Task<Member> GetByEmailAsync(string email);
+        Task<Member> GetMemberByEmailAsync(string email);
 
         Task<IList<Member>> GetAllMembersAsync();
 
