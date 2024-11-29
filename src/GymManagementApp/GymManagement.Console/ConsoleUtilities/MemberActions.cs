@@ -30,6 +30,12 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "6":
                     await AddUnbookedBookingAsync();
                     break;
+                case "7":
+                    await PrintUpcomingClassesForAllMembers();
+                    break;
+                case "8":
+                    await ClassActions.PrintAvailableClasses();
+                    break;
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
@@ -212,5 +218,24 @@ namespace GymManagement.Console.ConsoleUtilities
             }
         }
 
+        public static async Task PrintUpcomingClassesForAllMembers()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                var members = await uow.Members.FindAllAsync();
+                foreach (var member in members)
+                {
+                    var classes = await uow.Bookings.GetClassesByMemberAsync(member.Id);
+                    System.Console.WriteLine($"Member: {member.FullName}");
+                    foreach (var c in classes)
+                    {
+                        System.Console.WriteLine($"Class: {c.Name}, Date: {c.ScheduledDate}");
+                    }
+                }
+            }
+        }
+
     }
+
+
 }
