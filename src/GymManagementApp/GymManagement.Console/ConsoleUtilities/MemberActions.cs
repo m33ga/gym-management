@@ -23,6 +23,10 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "4":
                     await DeleteMemberAsync();
                     break;
+
+                case "5":
+                    await UpdateMemberAsync();
+                    break;
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
@@ -140,5 +144,47 @@ namespace GymManagement.Console.ConsoleUtilities
                 }
             }
         }
+
+        public static async Task UpdateMemberAsync()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                System.Console.WriteLine("Enter Member ID to update:");
+                if (int.TryParse(System.Console.ReadLine(), out int memberId))
+                {
+                    var member = await uow.Members.FindByIdAsync(memberId);
+                    if (member == null)
+                    {
+                        System.Console.WriteLine("Member not found.");
+                        return;
+                    }
+
+                    System.Console.WriteLine("Enter new height (in cm):");
+                    if (!float.TryParse(System.Console.ReadLine(), out float newHeight))
+                    {
+                        System.Console.WriteLine("Invalid height value entered.");
+                        return;
+                    }
+
+                    System.Console.WriteLine("Enter new weight (in kg):");
+                    if (!float.TryParse(System.Console.ReadLine(), out float newWeight))
+                    {
+                        System.Console.WriteLine("Invalid weight value entered.");
+                        return;
+                    }
+
+                    // Update member's height and weight
+                    member.UpdateProfile(member.FullName, member.PhoneNumber, newWeight, newHeight, member.Image);
+
+                    await uow.SaveChangesAsync();
+                    System.Console.WriteLine("Member's height and weight updated successfully.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Invalid ID entered.");
+                }
+            }
+        }
+
     }
 }
