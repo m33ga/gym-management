@@ -9,7 +9,7 @@ namespace GymManagement.Console.ConsoleUtilities
 {
     public static class MemberActions
     {
-        public static async Task HandleMemberActionsAsync(string input)
+        public static async Task<bool> HandleMemberActionsAsync(string input)
         {
             switch (input)
             {
@@ -23,9 +23,12 @@ namespace GymManagement.Console.ConsoleUtilities
                     await PrintBookingsAsync();
                     break;
                 case "4":
-                    await DeleteMemberAsync();
+                    var deleted = await MemberActions.DeleteMemberAsync();
+                    if (deleted)
+                    {
+                        return true;
+                    }
                     break;
-
                 case "5":
                     await UpdateMemberAsync();
                     break;
@@ -42,6 +45,7 @@ namespace GymManagement.Console.ConsoleUtilities
                     System.Console.WriteLine("Invalid Option.");
                     break;
             }
+            return false;
         }
 
         private static async Task FindAvailableClasses()
@@ -184,7 +188,7 @@ namespace GymManagement.Console.ConsoleUtilities
             }
         }
 
-        public static async Task DeleteMemberAsync()
+        public static async Task<bool> DeleteMemberAsync()
         {
             using (var uow = new UnitOfWork())
             {
@@ -195,16 +199,18 @@ namespace GymManagement.Console.ConsoleUtilities
                     if (member == null)
                     {
                         System.Console.WriteLine("Member not found.");
-                        return;
+                        return false; // No deletion happened, remain in the menu
                     }
 
                     uow.Members.Delete(member);
                     await uow.SaveChangesAsync();
                     System.Console.WriteLine("Member deleted successfully.");
+                    return true; // Deletion successful, indicate to exit the menu
                 }
                 else
                 {
                     System.Console.WriteLine("Invalid ID entered.");
+                    return false; 
                 }
             }
         }
