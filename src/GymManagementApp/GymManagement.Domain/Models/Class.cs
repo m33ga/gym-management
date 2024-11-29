@@ -47,13 +47,11 @@ namespace GymManagement.Domain.Models
         }
 
         // Methods
-        public void BookClass(Member member)
+        public void BookClass(int memberId)
         {
             if (!IsAvailable) throw new InvalidOperationException("Class is already booked.");
-            if (member == null) throw new ArgumentNullException(nameof(member), "Member cannot be null.");
 
-            Member = member;
-            MemberId = member.Id;
+            MemberId = memberId;
             IsAvailable = false;
         }
 
