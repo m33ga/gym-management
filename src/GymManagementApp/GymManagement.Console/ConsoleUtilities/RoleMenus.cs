@@ -42,7 +42,7 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("2. Create Membership");
                         System.Console.WriteLine("3. Print Bookings");
                         System.Console.WriteLine("4. Delete Member");
-                        System.Console.WriteLine("5. Update Member (not yet available)");
+                        System.Console.WriteLine("5. Update Member");
                         System.Console.WriteLine("0. Logout");
                         break;
                 }
