@@ -49,7 +49,7 @@ namespace GymManagement.Console.ConsoleUtilities
 
                 Class c1 = new("TestName", "TestDescription", date1, 50, t1);
 
-                Booking b1 = new(null, 5, date1);
+                Booking b1 = new(null, 2, date1);
                 if (b1.MemberId == null)
                 {
                     b1.Cancel();
@@ -112,7 +112,7 @@ namespace GymManagement.Console.ConsoleUtilities
 
                 Class c1 = new("TestName", "TestDescription", date1, 50, t1);
 
-                Booking b1 = new(1, 3, date1);
+                Booking b1 = new(1, 1, date1);
                 if (b1.MemberId == null)
                 {
                     b1.Cancel();
