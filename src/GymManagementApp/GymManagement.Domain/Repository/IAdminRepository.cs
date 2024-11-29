@@ -17,7 +17,7 @@ namespace GymManagement.Domain.Repository
         Task RemoveAdminAsync(Admin admin);
 
         // Find an admin by ID (with notifications)
-        Task<Admin> FindByIdAsync(int id);
+        //Task<Admin> FindByIdAsync(int id);
 
         // Get admin by username
         Task<Admin> GetAdminByUsernameAsync(string username);

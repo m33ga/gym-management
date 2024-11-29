@@ -12,12 +12,3 @@ Console.WriteLine("Testing GymManagement");
 
 // Main method and loop:
 await MainMenu.ShowMainMenuAsync();
-
-
-
-
-
-
-
-
-

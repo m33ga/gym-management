@@ -12,8 +12,13 @@ namespace GymManagement.Domain.Repository
         // retrieve all available classes
         Task<IList<Class>> GetAvailableClassesAsync();
 
+
         // retrieve all classes by trainer ID
         Task<IList<Class>> GetClassesByTrainerAsync(int trainerId);
+
+        // retrieve all booked classes by trainer ID
+        Task<IList<Class>> GetBookedClassesByTrainerAsync(int trainerId);
+
 
         // check for overlapping schedules when adding a class
         Task<bool> HasScheduleConflictAsync(int trainerId, DateTime startTime, DateTime endTime);

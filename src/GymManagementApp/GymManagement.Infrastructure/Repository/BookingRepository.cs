@@ -16,6 +16,7 @@ namespace GymManagement.Infrastructure.Repository
         {
             _dbContext = dbContext;
         }
+
         public async Task AddBookingAsync(Booking booking)
         {
             // Find the class to book
@@ -65,5 +66,12 @@ namespace GymManagement.Infrastructure.Repository
                 .ToListAsync();
         }
 
+        public async Task<IList<Class>> GetClassesByMemberAsync(int memberId)
+        {
+            return await _dbContext.Bookings
+                .Where(b => b.MemberId == memberId)
+                .Select(b => b.Class)
+                .ToListAsync();
+        }
     }
 }
