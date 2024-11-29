@@ -17,7 +17,12 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "1":
                     await ClassActions.AddClassAsync();
                     break;
-                // Add PrintTrainerClassesAsync when implemented
+                case "2":
+                    await PrintAllBookedClassesByTrainer();
+                    break;
+                case "3":
+                    await PrintClassesByTrainer();
+                    break;
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
@@ -62,5 +67,41 @@ namespace GymManagement.Console.ConsoleUtilities
                 }
             }
         }
+
+        public static async Task PrintAllBookedClassesByTrainer()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                var trainers = await uow.Trainers.FindAllAsync();
+                foreach (var trainer in trainers)
+                {
+                    var classes = await uow.Classes.GetBookedClassesByTrainerAsync(trainer.Id);
+                    System.Console.WriteLine($"Trainer: {trainer.FullName}");
+                    foreach (var c in classes)
+                    {
+                        System.Console.WriteLine($"Class: {c.Name}, Date: {c.ScheduledDate}, Is Available:{c.IsAvailable}");
+                    }
+                }
+            }
+        }
+
+        public static async Task PrintClassesByTrainer()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                var trainers = await uow.Trainers.FindAllAsync();
+                foreach (var trainer in trainers)
+                {
+                    var classes = await uow.Classes.GetClassesByTrainerAsync(trainer.Id);
+                    System.Console.WriteLine($"Trainer: {trainer.FullName}");
+                    foreach (var c in classes)
+                    {
+                        System.Console.WriteLine($"Class: {c.Name}, Date: {c.ScheduledDate}, Is Available: {c.IsAvailable}");
+                    }
+                }
+            }
+        }
+
+
     }
 }
