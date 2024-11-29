@@ -44,6 +44,9 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "10":
                     await InitializeDatabaseAsync();
                     break;
+                case "11":
+                    await AddNotificationAsync();
+                    break;
 
                 default:
                     System.Console.WriteLine("Invalid Option.");
@@ -51,6 +54,15 @@ namespace GymManagement.Console.ConsoleUtilities
             }
         }
 
+        private static async Task AddNotificationAsync()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                Notification n1 = new("Class is in an hour",DateTime.Now, "Unread",1,1,1);
+                await uow.Notifications.AddNotificationAsync(n1);
+                await uow.SaveChangesAsync();
+            }
+        }
 
         private static async Task InitializeDatabaseAsync()
         {

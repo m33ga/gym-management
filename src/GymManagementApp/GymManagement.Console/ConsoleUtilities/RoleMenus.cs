@@ -27,6 +27,7 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("8. Delete Member");
                         System.Console.WriteLine("9. Search Member by Email");
                         System.Console.WriteLine("10. Initialize Database");
+                        System.Console.WriteLine("11. Create Notification");
                         System.Console.WriteLine("0. Logout");
                         break;
 
@@ -48,6 +49,7 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("8. Print Upcoming Classes for Member");
                         System.Console.WriteLine("9. Print Trainer Rating");
                         System.Console.WriteLine("10. Create review for class");
+                        System.Console.WriteLine("11. Mark notification as read");
                         System.Console.WriteLine("0. Logout");
                         break;
                 }
