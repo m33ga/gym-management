@@ -121,7 +121,6 @@ async Task RegisterAsync()
         }
         else if (role == "Member")
         {
-            // Member-specific input
             Console.Write("Full Name: ");
             var fullName = Console.ReadLine();
             Console.Write("Phone Number: ");
@@ -131,8 +130,17 @@ async Task RegisterAsync()
             Console.Write("Height (cm): ");
             var height = float.Parse(Console.ReadLine());
 
-            // Create and add the new member
-            var member = new Member(fullName, email, hashedPassword, "MemberUsername", phone, weight, height, 10, null);
+            // Retrieve or create a default membership dynamically
+            var membership = await EnsureDefaultMembershipAsync(uow);
+
+            if (await uow.Members.GetMemberByEmailAsync(email) != null)
+            {
+                Console.WriteLine("Member with this email already exists.");
+                Console.ReadKey();
+                return;
+            }
+
+            var member = new Member(fullName, email, hashedPassword, "MemberUsername", phone, weight, height, 10, membership);
             await uow.Members.AddMemberAsync(member);
             Console.WriteLine("Member registered successfully.");
         }
@@ -353,6 +361,21 @@ async Task MemberActions(string input)
             Console.WriteLine("Invalid Option.");
             break;
     }
+}
+
+async Task<Membership> EnsureDefaultMembershipAsync(UnitOfWork uow)
+{
+    // Check if a default membership already exists
+    var membership = await uow.Memberships.FindByIdAsync(1); 
+    if (membership == null)
+    {
+        Console.WriteLine("No memberships found. Creating a default membership.");
+        membership = new Membership("Standard", 100, "Default Membership", 10, 30);
+        await uow.Memberships.AddMembershipAsync(membership);
+        await uow.SaveChangesAsync();
+        Console.WriteLine("Default membership created successfully.");
+    }
+    return membership;
 }
 
 
