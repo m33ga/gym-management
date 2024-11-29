@@ -58,11 +58,12 @@ namespace GymManagement.Console.ConsoleUtilities
                     foreach (var AvailableClass in list)
                     {
                         var t = AvailableClass.TrainerId;
-                        await uow.Trainers.GetByIdWithDetailsAsync(t);
+                        var tpr = await uow.Trainers.GetByIdWithDetailsAsync(t);
                         System.Console.WriteLine($"Class: {AvailableClass.Name}\n" +
+                            $"Description: {AvailableClass.Description}\n" +
                             $"ScheduledDate: {AvailableClass.ScheduledDate}\n" +
                             $"Duration: {AvailableClass.DurationInMinutes}min\n" +
-                            $"Trainer: {t}");
+                            $"Trainer: {tpr.FullName}, {tpr.Email}\n");
                     }
                 }
             }
