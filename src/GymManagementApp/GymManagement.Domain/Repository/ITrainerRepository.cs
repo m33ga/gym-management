@@ -20,7 +20,7 @@ namespace GymManagement.Domain.Repository
         Task AddTrainerAsync(Trainer trainer);
 
         Task RemoveTrainerAsync(Trainer trainer);
-
+        Task<Trainer> GetByIdWithDetailsAsync(int id);
         // this can also be handled by Unit of Work
         Task SaveChangesAsync();
     }

@@ -28,6 +28,7 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("6. Print Trainers");
                         System.Console.WriteLine("7. Print Memberships");
                         System.Console.WriteLine("8. Delete Member");
+                        System.Console.WriteLine("9. Search Member by Email");
                         System.Console.WriteLine("0. Logout");
                         break;
 
@@ -43,10 +44,10 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("2. Create Membership");
                         System.Console.WriteLine("3. Print Bookings");
                         System.Console.WriteLine("4. Delete Member");
-                        System.Console.WriteLine("5. Update Member (not yet available)");
+                        System.Console.WriteLine("5. Update Member");
                         System.Console.WriteLine("6. Create Unbooked Booking (Unhandled exception)"); // handle exception
-                        System.Console.WriteLine("7. Print Upcoming Classes for each member ");
-                        System.Console.WriteLine("8. Print All Available Classes");
+                        System.Console.WriteLine("7. Find Available Classes");
+                        System.Console.WriteLine("8. Print Upcoming Classes for each member ");
                         System.Console.WriteLine("0. Logout");
                         break;
                 }

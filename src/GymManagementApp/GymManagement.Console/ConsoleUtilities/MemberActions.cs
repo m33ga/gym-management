@@ -1,5 +1,6 @@
 ﻿using GymManagement.Domain.Models;
 using GymManagement.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Threading.Tasks;
 
@@ -31,16 +32,45 @@ namespace GymManagement.Console.ConsoleUtilities
                     await AddUnbookedBookingAsync();
                     break;
                 case "7":
-                    await PrintUpcomingClassesForAllMembers();
+                    await FindAvailableClasses();
                     break;
                 case "8":
-                    await ClassActions.PrintAvailableClasses();
+                    await PrintUpcomingClassesForAllMembers();
                     break;
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
             }
         }
+
+        private static async Task FindAvailableClasses()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                System.Console.WriteLine($"Database path: {uow.GetDbPath()}");
+
+                var list = await uow.Classes.GetAvailableClassesAsync();
+           
+                if (list.Count == 0)
+                {
+                    System.Console.WriteLine("\n There are no Members yet");
+                }
+                else
+                {
+                    System.Console.WriteLine("\n Members:");
+                    foreach (var AvailableClass in list)
+                    {
+                        var t = AvailableClass.TrainerId;
+                        await uow.Trainers.GetByIdWithDetailsAsync(t);
+                        System.Console.WriteLine($"Class: {AvailableClass.Name}\n" +
+                            $"ScheduledDate: {AvailableClass.ScheduledDate}\n" +
+                            $"Duration: {AvailableClass.DurationInMinutes}min\n" +
+                            $"Trainer: {t}");
+                    }
+                }
+            }
+        }
+        
 
         private static async Task AddUnbookedBookingAsync()
         {
@@ -55,7 +85,7 @@ namespace GymManagement.Console.ConsoleUtilities
 
                 Class c1 = new("TestName", "TestDescription", date1, 50, t1);
 
-                Booking b1 = new(null, 5, date1);
+                Booking b1 = new(null, 2, date1);
                 if (b1.MemberId == null)
                 {
                     b1.Cancel();
@@ -118,7 +148,7 @@ namespace GymManagement.Console.ConsoleUtilities
 
                 Class c1 = new("TestName", "TestDescription", date1, 50, t1);
 
-                Booking b1 = new(1, 3, date1);
+                Booking b1 = new(1, 1, date1);
                 if (b1.MemberId == null)
                 {
                     b1.Cancel();
