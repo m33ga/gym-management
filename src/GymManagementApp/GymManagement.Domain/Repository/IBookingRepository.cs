@@ -16,5 +16,7 @@ namespace GymManagement.Domain.Repository
 
         // Get all bookings for a specific member
         Task<IList<Booking>> GetBookingsByMemberAsync(int memberId);
+
+        Task<IList<Class>> GetClassesByMemberAsync(int memberId);
     }
 }

@@ -16,8 +16,14 @@ namespace GymManagement.Infrastructure.Repository
         {
             _dbContext = dbContext;
         }
+
         public async Task AddBookingAsync(Booking booking)
         {
+            var classToBook = await _dbContext.Classes.FindAsync(booking.ClassId);
+            if (classToBook == null)
+                throw new InvalidOperationException("Class not found.");
+
+            classToBook.BookClass(booking.MemberId);
             await _dbContext.Bookings.AddAsync(booking);
             await _dbContext.SaveChangesAsync();
         }
@@ -53,5 +59,12 @@ namespace GymManagement.Infrastructure.Repository
                 .ToListAsync();
         }
 
+        public async Task<IList<Class>> GetClassesByMemberAsync(int memberId)
+        {
+            return await _dbContext.Bookings
+                .Where(b => b.MemberId == memberId)
+                .Select(b => b.Class)
+                .ToListAsync();
+        }
     }
 }
