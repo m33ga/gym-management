@@ -47,7 +47,7 @@ namespace GymManagement.Infrastructure.Migrations
                     b.Property<int>("ClassId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MemberId")
+                    b.Property<int?>("MemberId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
@@ -55,7 +55,8 @@ namespace GymManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassId");
+                    b.HasIndex("ClassId")
+                        .IsUnique();
 
                     b.HasIndex("MemberId");
 
@@ -349,8 +350,8 @@ namespace GymManagement.Infrastructure.Migrations
             modelBuilder.Entity("GymManagement.Domain.Models.Booking", b =>
                 {
                     b.HasOne("GymManagement.Domain.Models.Class", "Class")
-                        .WithMany("Bookings")
-                        .HasForeignKey("ClassId")
+                        .WithOne("Booking")
+                        .HasForeignKey("GymManagement.Domain.Models.Booking", "ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

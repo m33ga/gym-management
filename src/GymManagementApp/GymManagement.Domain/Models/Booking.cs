@@ -9,7 +9,7 @@ namespace GymManagement.Domain.Models
     public class Booking : Entity
     {
         // Properties
-        public int MemberId { get; private set; }
+        public int? MemberId { get; set; }
         public Member Member { get; private set; }
 
         public int ClassId { get; private set; }
@@ -19,7 +19,7 @@ namespace GymManagement.Domain.Models
         public BookingStatus Status { get; private set; }
 
         // Constructor
-        public Booking(int memberId, int classId, DateTime bookingDate)
+        public Booking(int? memberId, int classId, DateTime bookingDate)
         {
             MemberId = memberId;
             ClassId = classId;
