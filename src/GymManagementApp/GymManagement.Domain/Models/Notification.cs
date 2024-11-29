@@ -28,18 +28,18 @@ namespace GymManagement.Domain.Models
             // For EF Core
         }
 
-        public Notification(string text, DateTime date, string status, Admin admin = null, Member member = null, Trainer trainer = null)
+        public Notification(string text, DateTime date, string status, int? adminId, int? memberId = null, int? trainerId = null)
         {
             if (string.IsNullOrWhiteSpace(text)) throw new ArgumentException("Notification text is required.", nameof(text));
             if (string.IsNullOrWhiteSpace(status)) throw new ArgumentException("Notification status is required.", nameof(status));
 
             Text = text;
-            Date = date;
+            Date = DateTime.UtcNow;
             Status = status;
 
-            Admin = admin;
-            Member = member;
-            Trainer = trainer;
+            AdminId = adminId;
+            MemberId = memberId;
+            TrainerId = trainerId;
         }
 
         // Methods
