@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GymManagement.Domain.Models;
+using GymManagement.Infrastructure;
 
 namespace GymManagement.Console.ConsoleUtilities
 {
@@ -36,11 +38,33 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "8":
                     await MemberActions.DeleteMemberAsync();
                     break;
+                case "9":
+                    await FindMemberByEmail();
+                    break;
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
             }
         }
-    }
 
+        private static async Task FindMemberByEmail()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                var input = System.Console.ReadLine();
+                var member = await uow.Members.GetMemberByEmailAsync(input);
+                if (member == null)
+                {
+                    System.Console.WriteLine("There's no member with this email yet");
+                }
+                else
+                {
+                    System.Console.WriteLine($"Here's information about your member\n" +
+                 $"Full name: {member.FullName},\n" +
+                 $"Username: {member.Username}\n" +
+                 $"Phone Number: {member.PhoneNumber}");
+                }
+            }
+        }
+    }
 }

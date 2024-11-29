@@ -26,7 +26,7 @@ namespace GymManagement.Infrastructure.Repository
             // Find the member for the booking
             var member = await _dbContext.Members.FindAsync(booking.MemberId);
             if (member == null)
-                throw new InvalidOperationException("Member not found.");
+                classToBook.IsAvailable = true;
 
             classToBook.BookClass(booking.MemberId);
             // Add the booking to the database

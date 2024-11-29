@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GymManagement.Infrastructure.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class IniatialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,8 @@ namespace GymManagement.Infrastructure.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Username = table.Column<string>(maxLength: 45, nullable: true),
-                    Password = table.Column<string>(maxLength: 45, nullable: true)
+                    Password = table.Column<string>(maxLength: 45, nullable: true),
+                    Email = table.Column<string>(maxLength: 45, nullable: true)
                 },
                 constraints: table =>
                 {
