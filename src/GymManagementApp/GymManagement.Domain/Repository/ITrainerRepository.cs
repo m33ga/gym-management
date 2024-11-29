@@ -14,8 +14,8 @@ namespace GymManagement.Domain.Repository
         // get all trainers with their scheduled classes
         Task<IList<Trainer>> GetTrainersWithClassesAsync();
 
-        // check if a trainer exists by email
-        Task<bool> TrainerExistsByEmailAsync(string email);
+        // Get trainer by email
+        Task<Trainer> GetTrainerByEmailAsync(string email);
 
         Task AddTrainerAsync(Trainer trainer);
 

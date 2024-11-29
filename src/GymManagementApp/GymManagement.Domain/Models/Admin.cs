@@ -10,6 +10,7 @@ namespace GymManagement.Domain.Models
         // Properties
         public string Username { get; private set; }
         public string Password { get; private set; }
+        public string Email { get; private set; }
 
         // Navigation Properties
         public ICollection<Notification> Notifications { get; private set; }
@@ -21,11 +22,13 @@ namespace GymManagement.Domain.Models
             Notifications = new HashSet<Notification>();
         }
 
-        public Admin(string username, string password)
+        public Admin(string username, string email, string password)
         {
             if (string.IsNullOrWhiteSpace(username)) throw new ArgumentException("Username is required.", nameof(username));
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Password is required.", nameof(password));
+            if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
 
+            Email = email;
             Username = username;
             Password = password; // Hashing should happen in the application layer.
 

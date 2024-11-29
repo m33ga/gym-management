@@ -1,10 +1,13 @@
 ﻿using System;
-using GymManagement.Infrastructure;
+using System.Text;
 using GymManagement.Domain;
-using GymManagement.Application;
 using GymManagement.Domain.Models;
+using GymManagement.Application;
+using System.Security.Cryptography;
+using GymManagement.Infrastructure;
 
 Console.WriteLine("Testing GymManagement");
+
 var exit = false;
 
 do
@@ -12,87 +15,30 @@ do
     Console.Clear();
     Console.WriteLine("App menu");
     Console.WriteLine("--------");
-    
-    Console.WriteLine("1. Create Booking");
-    Console.WriteLine("2. Create Member");
-    Console.WriteLine("3. Create Trainer"); 
-    Console.WriteLine("4. Create Class");
-    Console.WriteLine("5. Create Membership");
-    Console.WriteLine("6. Print Bookings");
-    Console.WriteLine("7. Print Members");
-    Console.WriteLine("8. Print Trainers");
-    Console.WriteLine("9. Print Classes");
-    Console.WriteLine("a. Print Memberships");
-    Console.WriteLine("b. Delete Member");
-    Console.WriteLine("c. Update Member");
 
-    Console.WriteLine("0. exit");
+    Console.WriteLine("1. Register");
+    Console.WriteLine("2. Login");
+    Console.WriteLine("0. Exit");
+
     var option = Console.ReadLine();
+
     switch (option)
     {
         case "1":
-            await AddBookingAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
+            await RegisterAsync();
             break;
 
         case "2":
-            await AddMemberAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
-            break ;
-        case "3":
-            await AddTrainerAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
+            var role = await LoginAsync();
+            if (role != null)
+            {
+                // Navigate to role-specific post-login menu
+                PostLoginMenu(role);
+            }
             break;
-        case "4":
-            await AddClassAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
-            break;
-        case "5":
-            await AddMemberShipAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
-            break;
-        case "6":
-            await PrintBookingsAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
-            break;
-        case "7":
-            await PrintMembersAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
-            break;
-        case "8":
-            await PrintTrainersAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
-            break;
-        case "9":
-            await PrintClassesAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
-            break;
-        case "a":
-            await PrintMemberShipsAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
-            break;
-
-        case "b":
-            await DeleteMemberAsync();
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
-            break;
-
 
         case "0":
             exit = true;
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
             break;
 
         default:
@@ -101,6 +47,314 @@ do
             break;
     }
 } while (!exit);
+
+async Task RegisterAsync()
+{
+    Console.Clear();
+    Console.WriteLine("============ Register ============");
+    Console.WriteLine("Select Role: [1] Admin  [2] Trainer  [3] Member");
+    var roleInput = Console.ReadLine();
+
+    string role = roleInput switch
+    {
+        "1" => "Admin",
+        "2" => "Trainer",
+        "3" => "Member",
+        _ => null
+    };
+
+    if (role == null)
+    {
+        Console.WriteLine("Invalid role. Returning to main menu.");
+        Console.ReadKey();
+        return;
+    }
+
+    using (var uow = new UnitOfWork())
+    {
+        Console.Write("Email: ");
+        var email = Console.ReadLine();
+
+        // Check if the email already exists for the selected role
+        bool emailExists = role switch
+        {
+            "Admin" => await uow.Admins.GetAdminByEmailAsync(email) != null,
+            "Trainer" => await uow.Trainers.GetTrainerByEmailAsync(email) != null,
+            "Member" => await uow.Members.GetMemberByEmailAsync(email) != null,
+            _ => throw new InvalidOperationException("Invalid role.")
+        };
+
+        if (emailExists)
+        {
+            Console.WriteLine($"{role} with this email already exists.");
+            Console.ReadKey();
+            return;
+        }
+
+        Console.Write("Password: ");
+        var password = Console.ReadLine();
+        var hashedPassword = HashPassword(password);
+
+        if (role == "Admin")
+        {
+            // Admin-specific input
+            Console.Write("Enter Admin Username: ");
+            var username = Console.ReadLine();
+
+            // Create and add the new admin
+            var admin = new Admin(username, email, hashedPassword);
+            await uow.Admins.AddAdminAsync(admin);
+            Console.WriteLine("Admin registered successfully.");
+        }
+        else if (role == "Trainer")
+        {
+            // Trainer-specific input
+            Console.Write("Full Name: ");
+            var fullName = Console.ReadLine();
+            Console.Write("Phone Number: ");
+            var phone = Console.ReadLine();
+
+            // Create and add the new trainer
+            var trainer = new Trainer(fullName, hashedPassword, email, "TrainerUsername", phone);
+            await uow.Trainers.AddTrainerAsync(trainer);
+            Console.WriteLine("Trainer registered successfully.");
+        }
+        else if (role == "Member")
+        {
+            // Member-specific input
+            Console.Write("Full Name: ");
+            var fullName = Console.ReadLine();
+            Console.Write("Phone Number: ");
+            var phone = Console.ReadLine();
+            Console.Write("Weight (kg): ");
+            var weight = float.Parse(Console.ReadLine());
+            Console.Write("Height (cm): ");
+            var height = float.Parse(Console.ReadLine());
+
+            // Create and add the new member
+            var member = new Member(fullName, email, hashedPassword, "MemberUsername", phone, weight, height, 10, null);
+            await uow.Members.AddMemberAsync(member);
+            Console.WriteLine("Member registered successfully.");
+        }
+
+        // Save changes for all roles
+        await uow.SaveChangesAsync();
+        Console.WriteLine("Registration Complete!");
+        Console.ReadKey();
+    }
+}
+
+async Task<string> LoginAsync()
+{
+    Console.Clear();
+    Console.WriteLine("============ Login ============");
+    Console.WriteLine("Select Role: [1] Admin  [2] Trainer  [3] Member");
+    var roleInput = Console.ReadLine();
+
+    string role = roleInput switch
+    {
+        "1" => "Admin",
+        "2" => "Trainer",
+        "3" => "Member",
+        _ => null
+    };
+
+    if (role == null)
+    {
+        Console.WriteLine("Invalid role. Returning to main menu.");
+        Console.ReadKey();
+        return null;
+    }
+
+    Console.Write("Email: ");
+    var email = Console.ReadLine();
+    Console.Write("Password: ");
+    var password = Console.ReadLine();
+
+    var hashedPassword = HashPassword(password);
+
+    using (var uow = new UnitOfWork())
+    {
+        if (role == "Admin")
+        {
+            var admin = await uow.Admins.GetAdminByEmailAsync(email);
+            if (admin != null && admin.Password == hashedPassword)
+            {
+                Console.WriteLine("Login Successful!");
+                Console.ReadKey();
+                return "Admin";
+            }
+        }
+        else if (role == "Trainer")
+        {
+            var trainer = await uow.Trainers.GetTrainerByEmailAsync(email);
+            if (trainer != null && trainer.Password == hashedPassword)
+            {
+                Console.WriteLine("Login Successful!");
+                Console.ReadKey();
+                return "Trainer";
+            }
+        }
+        else if (role == "Member")
+        {
+            var member = await uow.Members.GetMemberByEmailAsync(email);
+            if (member != null && member.Password == hashedPassword)
+            {
+                Console.WriteLine("Login Successful!");
+                Console.ReadKey();
+                return "Member";
+            }
+        }
+
+        Console.WriteLine("Invalid email or password.");
+        Console.ReadKey();
+        return null;
+    }
+}
+
+
+void PostLoginMenu(string role)
+{
+    var exit = false;
+
+    do
+    {
+        Console.Clear();
+        Console.WriteLine($"====== {role} Menu ======");
+
+        switch (role)
+        {
+            case "Admin":
+                Console.WriteLine("1. Create Membership");
+                Console.WriteLine("2. Create Member");
+                Console.WriteLine("3. Create Trainer");
+                Console.WriteLine("4. Print Bookings");
+                Console.WriteLine("5. Print Members");
+                Console.WriteLine("6. Print Trainers");
+                Console.WriteLine("7. Print Memberships");
+                Console.WriteLine("8. Delete Member");
+                Console.WriteLine("0. Logout");
+                break;
+
+            case "Trainer":
+                Console.WriteLine("1. Create Class");
+                Console.WriteLine("2. Print My Classes (not yet available)");
+                Console.WriteLine("0. Logout");
+                break;
+
+            case "Member":
+                Console.WriteLine("1. Create Booking");
+                Console.WriteLine("2. Create Membership");
+                Console.WriteLine("3. Print Bookings");
+                Console.WriteLine("4. Delete Member");
+                Console.WriteLine("5. Update Member (not yet available)");
+                Console.WriteLine("0. Logout");
+                break;
+        }
+
+        var input = Console.ReadLine();
+
+        switch (role)
+        {
+            case "Admin":
+                AdminActions(input);
+                break;
+
+            case "Trainer":
+                TrainerActions(input);
+                break;
+
+            case "Member":
+                MemberActions(input);
+                break;
+        }
+
+        if (input == "0")
+        {
+            exit = true; // Logout
+        }
+
+        Console.WriteLine("Press any key to continue");
+        Console.ReadKey();
+
+    } while (!exit);
+}
+
+async Task AdminActions(string input)
+{
+    switch (input)
+    {
+        case "1":
+            await AddMemberShipAsync();
+            break;
+        case "2":
+            await AddMemberAsync();
+            break;
+        case "3":
+            await AddTrainerAsync();
+            break;
+        case "4":
+            await PrintBookingsAsync();
+            break;
+        case "5":
+            await PrintMembersAsync();
+            break;
+        case "6":
+            await PrintTrainersAsync();
+            break;
+        case "7":
+            await PrintMemberShipsAsync();
+            break;
+        case "8":
+            await DeleteMemberAsync();
+            break;
+        default:
+            Console.WriteLine("Invalid Option.");
+            break;
+    }
+}
+
+async Task TrainerActions(string input)
+{
+    switch (input)
+    {
+        case "1":
+            await AddClassAsync();
+            break;
+        //case "2":
+        //    await PrintTrainerClassesAsync();
+        //    break;
+        default:
+            Console.WriteLine("Invalid Option.");
+            break;
+    }
+}
+
+async Task MemberActions(string input)
+{
+    switch (input)
+    {
+        case "1":
+            await AddBookingAsync();
+            break;
+        case "2":
+            await AddMemberShipAsync();
+            break;
+        case "3":
+            await PrintBookingsAsync();
+            break;
+        case "4":
+            await DeleteMemberAsync();
+            break;
+        //case "5":
+        //    await UpdateMemberAsync();
+        //    break;
+        default:
+            Console.WriteLine("Invalid Option.");
+            break;
+    }
+}
+
 
 async Task PrintMemberShipsAsync()
 {
@@ -308,7 +562,6 @@ static async Task AddBookingAsync()
 
 }
 
-
 async Task DeleteMemberAsync()
 {
     using (var uow = new UnitOfWork())
@@ -333,6 +586,17 @@ async Task DeleteMemberAsync()
         }
     }
 }
+
+string HashPassword(string password)
+{
+    using (var sha256 = SHA256.Create())
+    {
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var hashBytes = sha256.ComputeHash(passwordBytes);
+        return Convert.ToHexString(hashBytes);
+    }
+}
+
 
 
 

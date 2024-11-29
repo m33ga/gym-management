@@ -34,9 +34,11 @@ namespace GymManagement.Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<bool> TrainerExistsByEmailAsync(string email)
+        public async Task<Trainer> GetTrainerByEmailAsync(string email)
         {
-            return await _dbContext.Trainers.AnyAsync(t => t.Email == email);
+            return await _dbContext.Trainers
+                .Include(t => t.Classes) // Include scheduled classes
+                .FirstOrDefaultAsync(t => t.Email == email);
         }
 
         public async Task RemoveTrainerAsync(Trainer trainer)
