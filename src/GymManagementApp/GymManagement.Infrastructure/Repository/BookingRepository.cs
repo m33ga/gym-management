@@ -19,11 +19,18 @@ namespace GymManagement.Infrastructure.Repository
 
         public async Task AddBookingAsync(Booking booking)
         {
+            // Find the class to book
             var classToBook = await _dbContext.Classes.FindAsync(booking.ClassId);
             if (classToBook == null)
                 throw new InvalidOperationException("Class not found.");
 
+            // Find the member for the booking
+            var member = await _dbContext.Members.FindAsync(booking.MemberId);
+            if (member == null)
+                throw new InvalidOperationException("Member not found.");
+
             classToBook.BookClass(booking.MemberId);
+            // Add the booking to the database
             await _dbContext.Bookings.AddAsync(booking);
             await _dbContext.SaveChangesAsync();
         }

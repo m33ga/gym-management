@@ -17,8 +17,8 @@ namespace GymManagement.Domain.Models
         public bool IsAvailable { get; private set; }
         public int? MemberId { get; private set; } // Member who booked the class (if any) nullable
         public Member Member { get; private set; } // Navigation property for the Member
-        public ICollection<Booking> Bookings { get; private set; }
         public ICollection<Review> Reviews { get; private set; }
+        public Booking Booking { get; set; }
 
 
 
@@ -47,14 +47,14 @@ namespace GymManagement.Domain.Models
         }
 
         // Methods
-        public void BookClass(int memberId)
+        public void BookClass(int? memberId)
         {
             if (!IsAvailable) throw new InvalidOperationException("Class is already booked.");
+            if (memberId == null) throw new ArgumentNullException(nameof(memberId), "MemberId cannot be null.");
 
             MemberId = memberId;
             IsAvailable = false;
         }
-
         public void CancelBooking()
         {
             if (IsAvailable) throw new InvalidOperationException("No booking to cancel.");

@@ -45,7 +45,7 @@ namespace GymManagement.Infrastructure.Repository
         {
             return await _dbContext.Classes
                 .Include(c => c.Trainer)
-                .Include(c => c.Bookings)
+                .Include(c => c.Booking)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 

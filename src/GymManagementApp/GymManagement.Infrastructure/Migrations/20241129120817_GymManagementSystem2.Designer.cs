@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(GymManagementDbContext))]
-    [Migration("20241124162632_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241129120817_GymManagementSystem2")]
+    partial class GymManagementSystem2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,9 @@ namespace GymManagement.Infrastructure.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .HasColumnType("TEXT")
@@ -49,7 +52,7 @@ namespace GymManagement.Infrastructure.Migrations
                     b.Property<int>("ClassId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MemberId")
+                    b.Property<int?>("MemberId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
@@ -57,7 +60,8 @@ namespace GymManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassId");
+                    b.HasIndex("ClassId")
+                        .IsUnique();
 
                     b.HasIndex("MemberId");
 
@@ -351,8 +355,8 @@ namespace GymManagement.Infrastructure.Migrations
             modelBuilder.Entity("GymManagement.Domain.Models.Booking", b =>
                 {
                     b.HasOne("GymManagement.Domain.Models.Class", "Class")
-                        .WithMany("Bookings")
-                        .HasForeignKey("ClassId")
+                        .WithOne("Booking")
+                        .HasForeignKey("GymManagement.Domain.Models.Booking", "ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

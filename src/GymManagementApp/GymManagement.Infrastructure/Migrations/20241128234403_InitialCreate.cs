@@ -185,7 +185,7 @@ namespace GymManagement.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    MemberId = table.Column<int>(nullable: false),
+                    MemberId = table.Column<int>(nullable: true),
                     ClassId = table.Column<int>(nullable: false),
                     BookingDate = table.Column<DateTime>(nullable: false),
                     Status = table.Column<int>(nullable: false)
@@ -291,7 +291,8 @@ namespace GymManagement.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_ClassId",
                 table: "Bookings",
-                column: "ClassId");
+                column: "ClassId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_MemberId",

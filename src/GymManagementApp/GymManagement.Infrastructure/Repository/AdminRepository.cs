@@ -17,27 +17,35 @@ namespace GymManagement.Infrastructure.Repository
         }
 
         // Get all admins
-        async Task<IList<Admin>> IAdminRepository.GetAllAdminsAsync()
+        public async Task<IList<Admin>> GetAllAdminsAsync()
         {
             return await _dbContext.Admins.ToListAsync();
         }
 
         // Add a new admin and save changes
-        async Task IAdminRepository.AddAdminAsync(Admin admin)
+        public async Task AddAdminAsync(Admin admin)
         {
             await _dbContext.Admins.AddAsync(admin);
             await _dbContext.SaveChangesAsync();
         }
 
         // Remove an admin and save changes
-        async Task IAdminRepository.RemoveAdminAsync(Admin admin)
+        public async Task RemoveAdminAsync(Admin admin)
         {
             _dbContext.Admins.Remove(admin);
             await _dbContext.SaveChangesAsync();
         }
 
+        // Find an admin by ID and include notifications
+        public override async Task<Admin> FindByIdAsync(int id)
+        {
+            return await _dbContext.Admins
+                .Include(a => a.Notifications)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
         // Find an admin by ID
-        async Task<Admin> IAdminRepository.FindByIdWithNotificationsAsync(int id)
+        async Task<Admin> Domain.SeedWork.IRepository<Admin>.FindByIdAsync(int id)
         {
             return await _dbContext.Admins
                 .Include(a => a.Notifications) // Include notifications for the admin
@@ -48,8 +56,8 @@ namespace GymManagement.Infrastructure.Repository
         public override async Task<Admin> FindOrCreateAsync(Admin entity)
         {
             var existing = await _dbContext.Admins
-                .Include(a => a.Notifications) // Include notifications
-                .FirstOrDefaultAsync(a => a.Username == entity.Username);
+                .Include(a => a.Notifications)
+                .FirstOrDefaultAsync(a => a.Email == entity.Email); // Use Email for uniqueness
 
             if (existing != null)
                 return existing;
@@ -60,11 +68,18 @@ namespace GymManagement.Infrastructure.Repository
         }
 
         // Get admin by username
-        async Task<Admin> IAdminRepository.GetAdminByUsernameAsync(string username)
+        public async Task<Admin> GetAdminByUsernameAsync(string username)
         {
             return await _dbContext.Admins
-                .Include(a => a.Notifications) // Include notifications
+                .Include(a => a.Notifications)
                 .FirstOrDefaultAsync(a => a.Username == username);
         }
+
+        // Get admin by email
+        public async Task<Admin> GetAdminByEmailAsync(string email)
+        {
+            return await _dbContext.Admins.FirstOrDefaultAsync(a => a.Email == email);
+        }
     }
+
 }
