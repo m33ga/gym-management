@@ -23,9 +23,39 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "4":
                     await DeleteMemberAsync();
                     break;
+
+                case "5":
+                    await UpdateMemberAsync();
+                    break;
+                case "6":
+                    await AddUnbookedBookingAsync();
+                    break;
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
+            }
+        }
+
+        private static async Task AddUnbookedBookingAsync()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                DateTime date1 = DateTime.Now.AddDays(1);
+                Trainer t1 = new("Test Name", "password", "test@gmail.com", "testuser", "+123456789");
+
+                Membership mb1 = new("Test", 150, "Test Description", 15, 50);
+
+                Member m1 = new("TestName", "test@gmail.com", "password", "testuser1", "+123456789", 82.1F, 1.91F, 15, mb1);
+
+                Class c1 = new("TestName", "TestDescription", date1, 50, t1);
+
+                Booking b1 = new(null, 5, date1);
+                if (b1.MemberId == null)
+                {
+                    b1.Cancel();
+                }
+                await uow.Bookings.AddBookingAsync(b1);
+                await uow.SaveChangesAsync();
             }
         }
 
@@ -82,7 +112,7 @@ namespace GymManagement.Console.ConsoleUtilities
 
                 Class c1 = new("TestName", "TestDescription", date1, 50, t1);
 
-                Booking b1 = new(null, 3, date1);
+                Booking b1 = new(1, 3, date1);
                 if (b1.MemberId == null)
                 {
                     b1.Cancel();
@@ -140,5 +170,47 @@ namespace GymManagement.Console.ConsoleUtilities
                 }
             }
         }
+
+        public static async Task UpdateMemberAsync()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                System.Console.WriteLine("Enter Member ID to update:");
+                if (int.TryParse(System.Console.ReadLine(), out int memberId))
+                {
+                    var member = await uow.Members.FindByIdAsync(memberId);
+                    if (member == null)
+                    {
+                        System.Console.WriteLine("Member not found.");
+                        return;
+                    }
+
+                    System.Console.WriteLine("Enter new height (in cm):");
+                    if (!float.TryParse(System.Console.ReadLine(), out float newHeight))
+                    {
+                        System.Console.WriteLine("Invalid height value entered.");
+                        return;
+                    }
+
+                    System.Console.WriteLine("Enter new weight (in kg):");
+                    if (!float.TryParse(System.Console.ReadLine(), out float newWeight))
+                    {
+                        System.Console.WriteLine("Invalid weight value entered.");
+                        return;
+                    }
+
+                    // Update member's height and weight
+                    member.UpdateProfile(member.FullName, member.PhoneNumber, newWeight, newHeight, member.Image);
+
+                    await uow.SaveChangesAsync();
+                    System.Console.WriteLine("Member's height and weight updated successfully.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Invalid ID entered.");
+                }
+            }
+        }
+
     }
 }

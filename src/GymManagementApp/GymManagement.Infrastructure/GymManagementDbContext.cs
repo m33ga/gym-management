@@ -44,6 +44,9 @@ namespace GymManagement.Infrastructure
         {
             //Admin
             modelBuilder.Entity<Admin>()
+                .Property(a => a.Email)
+                .HasMaxLength(45);
+            modelBuilder.Entity<Admin>()
                 .Property(a => a.Username)
                 .HasMaxLength(45);
 
