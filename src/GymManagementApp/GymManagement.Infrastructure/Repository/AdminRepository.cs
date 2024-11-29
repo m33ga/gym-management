@@ -44,14 +44,6 @@ namespace GymManagement.Infrastructure.Repository
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        // Find an admin by ID
-        async Task<Admin> Domain.SeedWork.IRepository<Admin>.FindByIdAsync(int id)
-        {
-            return await _dbContext.Admins
-                .Include(a => a.Notifications) // Include notifications for the admin
-                .FirstOrDefaultAsync(a => a.Id == id);
-        }
-
         // Find or create an admin (custom logic)
         public override async Task<Admin> FindOrCreateAsync(Admin entity)
         {
