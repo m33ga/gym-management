@@ -214,7 +214,6 @@ async Task PrintMembersAsync()
         }
     }
 }
-
 async Task PrintBookingsAsync()
 {
     using (var uow = new UnitOfWork())
