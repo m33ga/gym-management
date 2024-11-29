@@ -37,7 +37,7 @@ namespace GymManagement.Infrastructure.Repository
         }
 
         // Find an admin by ID
-        async Task<Admin> IAdminRepository.FindByIdAsync(int id)
+        async Task<Admin> IAdminRepository.FindByIdWithNotificationsAsync(int id)
         {
             return await _dbContext.Admins
                 .Include(a => a.Notifications) // Include notifications for the admin
