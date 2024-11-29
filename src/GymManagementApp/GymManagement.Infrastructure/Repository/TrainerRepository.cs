@@ -15,7 +15,11 @@ namespace GymManagement.Infrastructure.Repository
         {
             _dbContext = dbContext;
         }
-
+        public async Task<Trainer> GetByIdWithDetailsAsync(int id)
+        {
+            return await _dbContext.Trainers
+                .FirstOrDefaultAsync(t => t.Id == id);
+        }
         public async Task AddTrainerAsync(Trainer trainer)
         {
             await _dbContext.Trainers.AddAsync(trainer);

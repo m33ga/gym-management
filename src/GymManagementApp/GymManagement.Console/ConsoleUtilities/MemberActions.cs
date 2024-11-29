@@ -1,6 +1,7 @@
 ﻿using GymManagement.ConsoleUtilities;
 using GymManagement.Domain.Models;
 using GymManagement.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Threading.Tasks;
 
@@ -31,12 +32,45 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "6":
                     await AddUnbookedBookingAsync();
                     break;
+                case "7":
+                    await FindAvailableClasses();
+                    break;
 
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
             }
         }
+
+        private static async Task FindAvailableClasses()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                System.Console.WriteLine($"Database path: {uow.GetDbPath()}");
+
+                var list = await uow.Classes.GetAvailableClassesAsync();
+           
+                if (list.Count == 0)
+                {
+                    System.Console.WriteLine("\n There are no Members yet");
+                }
+                else
+                {
+                    System.Console.WriteLine("\n Members:");
+                    foreach (var AvailableClass in list)
+                    {
+                        var t = AvailableClass.TrainerId;
+                        var tpr = await uow.Trainers.GetByIdWithDetailsAsync(t);
+                        System.Console.WriteLine($"Class: {AvailableClass.Name}\n" +
+                            $"Description: {AvailableClass.Description}\n" +
+                            $"ScheduledDate: {AvailableClass.ScheduledDate}\n" +
+                            $"Duration: {AvailableClass.DurationInMinutes}min\n" +
+                            $"Trainer: {tpr.FullName}, {tpr.Email}\n");
+                    }
+                }
+            }
+        }
+        
 
         private static async Task AddUnbookedBookingAsync()
         {

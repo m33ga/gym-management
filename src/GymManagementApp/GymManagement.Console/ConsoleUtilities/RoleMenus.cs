@@ -45,6 +45,7 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("4. Delete Member");
                         System.Console.WriteLine("5. Update Member");
                         System.Console.WriteLine("6. Create Unbooked Booking");
+                        System.Console.WriteLine("7. Find Available Classes");
                         System.Console.WriteLine("0. Logout");
                         break;
                 }
