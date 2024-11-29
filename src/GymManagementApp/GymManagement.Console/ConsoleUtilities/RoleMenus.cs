@@ -28,6 +28,7 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("6. Print Trainers");
                         System.Console.WriteLine("7. Print Memberships");
                         System.Console.WriteLine("8. Delete Member");
+                        System.Console.WriteLine("9. Search Member by Email");
                         System.Console.WriteLine("0. Logout");
                         break;
 
