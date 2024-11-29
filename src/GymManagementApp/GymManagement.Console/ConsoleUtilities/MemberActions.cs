@@ -1,4 +1,5 @@
-﻿using GymManagement.Domain.Models;
+﻿using GymManagement.ConsoleUtilities;
+using GymManagement.Domain.Models;
 using GymManagement.Infrastructure;
 using System;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "6":
                     await AddUnbookedBookingAsync();
                     break;
+
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
@@ -199,11 +201,33 @@ namespace GymManagement.Console.ConsoleUtilities
                         return;
                     }
 
+                    System.Console.WriteLine("Do you want to update the password? (yes/no):");
+                    string updatePasswordResponse = System.Console.ReadLine()?.Trim().ToLower();
+
+                    if (updatePasswordResponse == "yes")
+                    {
+                        System.Console.WriteLine("Enter new password:");
+                        string newPassword = System.Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+                        {
+                            System.Console.WriteLine("Password must be at least 6 characters long.");
+                            return;
+                        }
+
+                        // Hash the new password
+                        string hashedPassword = PasswordUtils.HashPassword(newPassword);
+
+                        // Update the member's password
+                        member.UpdatePassword(hashedPassword);
+                        System.Console.WriteLine("Password updated successfully.");
+                    }
+
                     // Update member's height and weight
                     member.UpdateProfile(member.FullName, member.PhoneNumber, newWeight, newHeight, member.Image);
 
                     await uow.SaveChangesAsync();
-                    System.Console.WriteLine("Member's height and weight updated successfully.");
+                    System.Console.WriteLine("Member's profile updated successfully.");
                 }
                 else
                 {
@@ -211,6 +235,5 @@ namespace GymManagement.Console.ConsoleUtilities
                 }
             }
         }
-
     }
 }
