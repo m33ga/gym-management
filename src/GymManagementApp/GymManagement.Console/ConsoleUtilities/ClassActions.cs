@@ -51,5 +51,31 @@ namespace GymManagement.Console.ConsoleUtilities
                 }
             }
         }
+
+        public static async Task PrintAvailableClasses()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                var list = await uow.Classes.GetAvailableClassesAsync();
+                if (list.Count == 0)
+                {
+                    System.Console.WriteLine("\n There are no available classes yet");
+                }
+                else
+                {
+                    System.Console.WriteLine("\n Members:");
+                    foreach (var classi in list)
+                    {
+                        System.Console.WriteLine($"class: {classi.Id}, " +
+                                                 $"class Name: {classi.Name}, " +
+                                                 $"class Description: {classi.Description}, " +
+                                                 $"class Date: {classi.ScheduledDate}, " +
+                                                 $"class Duration: {classi.DurationInMinutes}min, " +
+                                                 $"class Trainer ID: {classi.TrainerId}, " +
+                                                 $"Class Availability: {classi.IsAvailable}, ");
+                    }
+                }
+            }
+        }
     }
 }
