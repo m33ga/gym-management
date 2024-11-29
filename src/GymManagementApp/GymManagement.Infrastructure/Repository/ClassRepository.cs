@@ -56,6 +56,13 @@ namespace GymManagement.Infrastructure.Repository
                 .ToListAsync();
         }
 
+        public async Task<IList<Class>> GetBookedClassesByTrainerAsync(int trainerId)
+        {
+            return await _dbContext.Classes
+                .Where(c => c.TrainerId == trainerId && !c.IsAvailable)
+                .ToListAsync();
+        }
+
         public async Task<bool> HasScheduleConflictAsync(int trainerId, DateTime startTime, DateTime endTime)
         {
             return await _dbContext.Classes.AnyAsync(c =>
