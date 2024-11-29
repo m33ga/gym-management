@@ -96,6 +96,17 @@ namespace GymManagement.Domain.Models
             MealPlans.Add(mealPlan);
         }
 
+        public void UpdatePassword(string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(newPassword))
+                throw new ArgumentException("Password cannot be empty.", nameof(newPassword));
+            if (newPassword.Length < 6)
+                throw new ArgumentException("Password must be at least 6 characters long.", nameof(newPassword));
+
+            Password = newPassword;
+        }
+
+
         public void UseWorkout()
         {
             if (RemainingWorkouts <= 0) throw new InvalidOperationException("No remaining workouts available.");

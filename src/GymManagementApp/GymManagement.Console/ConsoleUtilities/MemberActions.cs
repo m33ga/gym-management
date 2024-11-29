@@ -1,4 +1,5 @@
-﻿using GymManagement.Domain.Models;
+﻿using GymManagement.ConsoleUtilities;
+using GymManagement.Domain.Models;
 using GymManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -61,11 +62,12 @@ namespace GymManagement.Console.ConsoleUtilities
                     foreach (var AvailableClass in list)
                     {
                         var t = AvailableClass.TrainerId;
-                        await uow.Trainers.GetByIdWithDetailsAsync(t);
+                        var tpr = await uow.Trainers.GetByIdWithDetailsAsync(t);
                         System.Console.WriteLine($"Class: {AvailableClass.Name}\n" +
+                            $"Description: {AvailableClass.Description}\n" +
                             $"ScheduledDate: {AvailableClass.ScheduledDate}\n" +
                             $"Duration: {AvailableClass.DurationInMinutes}min\n" +
-                            $"Trainer: {t}");
+                            $"Trainer: {tpr.FullName}, {tpr.Email}\n");
                     }
                 }
             }
@@ -235,11 +237,33 @@ namespace GymManagement.Console.ConsoleUtilities
                         return;
                     }
 
+                    System.Console.WriteLine("Do you want to update the password? (yes/no):");
+                    string updatePasswordResponse = System.Console.ReadLine()?.Trim().ToLower();
+
+                    if (updatePasswordResponse == "yes")
+                    {
+                        System.Console.WriteLine("Enter new password:");
+                        string newPassword = System.Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+                        {
+                            System.Console.WriteLine("Password must be at least 6 characters long.");
+                            return;
+                        }
+
+                        // Hash the new password
+                        string hashedPassword = PasswordUtils.HashPassword(newPassword);
+
+                        // Update the member's password
+                        member.UpdatePassword(hashedPassword);
+                        System.Console.WriteLine("Password updated successfully.");
+                    }
+
                     // Update member's height and weight
                     member.UpdateProfile(member.FullName, member.PhoneNumber, newWeight, newHeight, member.Image);
 
                     await uow.SaveChangesAsync();
-                    System.Console.WriteLine("Member's height and weight updated successfully.");
+                    System.Console.WriteLine("Member's profile updated successfully.");
                 }
                 else
                 {
