@@ -18,7 +18,7 @@ namespace GymManagement.Infrastructure.Repository
             _dbSet = _dbContext.Set<T>();
         }
 
-        public async Task<T> FindByIdAsync(int id)
+        public virtual async Task<T> FindByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }

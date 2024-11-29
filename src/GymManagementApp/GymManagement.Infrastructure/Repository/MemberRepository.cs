@@ -22,7 +22,7 @@ namespace GymManagement.Infrastructure.Repository
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<Member> GetByEmailAsync(string email)
+        public async Task<Member> GetMemberByEmailAsync(string email)
         {
             return await _dbContext.Members.FirstOrDefaultAsync(m => m.Email == email);
         }
