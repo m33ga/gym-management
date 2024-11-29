@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GymManagement.Console.ConsoleUtilities
@@ -29,13 +26,14 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("7. Print Memberships");
                         System.Console.WriteLine("8. Delete Member");
                         System.Console.WriteLine("9. Search Member by Email");
+                        System.Console.WriteLine("10. Initialize Database");
                         System.Console.WriteLine("0. Logout");
                         break;
 
                     case "Trainer":
                         System.Console.WriteLine("1. Create Class");
-                        System.Console.WriteLine("2. Print Upcoming Classes(booked by someone) for each Trainer");
-                        System.Console.WriteLine("3. Print All Classes for each Trainer");
+                        System.Console.WriteLine("2. Print Upcoming Classes (booked)");
+                        System.Console.WriteLine("3. Print All Classes");
                         System.Console.WriteLine("0. Logout");
                         break;
 
@@ -43,11 +41,13 @@ namespace GymManagement.Console.ConsoleUtilities
                         System.Console.WriteLine("1. Create Booking");
                         System.Console.WriteLine("2. Create Membership");
                         System.Console.WriteLine("3. Print Bookings");
-                        System.Console.WriteLine("4. Delete Member");
-                        System.Console.WriteLine("5. Update Member");
-                        System.Console.WriteLine("6. Create Unbooked Booking (Unhandled exception)"); // handle exception
+                        System.Console.WriteLine("4. Delete Account");
+                        System.Console.WriteLine("5. Update Account");
+                        System.Console.WriteLine("6. Create Unbooked Booking (Unhandled exception)"); // Handle exception
                         System.Console.WriteLine("7. Find Available Classes");
-                        System.Console.WriteLine("8. Print Upcoming Classes for each member ");
+                        System.Console.WriteLine("8. Print Upcoming Classes for Member");
+                        System.Console.WriteLine("9. Print Trainer Rating");
+                        System.Console.WriteLine("10. Create review for class");
                         System.Console.WriteLine("0. Logout");
                         break;
                 }
@@ -65,17 +65,23 @@ namespace GymManagement.Console.ConsoleUtilities
                         break;
 
                     case "Member":
-                        await MemberActions.HandleMemberActionsAsync(input);
+                        bool shouldExit = await MemberActions.HandleMemberActionsAsync(input);
+                        if (shouldExit || input == "0")
+                        {
+                            exit = true; // Exit the loop
+                        }
+                        break;
+
+                    default:
+                        System.Console.WriteLine("Invalid role.");
                         break;
                 }
 
-                if (input == "0")
+                if (!exit)
                 {
-                    exit = true; // Logout
+                    System.Console.WriteLine("Press any key to continue...");
+                    System.Console.ReadKey();
                 }
-
-                System.Console.WriteLine("Press any key to continue");
-                System.Console.ReadKey();
 
             } while (!exit);
         }

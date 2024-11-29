@@ -1,6 +1,7 @@
 ﻿using GymManagement.ConsoleUtilities;
 using GymManagement.Domain.Models;
 using GymManagement.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace GymManagement.Console.ConsoleUtilities
 {
     public static class MemberActions
     {
-        public static async Task HandleMemberActionsAsync(string input)
+        public static async Task<bool> HandleMemberActionsAsync(string input)
         {
             switch (input)
             {
@@ -23,9 +24,12 @@ namespace GymManagement.Console.ConsoleUtilities
                     await PrintBookingsAsync();
                     break;
                 case "4":
-                    await DeleteMemberAsync();
+                    var deleted = await MemberActions.DeleteMemberAsync();
+                    if (deleted)
+                    {
+                        return true;
+                    }
                     break;
-
                 case "5":
                     await UpdateMemberAsync();
                     break;
@@ -38,9 +42,76 @@ namespace GymManagement.Console.ConsoleUtilities
                 case "8":
                     await PrintUpcomingClassesForAllMembers();
                     break;
+                case "9":
+                    await GetReviewsByTrainerAsync();
+                    break;
+                case "10":
+                    await AddReviewForClass();
+                    break;
                 default:
                     System.Console.WriteLine("Invalid Option.");
                     break;
+            }
+            return false;
+        }
+
+        private static async Task AddReviewForClass()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                System.Console.WriteLine($"Database path: {uow.GetDbPath()}");
+                
+                var list = await uow.Classes.FindAllAsync();
+                
+                if (list.Count == 0)
+                {
+                    System.Console.WriteLine("\n There are no Classes yet");
+                }
+                else
+                {
+                    
+                    System.Console.WriteLine("\n Classes:");
+                    foreach (var classes in list)
+                    {
+                        System.Console.WriteLine($"{classes.Id} Class: {classes.Name}, Date: {classes.ScheduledDate}, Is Available:{classes.IsAvailable}");
+                        
+                    }
+                    
+                }
+                System.Console.WriteLine("Choose needed class");
+                int input = int.Parse(System.Console.ReadLine());
+                var n_class = await uow.Classes.FindByIdAsync(input);
+                
+                Review r1 = new(1, input, 5, "TestReview", n_class.TrainerId);
+                await uow.Reviews.AddReviewAsync(r1);
+                await uow.SaveChangesAsync();
+            }
+        }
+
+        private static async Task GetReviewsByTrainerAsync()
+        {
+            using (var uow = new UnitOfWork())
+            {
+                System.Console.WriteLine($"Database path: {uow.GetDbPath()}");
+                System.Console.WriteLine("Enter trainer ID");
+                int input = int.Parse(System.Console.ReadLine());
+                var list = await uow.Reviews.GetTrainerRatingAsync(input);
+
+                if (list.Count == 0)
+                {
+                    System.Console.WriteLine("\n There are no rating for trainer yet");
+                }
+                else
+                {
+                    System.Console.WriteLine("\n Rating:");
+                    var collect = 0;
+                        foreach (var rating in list)
+                        {
+                            collect += rating.Rating;
+                        }
+                    var rate = collect / list.Count;
+                    System.Console.WriteLine(rate);
+                }
             }
         }
 
@@ -221,7 +292,7 @@ namespace GymManagement.Console.ConsoleUtilities
             }
         }
 
-        public static async Task DeleteMemberAsync()
+        public static async Task<bool> DeleteMemberAsync()
         {
             using (var uow = new UnitOfWork())
             {
@@ -232,16 +303,18 @@ namespace GymManagement.Console.ConsoleUtilities
                     if (member == null)
                     {
                         System.Console.WriteLine("Member not found.");
-                        return;
+                        return false; // No deletion happened, remain in the menu
                     }
 
                     uow.Members.Delete(member);
                     await uow.SaveChangesAsync();
                     System.Console.WriteLine("Member deleted successfully.");
+                    return true; // Deletion successful, indicate to exit the menu
                 }
                 else
                 {
                     System.Console.WriteLine("Invalid ID entered.");
+                    return false; 
                 }
             }
         }
