@@ -130,7 +130,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Event Accepted.png" />
+    <Content Include="Assets\Schedule.png" />
     <Content Include="Assets\Notification.png" />
     <Content Include="Assets\Restaurant.png" />
     <Content Include="Assets\Shortlist.png" />
