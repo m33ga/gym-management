@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymManagement.Console", "Gy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymManagement.Application", "GymManagement.Application\GymManagement.Application.csproj", "{84342CB8-C633-4F59-9DE5-BCE8BED749D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymManagement.UWP", "GymManagement.UWP\GymManagement.UWP.csproj", "{3C5EBE11-0799-4F7B-BD79-9A4B1B09312F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,12 @@ Global
 		{84342CB8-C633-4F59-9DE5-BCE8BED749D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84342CB8-C633-4F59-9DE5-BCE8BED749D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84342CB8-C633-4F59-9DE5-BCE8BED749D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C5EBE11-0799-4F7B-BD79-9A4B1B09312F}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{3C5EBE11-0799-4F7B-BD79-9A4B1B09312F}.Debug|Any CPU.Build.0 = Debug|x64
+		{3C5EBE11-0799-4F7B-BD79-9A4B1B09312F}.Debug|Any CPU.Deploy.0 = Debug|x64
+		{3C5EBE11-0799-4F7B-BD79-9A4B1B09312F}.Release|Any CPU.ActiveCfg = Release|x64
+		{3C5EBE11-0799-4F7B-BD79-9A4B1B09312F}.Release|Any CPU.Build.0 = Release|x64
+		{3C5EBE11-0799-4F7B-BD79-9A4B1B09312F}.Release|Any CPU.Deploy.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
