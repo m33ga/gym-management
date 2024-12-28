@@ -9,6 +9,74 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <NavigationView x:Name="nvMain" 
+                        IsSettingsVisible="False" 
+                        IsBackButtonVisible="Collapsed" 
+                        ItemInvoked="NvMain_OnItemInvoked"
+                        PaneDisplayMode="LeftCompact" IsPaneToggleButtonVisible="False">
+ 
+            <NavigationView.MenuItems>
+
+                <NavigationViewItem x:Name="nvProfile">
+                    <NavigationViewItem.ContentTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20">
+                                <!-- Circular Mask -->
+                                <Ellipse Fill="White" />
+                                <!-- Profile Image -->
+                                <Image Source="ms-appx:///Assets/image.png"
+                               Stretch="UniformToFill" />
+                            </Grid>
+                        </DataTemplate>
+                    </NavigationViewItem.ContentTemplate>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="nvNotifications"
+                    Content="Notifications"
+                    Tag="notifications">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Notification.png" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="nvDashboard"
+                                    Content="Dashboard" 
+                                    Tag="dashboard">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Shortlist.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="nvSchedule"
+                                    Content="Schedule"
+                                    Tag="schedule">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Schedule.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="nvMealplan"
+                                    Content="Meal Plan"
+                                    Tag="meal_plan">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Restaurant.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                
+            </NavigationView.MenuItems>
+
+            <NavigationView.PaneFooter>
+                <StackPanel>
+                    <NavigationViewItem x:Name="nvLogout"
+                                        Content="Logout" 
+                                        Icon="NewWindow"
+                                        Tapped="NvLogout_OnTapped"/>
+                </StackPanel>
+            </NavigationView.PaneFooter>
+
+
+
+            <Frame x:Name="frmMain" Padding="10, 0">
+                <TextBlock Text="This is my content area"/>
+            </Frame>
+            
+        </NavigationView>
 
     </Grid>
 </Page>

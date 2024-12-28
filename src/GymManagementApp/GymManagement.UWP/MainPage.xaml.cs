@@ -25,6 +25,31 @@ namespace GymManagement.UWP
         public MainPage()
         {
             this.InitializeComponent();
+           
         }
+        private void NvMain_OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        {
+            var selectedItem = args.InvokedItemContainer as NavigationViewItem;
+            if (selectedItem != null)
+            {
+                switch (selectedItem.Tag)
+                {
+                    case "categories":
+                        
+                        break;
+                    case "products":
+                        
+                        break;
+
+                }
+            }
+        }
+        private void NvLogout_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
     }
 }
