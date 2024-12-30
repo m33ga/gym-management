@@ -440,7 +440,7 @@ namespace GymManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GymManagement.Domain.Models.Trainer", null)
+                    b.HasOne("GymManagement.Domain.Models.Trainer", "Trainer")
                         .WithMany("Reviews")
                         .HasForeignKey("TrainerId")
                         .OnDelete(DeleteBehavior.Cascade)
