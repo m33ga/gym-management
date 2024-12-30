@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymManagement.UWP.ViewModels
 {
-    public class AccountViewModel : BindableBase
+    public class ProfileViewModel : BindableBase
     {
     }
 }
