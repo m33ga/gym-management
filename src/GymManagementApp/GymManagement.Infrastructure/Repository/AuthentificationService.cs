@@ -36,7 +36,7 @@ namespace GymManagement.Infrastructure.Repository
             }
             if (await trainerRepository.GetTrainerByEmailAsync(email) != null)
             {
-                result.UserRole = Domain.Enums.Role.Member;
+                result.UserRole = Domain.Enums.Role.Trainer;
                 return result;
             }
             result.IsAuthentificated = false;
