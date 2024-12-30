@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using GymManagement.UWP.Views.Profile;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -25,7 +26,7 @@ namespace GymManagement.UWP
         public MainPage()
         {
             this.InitializeComponent();
-           
+            frmMain.Navigate(typeof(ProfilePage));
         }
         private void NvMain_OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
@@ -34,11 +35,20 @@ namespace GymManagement.UWP
             {
                 switch (selectedItem.Tag)
                 {
-                    case "categories":
+                    case "profile":
+                        frmMain.Navigate(typeof(ProfilePage));
+                        break;
+                    case "notifications":
+
+                        break;
+                    case "dashboard":
                         
                         break;
-                    case "products":
-                        
+                    case "schedule":
+
+                        break;
+                    case "meal_plan":
+
                         break;
 
                 }
