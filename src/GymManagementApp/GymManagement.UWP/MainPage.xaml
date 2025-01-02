@@ -5,11 +5,12 @@
     xmlns:local="using:GymManagement.UWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="using:GymManagement.UWP.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:UserViewModel}"
     mc:Ignorable="d">
     
     <Page.Resources>
 
-        <Style TargetType="NavigationView">
+        <Style TargetType="Grid">
             <Setter Property="Background" Value="#F9F9F9" />
         </Style>
 
@@ -26,7 +27,8 @@
                         ItemInvoked="NvMain_OnItemInvoked"
                         PaneDisplayMode="LeftCompact" 
                         IsPaneToggleButtonVisible="False"
-                        Foreground="Black">
+                        Foreground="Black"
+                        >
 
 
             <NavigationView.Resources>
@@ -36,6 +38,7 @@
 
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Name="nvProfile"
+                                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
                                     Tag="profile">
                     <NavigationViewItem.ContentTemplate>
                         <DataTemplate>
@@ -50,28 +53,28 @@
                     </NavigationViewItem.ContentTemplate>
                 </NavigationViewItem>
                 <NavigationViewItem x:Name="nvNotifications"
-                                    
+                                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
                                     Tag="notifications">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Notification.png" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem x:Name="nvDashboard"
-                                    
+                                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
                                     Tag="dashboard">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Shortlist.png"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem x:Name="nvSchedule"
-                                   
+                                   Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
                                     Tag="schedule">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Schedule.png"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem x:Name="nvMealplan"
-                                    
+                                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
                                     Tag="meal_plan">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Restaurant.png"/>
@@ -79,6 +82,7 @@
                 </NavigationViewItem>
                 <NavigationViewItem
                     Icon="Account"
+                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
                     Tag="login"/>
                 
 
@@ -88,7 +92,7 @@
             <NavigationView.PaneFooter>
                 <StackPanel>
                     <NavigationViewItem x:Name="nvLogout"
-                                        
+                                        Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
                                         Icon="NewWindow"
                                         Tapped="NvLogout_OnTapped"/>
                 </StackPanel>

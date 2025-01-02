@@ -11,27 +11,18 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class AuthentificationService : IAuthentificationService
     {
-        private readonly IAdminRepository adminRepository;
-        private readonly IMemberRepository memberRepository;
-        private readonly ITrainerRepository trainerRepository;
-
-        public AuthentificationService( IAdminRepository adminRepository, IMemberRepository memberRepository, ITrainerRepository trainerRepository)
-        {
-
-            if (adminRepository == null) throw new ArgumentNullException(nameof(adminRepository));
-            if (memberRepository == null) throw new ArgumentNullException(nameof(memberRepository));
-            if (trainerRepository == null) throw new ArgumentNullException(nameof(trainerRepository));
-
-            this.adminRepository = adminRepository;
-            this.memberRepository = memberRepository;
-            this.trainerRepository = trainerRepository;
+        
+        public AuthentificationService()
+        {         
         }
         public async Task<AuthentificationResult> Authentificate(string email, string password)
         {
             using (var uow = new UnitOfWork())
             {
-                var result = new AuthentificationResult();
-                result.IsAuthentificated = true;
+                var result = new AuthentificationResult
+                {
+                    IsAuthentificated = true
+                };
                 if (await uow.Admins.GetAdminByEmailAsync(email) != null)
                 {
                     Admin admin = await uow.Admins.GetAdminByEmailAsync(email);
@@ -45,7 +36,7 @@ namespace GymManagement.Infrastructure.Repository
                     result.UserRole = Domain.Enums.Role.Admin;
                     return result;
                 }
-                else if (await uow.Members.GetMemberByEmailAsync(email) != null)
+                if (await uow.Members.GetMemberByEmailAsync(email) != null)
                 {
                     Member member = await uow.Members.GetMemberByEmailAsync(email);
                     password = PasswordUtils.PasswordUtils.HashPassword(password);
@@ -58,7 +49,7 @@ namespace GymManagement.Infrastructure.Repository
                     result.UserRole = Domain.Enums.Role.Member;
                     return result;
                 }
-                else if (await uow.Trainers.GetTrainerByEmailAsync(email) != null)
+                if (await uow.Trainers.GetTrainerByEmailAsync(email) != null)
                 {
                     Trainer trainer = await uow.Trainers.GetTrainerByEmailAsync(email);
                     password = PasswordUtils.PasswordUtils.HashPassword(password);

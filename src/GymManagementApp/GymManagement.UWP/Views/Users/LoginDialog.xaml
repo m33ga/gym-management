@@ -70,7 +70,8 @@
                 <!-- Sign Up Link -->
                 <TextBlock HorizontalAlignment="Center" FontSize="14">
                     <Run Text="Don't Have An Account? " Foreground="#000000" FontFamily="sans serif" />
-                    <Run Text="Create Account" Foreground="#007BFF" />
+                    
+                       <Hyperlink Foreground="#007BFF" Click="OnRegisterClick">Go to Registration</Hyperlink>
                 </TextBlock>
             </StackPanel>
         </Border>

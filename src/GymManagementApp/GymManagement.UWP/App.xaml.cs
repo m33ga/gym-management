@@ -31,26 +31,16 @@ namespace GymManagement.UWP
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
-        private IAdminRepository _adminRepository;
-        private IMemberRepository _memberRepository;
-        private ITrainerRepository _trainerRepository;
-        private GymManagementDbContext _dbContext;
         public App()
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            _dbContext = new GymManagementDbContext();  // Instantiate DbContext
-
-            // Initialize repositories with the DbContext
-            _adminRepository = new AdminRepository(_dbContext);  // Pass DbContext
-            _memberRepository = new MemberRepository(_dbContext);  // Pass DbContext
-            _trainerRepository = new TrainerRepository(_dbContext);  // Pass DbContext
 
             // Initialize AuthentificationService with the repositories
-            var authentificationService = new AuthentificationService(_adminRepository, _memberRepository, _trainerRepository);
+            var authentificationService = new AuthentificationService();
 
             // Initialize UserViewModel with the required dependencies
-            UserViewModel = new UserViewModel(authentificationService, _adminRepository, _memberRepository, _trainerRepository);
+            UserViewModel = new UserViewModel(authentificationService);
         }
 
         public static UserViewModel UserViewModel { get; internal set; }
@@ -63,11 +53,9 @@ namespace GymManagement.UWP
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-            if (rootFrame == null)
+            if (!(Window.Current.Content is Frame rootFrame))
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();

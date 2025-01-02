@@ -69,6 +69,10 @@ namespace GymManagement.UWP.Views.Users
                 loginButton.IsEnabled = true;
             }
         }
+        private void OnRegisterClick(object sender, RoutedEventArgs e) 
+        {
+            Frame.Navigate(typeof(RegisterDialog));
+        }
     }
 }
     

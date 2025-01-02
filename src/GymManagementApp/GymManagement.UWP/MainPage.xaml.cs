@@ -14,6 +14,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using GymManagement.UWP.Views.Profile;
 using GymManagement.UWP.Views.Users;
+using GymManagement.UWP.ViewModels;
+using GymManagement.Infrastructure.Repository;
+using GymManagement.Domain.Services;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -24,15 +27,24 @@ namespace GymManagement.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
+
+
+        public UserViewModel UserViewModel { get; set; }
         public MainPage()
         {
             this.InitializeComponent();
-            frmMain.Navigate(typeof(ProfilePage));
+       
+            UserViewModel = App.UserViewModel;
+            
+            if (UserViewModel.IsLogged == true)
+            {
+                frmMain.Navigate(typeof(ProfilePage));  
+            }
+            frmMain.Navigate(typeof(LoginDialog));
         }
         private void NvMain_OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            var selectedItem = args.InvokedItemContainer as NavigationViewItem;
-            if (selectedItem != null)
+            if (args.InvokedItemContainer is NavigationViewItem selectedItem)
             {
                 switch (selectedItem.Tag)
                 {
@@ -43,7 +55,7 @@ namespace GymManagement.UWP
 
                         break;
                     case "dashboard":
-                        
+
                         break;
                     case "schedule":
 
@@ -60,7 +72,8 @@ namespace GymManagement.UWP
         }
         private void NvLogout_OnTapped(object sender, TappedRoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            UserViewModel.DoLogout();
+            frmMain.Navigate(typeof(LoginDialog));
         }
 
 
