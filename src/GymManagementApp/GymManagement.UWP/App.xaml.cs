@@ -1,4 +1,9 @@
-﻿using System;
+﻿using GymManagement.Domain.Repository;
+using GymManagement.Infrastructure;
+using GymManagement.Infrastructure.Repository;
+using GymManagement.UWP.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,11 +31,30 @@ namespace GymManagement.UWP
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
+        private IAdminRepository _adminRepository;
+        private IMemberRepository _memberRepository;
+        private ITrainerRepository _trainerRepository;
+        private GymManagementDbContext _dbContext;
         public App()
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            _dbContext = new GymManagementDbContext();  // Instantiate DbContext
+
+            // Initialize repositories with the DbContext
+            _adminRepository = new AdminRepository(_dbContext);  // Pass DbContext
+            _memberRepository = new MemberRepository(_dbContext);  // Pass DbContext
+            _trainerRepository = new TrainerRepository(_dbContext);  // Pass DbContext
+
+            // Initialize AuthentificationService with the repositories
+            var authentificationService = new AuthentificationService(_adminRepository, _memberRepository, _trainerRepository);
+
+            // Initialize UserViewModel with the required dependencies
+            UserViewModel = new UserViewModel(authentificationService, _adminRepository, _memberRepository, _trainerRepository);
         }
+
+        public static UserViewModel UserViewModel { get; internal set; }
+
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points

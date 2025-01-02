@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using GymManagement.UWP.Views.Profile;
+using GymManagement.UWP.Views.Users;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -49,6 +50,9 @@ namespace GymManagement.UWP
                         break;
                     case "meal_plan":
 
+                        break;
+                    case "login":
+                        frmMain.Navigate(typeof(LoginDialog));
                         break;
 
                 }

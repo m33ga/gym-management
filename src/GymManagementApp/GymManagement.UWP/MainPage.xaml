@@ -26,8 +26,7 @@
                         ItemInvoked="NvMain_OnItemInvoked"
                         PaneDisplayMode="LeftCompact" 
                         IsPaneToggleButtonVisible="False"
-                        Foreground="Black"
-                        Visibility="{x:Bind IsLogged, Converter=BoolToVisibili}">
+                        Foreground="Black">
 
 
             <NavigationView.Resources>
@@ -78,6 +77,12 @@
                         <BitmapIcon UriSource="ms-appx:///Assets/Restaurant.png"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem
+                    Icon="Account"
+                    Tag="login"/>
+                
+
+
             </NavigationView.MenuItems>
 
             <NavigationView.PaneFooter>
