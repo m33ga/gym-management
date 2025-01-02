@@ -26,7 +26,8 @@
                         ItemInvoked="NvMain_OnItemInvoked"
                         PaneDisplayMode="LeftCompact" 
                         IsPaneToggleButtonVisible="False"
-                        Foreground="Black">
+                        Foreground="Black"
+                        Visibility="{x:Bind IsLogged, Converter=BoolToVisibili}">
 
 
             <NavigationView.Resources>

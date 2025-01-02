@@ -8,24 +8,12 @@ namespace GymManagement.UWP.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is bool isVisible)
-            {
-                if (isVisible)
-                {
-                    return Visibility.Visible;
-                }
-                else
-                {
-                    return Visibility.Collapsed;
-                }
-            }
-
-            return Visibility.Collapsed;
+            return value is bool boolValue && boolValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            throw new NotImplementedException();
+            return (value is Visibility visibility && visibility == Visibility.Visible);
         }
     }
 }

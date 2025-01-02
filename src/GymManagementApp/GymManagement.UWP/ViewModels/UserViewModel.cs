@@ -2,65 +2,48 @@
 using GymManagement.Domain.Models;
 using GymManagement.Domain.Repository;
 using GymManagement.Domain.Services;
+using GymManagement.Domain.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GymManagement.UWP.ViewModels
 {
-    public class UserViewModel : INotifyPropertyChanged
+    public class UserViewModel : BindableBase
     {
         private readonly IAuthentificationService _authentificationService;
+        private readonly IAdminRepository _adminRepository;
+        private readonly IMemberRepository _memberRepository;
+        private readonly ITrainerRepository _trainerRepository;
 
         private object _loggedUser; // Can hold Admin, Trainer, or Member
-        private readonly IAdminRepository adminRepository;
-        private readonly IMemberRepository memberRepository;
-        private readonly ITrainerRepository trainerRepository;
-        public object LoggedUser
-        {
-            get => _loggedUser;
-            set
-            {
-                _loggedUser = value;
-                OnPropertyChanged(nameof(LoggedUser));
-                OnPropertyChanged(nameof(IsLogged));
-                OnPropertyChanged(nameof(IsAdmin));
-                OnPropertyChanged(nameof(IsTrainer));
-                OnPropertyChanged(nameof(IsMember));
-            }
-        }
-
-        public bool IsLogged => LoggedUser != null;
-
-        public bool IsAdmin => LoggedUser is Admin;
-
-        public bool IsTrainer => LoggedUser is Trainer;
-
-        public bool IsMember => LoggedUser is Member;
-
         private bool _showError;
-
-        public bool ShowError
-        {
-            get => _showError;
-            set
-            {
-                _showError = value;
-                OnPropertyChanged(nameof(ShowError));
-            }
-        }
 
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public object LoggedUser
+        {
+            get => _loggedUser;
+            set => Set(ref _loggedUser, value);
+        }
 
-        public UserViewModel(IAuthentificationService authentificationService)
+        public bool IsLogged => LoggedUser != null;
+        public bool IsAdmin => LoggedUser is Admin;
+        public bool IsTrainer => LoggedUser is Trainer;
+        public bool IsMember => LoggedUser is Member;
+
+        public bool ShowError
+        {
+            get => _showError;
+            set => Set(ref _showError, value);
+        }
+
+        public UserViewModel(IAuthentificationService authentificationService, IAdminRepository adminRepository, IMemberRepository memberRepository, ITrainerRepository trainerRepository)
         {
             _authentificationService = authentificationService;
+            _adminRepository = adminRepository;
+            _memberRepository = memberRepository;
+            _trainerRepository = trainerRepository;
         }
 
         public async Task<bool> DoLoginAsync()
@@ -74,13 +57,13 @@ namespace GymManagement.UWP.ViewModels
                     switch (result.UserRole)
                     {
                         case Role.Admin:
-                            LoggedUser = await adminRepository.GetAdminByEmailAsync(Email);
+                            LoggedUser = await _adminRepository.GetAdminByEmailAsync(Email);
                             break;
                         case Role.Trainer:
-                            LoggedUser = await trainerRepository.GetTrainerByEmailAsync(Email);
+                            LoggedUser = await _trainerRepository.GetTrainerByEmailAsync(Email);
                             break;
                         case Role.Member:
-                            LoggedUser = await memberRepository.GetMemberByEmailAsync(Email);
+                            LoggedUser = await _memberRepository.GetMemberByEmailAsync(Email);
                             break;
                         default:
                             LoggedUser = null;
@@ -108,11 +91,6 @@ namespace GymManagement.UWP.ViewModels
             LoggedUser = null;
             Email = string.Empty;
             Password = string.Empty;
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
