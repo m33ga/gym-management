@@ -3,10 +3,13 @@ using GymManagement.Domain.Models;
 using GymManagement.Domain.Repository;
 using GymManagement.Domain.Services;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace GymManagement.Domain.ViewModels
+namespace GymManagement.UWP.ViewModels
 {
     public class UserViewModel : INotifyPropertyChanged
     {
