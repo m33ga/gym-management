@@ -15,7 +15,7 @@ namespace GymManagement.Domain.Models
         public Member Member { get; private set; }
 
         public int Rating { get; private set; }
-        public string Comment { get; private set; }
+        //public string Comment { get; private set; }
         public DateTime DateSubmitted { get; set; }
         public Trainer Trainer { get; private set; }
         public int TrainerId { get; set; }

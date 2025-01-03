@@ -73,5 +73,23 @@ namespace GymManagement.Infrastructure.Repository
                 .Select(b => b.Class)
                 .ToListAsync();
         }
+
+        public async Task<IList<Class>> GetPastClassesByMemberAsync(int memberId)
+        {
+            return await _dbContext.Bookings
+                .Where(b => b.MemberId == memberId &&
+                            b.Class.ScheduledDate.AddMinutes(b.Class.DurationInMinutes) < DateTime.Now)
+                .Select(b => b.Class)
+                .ToListAsync();
+        }
+
+        public async Task<IList<Class>> GetUpcomingClassesByMemberAsync(int memberId)
+        {
+            return await _dbContext.Bookings
+                .Where(b => b.MemberId == memberId &&
+                        b.Class.ScheduledDate > DateTime.Now)
+                .Select(b => b.Class)
+                .ToListAsync();
+        }
     }
 }

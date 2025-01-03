@@ -27,6 +27,7 @@ namespace GymManagement.UWP.Views.Dashboard
         {
             this.InitializeComponent();
             UpcomingWorkoutsList.SelectedIndex = -1;
+            PastWorkoutsList.SelectedIndex = -1;
         }
 
 
@@ -198,7 +199,7 @@ namespace GymManagement.UWP.Views.Dashboard
                             Margin = new Thickness(0, 0, 0, 20),
                             HorizontalAlignment = HorizontalAlignment.Center
                         },
-                            
+
                         // Date section
                         new StackPanel
                         {
@@ -304,29 +305,14 @@ namespace GymManagement.UWP.Views.Dashboard
                                     }
                                 }
                             }
-                        },
-
-                        // Rating section
-                        new TextBlock
-                        {
-                            Text = "Leave your rating for the workout",
-                            Margin = new Thickness(0, 0, 0, 10),
-                            FontSize = 16,
-                            HorizontalAlignment = HorizontalAlignment.Stretch
-                        },
-                        new RatingControl
-                        {
-                            //AutomationPropertiesName = "Simple RatingControl",
-                            IsClearEnabled = false,
-                            IsReadOnly = false,
-                                FontSize = 96,
-                                Width = 110
-                            }
                         }
+
+                    }
+
                 };
-
             }
-        }
 
+        }
     }
+
 }
