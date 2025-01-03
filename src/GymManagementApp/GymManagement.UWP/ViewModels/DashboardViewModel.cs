@@ -38,6 +38,22 @@ namespace GymManagement.UWP.ViewModels
             set => Set(ref _pastWorkouts, value);
         }
 
+        private Class _selectedWorkout;
+        public Class SelectedWorkout
+        {
+            get => _selectedWorkout;
+            set
+            {
+                _selectedWorkout = value;
+                OnPropertyChanged(nameof(SelectedWorkout));
+            }
+        }
+
+        public async Task LoadWorkoutDetailsAsync(Class selectedWorkout)
+        {
+            SelectedWorkout = await _classRepository.GetByIdWithDetailsAsync(selectedWorkout.Id);
+        }
+
         private async Task LoadWorkoutsAsync()
         {
             if (_userViewModel.IsMember)
@@ -51,6 +67,20 @@ namespace GymManagement.UWP.ViewModels
                 var trainerId = ((Trainer)_userViewModel.LoggedUser).Id;
                 UpcomingWorkouts = new ObservableCollection<Class>(await _classRepository.GetUpcomingBookedClassesByTrainerAsync(trainerId));
                 PastWorkouts = new ObservableCollection<Class>(await _classRepository.GetPastBookedClassesByTrainerAsync(trainerId));
+            }
+        }
+
+        public string FormattedTimeRange
+        {
+            get
+            {
+                if (SelectedWorkout != null)
+                {
+                    var startTime = SelectedWorkout.ScheduledDate.TimeOfDay;
+                    var endTime = SelectedWorkout.ScheduledDate.AddMinutes(SelectedWorkout.DurationInMinutes).TimeOfDay;
+                    return $"{startTime:hh\\:mm} - {endTime:hh\\:mm}";
+                }
+                return string.Empty;
             }
         }
     }

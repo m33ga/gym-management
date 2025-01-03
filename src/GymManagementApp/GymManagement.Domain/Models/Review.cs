@@ -24,7 +24,7 @@ namespace GymManagement.Domain.Models
         // TODO: in application layer,
         // TODO:    add logic for review only after class has ended and
         // TODO:    prevent multiple reviews from the same member for the same class.
-        public Review(int memberId, int classId, int rating, string comment, int trainerId)
+        public Review(int memberId, int classId, int rating, int trainerId)
         {
             if (rating < 1 || rating > 5)
                 throw new ArgumentOutOfRangeException(nameof(rating), "Rating must be between 1 and 5.");
@@ -32,7 +32,7 @@ namespace GymManagement.Domain.Models
             MemberId = memberId;
             ClassId = classId;
             Rating = rating;
-            Comment = comment;
+            
             DateSubmitted = DateTime.UtcNow;
             TrainerId = trainerId;
         }
@@ -44,7 +44,7 @@ namespace GymManagement.Domain.Models
                 throw new ArgumentOutOfRangeException(nameof(rating), "Rating must be between 1 and 5.");
 
             Rating = rating;
-            Comment = comment;
+            
             DateSubmitted = DateTime.UtcNow; // Update submission date
         }
     }

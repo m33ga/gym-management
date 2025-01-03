@@ -15,6 +15,7 @@ namespace GymManagement.Domain.Models
         public string Username { get; private set; }
         public string PhoneNumber { get; private set; }
         public byte[] Image { get; private set; } // profile picture
+        public string Bio { get; private set; } // short bio}
 
         // Navigation Properties
         public ICollection<Class> Classes { get; private set; }
@@ -32,13 +33,14 @@ namespace GymManagement.Domain.Models
             Reviews = new HashSet<Review>();
         }
 
-        public Trainer(string fullName, string password, string email, string username, string phoneNumber, byte[] image = null)
+        public Trainer(string fullName, string password, string email, string username, string phoneNumber, string bio, byte[] image = null)
         {
             if (string.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("Full name is required.", nameof(fullName));
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Password is required.", nameof(password));
             if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
             if (string.IsNullOrWhiteSpace(username)) throw new ArgumentException("Username is required.", nameof(username));
             if (string.IsNullOrWhiteSpace(phoneNumber)) throw new ArgumentException("Phone number is required.", nameof(phoneNumber));
+            
 
             FullName = fullName;
             Password = password; // Hashing should happen in the application layer.
@@ -46,6 +48,7 @@ namespace GymManagement.Domain.Models
             Username = username;
             PhoneNumber = phoneNumber;
             Image = image;
+            Bio = bio;
 
             Classes = new HashSet<Class>();
             MealPlans = new HashSet<MealPlan>();
