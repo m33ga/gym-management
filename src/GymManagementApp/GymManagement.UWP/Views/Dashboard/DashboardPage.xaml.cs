@@ -1,4 +1,8 @@
-﻿using System;
+﻿using GymManagement.Domain.ViewModels;
+using GymManagement.Infrastructure;
+using GymManagement.Infrastructure.Repository;
+using GymManagement.UWP.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,11 +27,22 @@ namespace GymManagement.UWP.Views.Dashboard
     /// </summary>
     public sealed partial class DashboardPage : Page
     {
+        public DashboardViewModel ViewModel { get; }
+
         public DashboardPage()
         {
             this.InitializeComponent();
             UpcomingWorkoutsList.SelectedIndex = -1;
             PastWorkoutsList.SelectedIndex = -1;
+            var dbContext = new GymManagementDbContext();
+            var adminRepository = new AdminRepository(dbContext);
+            var memberRepository = new MemberRepository(dbContext);
+            var trainerRepository = new TrainerRepository(dbContext);
+            var authentificationService = new AuthentificationService(adminRepository, memberRepository, trainerRepository); 
+            var userViewModel = new UserViewModel(authentificationService);
+            ViewModel = new DashboardViewModel(new ClassRepository(dbContext), new BookingRepository(dbContext), userViewModel);
+
+            this.DataContext = ViewModel;
         }
 
 
