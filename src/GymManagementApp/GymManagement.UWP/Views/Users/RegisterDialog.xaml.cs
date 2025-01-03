@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -36,51 +37,44 @@ namespace GymManagement.UWP.Views.Users
         {
             try
             {
-                // Retrieve the selected role from the ComboBox
-                if (!(RoleComboBox.SelectedItem is ComboBoxItem selectedRole))
+                // Check if a role is selected
+                var selectedRole = RoleComboBox.SelectedItem as ComboBoxItem;
+                if (selectedRole == null)
                 {
-                    // Show an error if no role is selected
-                    await new ContentDialog
-                    {
-                        Title = "Error",
-                        Content = "Please select a role (Member or Trainer).",
-                        CloseButtonText = "OK"
-                    }.ShowAsync();
+                    await ShowErrorDialog("Please select a role (Member or Trainer).");
                     return;
                 }
 
-                // Map the selected role to the Role enum
-                var role = RoleComboBox.SelectedItem.ToString() == "Member"? Role.Member : Role.Trainer;
+                // Map role from ComboBox
+                Role role = selectedRole.Content.ToString() == "Member" ? Role.Member : Role.Trainer;
 
-                // Call the DoRegisterAsync method in the ViewModel
+                // Attempt registration
                 bool registrationSuccessful = await UserViewModel.DoRegisterAsync(role);
 
                 if (registrationSuccessful)
                 {
-                    // Navigate to the next page (e.g., ProfilePage) upon successful registration
+                    // Navigate to profile page upon success
                     Frame.Navigate(typeof(ProfilePage));
                 }
                 else
                 {
-                    // Show an error dialog if registration fails
-                    await new ContentDialog
-                    {
-                        Title = "Registration Failed",
-                        Content = "An error occurred during registration. Please try again.",
-                        CloseButtonText = "OK"
-                    }.ShowAsync();
+                    await ShowErrorDialog("An error occurred during registration. Please try again.");
                 }
             }
             catch (Exception ex)
             {
-                // Handle unexpected errors
-                await new ContentDialog
-                {
-                    Title = "Error",
-                    Content = $"An unexpected error occurred: {ex.Message}",
-                    CloseButtonText = "OK"
-                }.ShowAsync();
+                await ShowErrorDialog($"An unexpected error occurred: {ex.Message}");
             }
+        }
+
+        private async Task ShowErrorDialog(string message)
+        {
+            await new ContentDialog
+            {
+                Title = "Error",
+                Content = message,
+                CloseButtonText = "OK"
+            }.ShowAsync();
         }
     }
 }

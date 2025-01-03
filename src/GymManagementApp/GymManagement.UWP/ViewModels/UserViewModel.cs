@@ -2,16 +2,15 @@
 using GymManagement.Domain.Models;
 using GymManagement.Domain.Services;
 using GymManagement.Infrastructure;
+using GymManagement.Infrastructure.Repository;
 using System;
 using System.Threading.Tasks;
-using Windows.System;
 
 namespace GymManagement.UWP.ViewModels
 {
     public class UserViewModel : BindableBase
     {
         private readonly IAuthentificationService _authentificationService;
-
 
         private object _loggedUser; // Can hold Admin, Trainer, or Member
         private bool _showError;
@@ -98,53 +97,74 @@ namespace GymManagement.UWP.ViewModels
         {
             try
             {
-                using (var uow = new UnitOfWork())
+                var registrationService = new RegistrationService();
+
+                var registrationResult = await registrationService.RegisterAsync(
+                    email: Email,
+                    password: Password,
+                    fullname: FullName,
+                    username: Username,
+                    phonenumber: PhoneNumber,
+                    role: role,
+                    weight: Weight,
+                    height: Height
+                );
+
+                if (!registrationResult.IsRegistered)
                 {
-                    // Check if the user already exists
-                    if (await uow.Members.GetMemberByEmailAsync(Email) != null)
-                    {
-                        ShowError = true;
-                        return false;
-                    }
-                    if (await uow.Trainers.GetTrainerByEmailAsync(Email) != null)
-                    {
-                        ShowError = true;
-                        return false;
-                    }
-
-                    // Create the appropriate user based on the UserType
-                    switch (role)
-                    {
-                        case Role.Member:
-                            var membership = await uow.Memberships.GetMembershipByIdAsync(1);
-                            var member = new Member(FullName, Email, Password, Username, PhoneNumber, Weight, Height, 1, membership);             
-                            await uow.Members.AddMemberAsync(member);
-                            await uow.SaveChangesAsync();
-                            LoggedUser = member;
-                            break;
-
-                        case Role.Trainer:
-                            var trainer = new Trainer(FullName, Password, Email, Username, PhoneNumber);
-                            await uow.Trainers.AddTrainerAsync(trainer);
-                            await uow.SaveChangesAsync();
-                            LoggedUser = trainer;
-                            break;
-
-                        default:
-                            ShowError = true;
-                            return false; // Invalid UserType
-                    }
-
-                    await uow.SaveChangesAsync();
-                    ShowError = LoggedUser == null;
-                    return IsLogged; // Registration succeeded
+                    ShowError = true;
+                    Console.WriteLine("Registration failed.");
+                    return false;
                 }
+
+                if (role == Role.Member)
+                {
+                    LoggedUser = registrationResult.Member;
+                    using (var uow = new UnitOfWork())
+                    {
+
+                        uow.Members.Create(registrationResult.Member);
+                        await uow.SaveChangesAsync();
+                    }
+                }
+                else if (role == Role.Trainer)
+                {
+                    LoggedUser = registrationResult.Trainer;
+                    using (var uow = new UnitOfWork())
+                    {
+
+                        uow.Trainers.Create(registrationResult.Trainer);
+                        await uow.SaveChangesAsync();
+                    }
+                }
+                else
+                {
+                    LoggedUser = null;
+                }
+
+                ShowError = LoggedUser == null;
+
+                if (LoggedUser == null)
+                {
+                    Console.WriteLine("Failed to set the logged user.");
+                    return false;
+                }
+
+                Console.WriteLine("Registration successful.");
+                return true;
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Handle duplicate user registration exception
+                ShowError = true;
+                Console.WriteLine($"Error during registration: {ex.Message}");
+                return false;
             }
             catch (Exception ex)
             {
                 ShowError = true;
-                Console.WriteLine($"Error during registration: {ex.Message}");
-                return false; // Registration failed due to an exception
+                Console.WriteLine($"Unexpected error during registration: {ex.Message}");
+                return false;
             }
         }
 
