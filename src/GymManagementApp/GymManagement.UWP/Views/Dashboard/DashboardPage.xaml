@@ -5,6 +5,7 @@
     xmlns:local="using:GymManagement.UWP.Views.Dashboard"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:GymManagement.Domain.Models"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -63,6 +64,12 @@
                                     <Setter Property="Background" Value="AliceBlue" />
                                 </Style>
                             </ListBox.ItemContainerStyle>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Class">
+                                    <TextBlock Text="{x:Bind Path=FormattedWorkoutDetails}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
                             <!--<ListBoxItem Content="Workout on 07.11.2024 at 11:00 with trainer Ann Smith" />
                             <ListBoxItem Content="Workout on 07.11.2024 at 11:00 with trainer Ann Smith" />
                             <ListBoxItem Content="Workout on 08.11.2024 at 14:00 with trainer Ann Smith" />

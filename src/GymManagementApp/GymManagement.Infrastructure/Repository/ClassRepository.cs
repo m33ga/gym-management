@@ -59,6 +59,7 @@ namespace GymManagement.Infrastructure.Repository
         public async Task<IList<Class>> GetUpcomingBookedClassesByTrainerAsync(int trainerId)
         {
             return await _dbContext.Classes
+                .Include(c => c.Member)
                 .Where(c => c.TrainerId == trainerId && !c.IsAvailable && c.ScheduledDate > DateTime.Now)
                 .OrderBy(c => c.ScheduledDate)
                 .ToListAsync();
@@ -67,6 +68,7 @@ namespace GymManagement.Infrastructure.Repository
         public async Task<IList<Class>> GetUpcomingClassesByTrainerAsync(int trainerId)
         {
             return await _dbContext.Classes
+                .Include(c => c.Member)
                 .Where(c => c.TrainerId == trainerId && c.ScheduledDate > DateTime.Now)
                 .OrderBy(c => c.ScheduledDate)
                 .ToListAsync();
@@ -75,6 +77,7 @@ namespace GymManagement.Infrastructure.Repository
         public async Task<IList<Class>> GetPastBookedClassesByTrainerAsync(int trainerId)
         {
             return await _dbContext.Classes
+                .Include(c => c.Member)
                 .Where(c => c.TrainerId == trainerId && !c.IsAvailable && c.ScheduledDate.AddMinutes(c.DurationInMinutes) < DateTime.Now)
                 .OrderByDescending(c => c.ScheduledDate)
                 .ToListAsync();

@@ -80,6 +80,7 @@ namespace GymManagement.Infrastructure.Repository
                 .Where(b => b.MemberId == memberId &&
                             b.Class.ScheduledDate.AddMinutes(b.Class.DurationInMinutes) < DateTime.Now)
                 .Select(b => b.Class)
+                .Include(c => c.Trainer)
                 .ToListAsync();
         }
 
@@ -89,6 +90,7 @@ namespace GymManagement.Infrastructure.Repository
                 .Where(b => b.MemberId == memberId &&
                         b.Class.ScheduledDate > DateTime.Now)
                 .Select(b => b.Class)
+                .Include(c => c.Trainer)
                 .ToListAsync();
         }
     }
