@@ -132,6 +132,12 @@
     <Compile Include="ViewModels\MealPlanViewModel.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
+    <Compile Include="Views\Booking\BookingManagementPage.xaml.cs">
+      <DependentUpon>BookingManagementPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Booking\ScheduleManagementPage.xaml.cs">
+      <DependentUpon>ScheduleManagementPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Profile\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>
@@ -171,6 +177,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Booking\BookingManagementPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Booking\ScheduleManagementPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Profile\ProfilePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -190,7 +204,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Booking\" />
     <Folder Include="Views\Dashboard\" />
     <Folder Include="Views\MealPlan\" />
     <Folder Include="Views\Notifications\" />
