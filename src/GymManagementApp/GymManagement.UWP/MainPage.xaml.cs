@@ -63,9 +63,7 @@ namespace GymManagement.UWP
                     case "meal_plan":
 
                         break;
-                    case "login":
-                        frmMain.Navigate(typeof(LoginDialog));
-                        break;
+                    
 
                 }
             }

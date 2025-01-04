@@ -80,10 +80,7 @@
                         <BitmapIcon UriSource="ms-appx:///Assets/Restaurant.png"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem
-                    Icon="Account"
-                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
-                    Tag="login"/>
+                
                 
 
 
