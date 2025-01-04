@@ -17,6 +17,7 @@ using GymManagement.UWP.Views.Users;
 using GymManagement.UWP.ViewModels;
 using GymManagement.Infrastructure.Repository;
 using GymManagement.Domain.Services;
+using GymManagement.UWP.Views.Booking;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -58,7 +59,19 @@ namespace GymManagement.UWP
 
                         break;
                     case "schedule":
-
+                        
+                        if(UserViewModel.IsMember)
+                        {
+                            frmMain.Navigate(typeof(BookingManagementPage));
+                        }
+                        if (UserViewModel.IsTrainer)
+                        {
+                            frmMain.Navigate(typeof(ScheduleManagementPage));
+                        }
+                        if (UserViewModel.IsAdmin)
+                        {
+                            frmMain.Navigate(typeof(ScheduleManagementPage));
+                        }
                         break;
                     case "meal_plan":
 

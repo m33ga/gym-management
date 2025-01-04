@@ -4,6 +4,7 @@ using GymManagement.Domain.Services;
 using GymManagement.Infrastructure;
 using GymManagement.Infrastructure.Repository;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace GymManagement.UWP.ViewModels
@@ -69,12 +70,15 @@ namespace GymManagement.UWP.ViewModels
                         {
                             case Role.Admin:
                                 LoggedUser = await uow.Admins.GetAdminByEmailAsync(Email);
+                                Debug.WriteLine($"LoggedUser set to: {LoggedUser}");
                                 break;
                             case Role.Trainer:
                                 LoggedUser = await uow.Trainers.GetTrainerByEmailAsync(Email);
+                                Debug.WriteLine($"LoggedUser set to: {LoggedUser}");
                                 break;
                             case Role.Member:
                                 LoggedUser = await uow.Members.GetMemberByEmailAsync(Email);
+                                Debug.WriteLine($"LoggedUser set to: {LoggedUser}");
                                 break;
                             default:
                                 LoggedUser = null;

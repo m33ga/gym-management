@@ -41,9 +41,11 @@ namespace GymManagement.UWP
 
             // Initialize UserViewModel with the required dependencies
             UserViewModel = new UserViewModel(authentificationService);
+
         }
 
         public static UserViewModel UserViewModel { get; internal set; }
+        public static BookingViewModel BookingViewModel { get; internal set; }
 
 
         /// <summary>

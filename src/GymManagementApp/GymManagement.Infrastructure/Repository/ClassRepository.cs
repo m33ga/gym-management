@@ -70,5 +70,22 @@ namespace GymManagement.Infrastructure.Repository
                 c.ScheduledDate < endTime &&
                 startTime < c.ScheduledDate.AddMinutes(c.DurationInMinutes));
         }
+
+        public async Task<IEnumerable<object>> GetClassesByDateAsync(DateTime dateTime)
+        {
+            return await _dbContext.Classes
+               .Where(c => c.ScheduledDate.Date == dateTime.Date)
+               .ToListAsync();
+        }
+
+
+        public async Task<Class> GetClassByDateTimeAsync(DateTime scheduledDateTime)
+        {
+            return await _dbContext.Classes
+                .Where(c => c.ScheduledDate == scheduledDateTime)
+                .FirstOrDefaultAsync();
+        }
+
+
     }
 }
