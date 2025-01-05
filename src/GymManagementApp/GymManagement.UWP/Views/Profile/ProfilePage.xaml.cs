@@ -16,10 +16,10 @@ namespace GymManagement.UWP.Views.Profile
         public ProfilePage()
         {
             this.InitializeComponent();
-            ViewModel = new ProfileViewModel(App.UserViewModel);
-            DataContext = ViewModel;
 
-            UpdateVisibility();
+            // Pass UnitOfWork and UserViewModel
+            ViewModel = new ProfileViewModel(App.UnitOfWork, App.UserViewModel);
+            DataContext = ViewModel;
         }
 
         private void UpdateVisibility()

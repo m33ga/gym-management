@@ -5,7 +5,7 @@
     xmlns:local="using:GymManagement.UWP.Views.Profile"
     xmlns:viewModels="using:GymManagement.UWP.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
->
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
 
     <Page.Resources>
         <Style TargetType="Grid">
@@ -18,9 +18,6 @@
         </Style>
     </Page.Resources>
 
-    <Page.DataContext>
-        <viewModels:ProfileViewModel x:Name="ProfileViewModel" />
-    </Page.DataContext>
 
     <Grid>
         <NavigationView x:Name="nvMain"
@@ -37,7 +34,7 @@
 
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Name="nvProfile"
-                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
                                     Tag="profile">
                     <NavigationViewItem.ContentTemplate>
                         <DataTemplate>
@@ -51,7 +48,7 @@
                 </NavigationViewItem>
 
                 <NavigationViewItem x:Name="nvNotifications"
-                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
                                     Tag="notifications">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Notification.png" />
@@ -59,7 +56,7 @@
                 </NavigationViewItem>
 
                 <NavigationViewItem x:Name="nvDashboard"
-                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
                                     Tag="dashboard">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Shortlist.png"/>
@@ -67,7 +64,7 @@
                 </NavigationViewItem>
 
                 <NavigationViewItem x:Name="nvSchedule"
-                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
                                     Tag="schedule">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Schedule.png"/>
@@ -75,7 +72,7 @@
                 </NavigationViewItem>
 
                 <NavigationViewItem x:Name="nvMealplan"
-                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
                                     Tag="meal_plan">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Restaurant.png"/>
@@ -86,25 +83,114 @@
             <NavigationView.PaneFooter>
                 <StackPanel>
                     <NavigationViewItem x:Name="nvLogout"
-                                        Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
                                         Icon="NewWindow"
                                         Tapped="NvLogout_OnTapped"/>
                 </StackPanel>
             </NavigationView.PaneFooter>
 
-            <Frame x:Name="frmMain" Padding="10, 0">
-                <TextBlock Text="Setting Up the Profile Page :D" />
+            <!-- Main Content Area with Custom Grid Layout -->
+            <Frame x:Name="frmMain" Padding="40, 40">
+                <Grid Margin="0">
+                    <!-- Grid Layout -->
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="228*" />
+                        <RowDefinition Height="463*" />
+                        <RowDefinition Height="229*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Row 1 (Full Width) -->
+                    <!--<Rectangle Fill="Red"
+                               Grid.Row="0"
+                               Grid.ColumnSpan="2"
+                               Margin="0,10,0,0"/>-->
+
+                    <!-- Profile Section (Row 1) -->
+                    <Grid Grid.Row="0"
+                          Grid.ColumnSpan="2"
+                          Background="White"
+                          Height="250"
+                          Margin="0,20,20,421" Grid.RowSpan="2">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid CornerRadius="10"
+                              Background="White"
+                              Height="200"
+                              VerticalAlignment="Center"
+                              Padding="30" Grid.ColumnSpan="2" Margin="1,0,0,0" HorizontalAlignment="Left" Width="1379">
+
+                            <!-- Left Section: Profile Picture and User Info -->
+                            <StackPanel Orientation="Horizontal"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,0,0"
+                                        Grid.Column="0">
+
+                                <!-- Profile Picture -->
+                                <PersonPicture Width="100"
+                                               Height="100"
+                                               ProfilePicture="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png"
+                                               DisplayName="Alexa Rawles"
+                                               HorizontalAlignment="Center"
+                                               CornerRadius="50"
+                                               Margin="0,0,20,0"/>
+
+                                <!-- User Info -->
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding FullName}"
+                                               FontSize="26"
+                                               FontWeight="Bold"
+                                               Foreground="Black"/>
+                                    <TextBlock Text="{Binding Email}"
+                                               FontSize="16"
+                                               Foreground="Gray"
+                                               Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Right Section: Edit Button -->
+                            <Button Content="Edit"
+                                    Width="100"
+                                    Height="40"
+                                    Foreground="White"
+                                    Background="#0078D7"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    CornerRadius="5"
+                                    Grid.Column="1"
+                                    Margin="0,0,40,0"
+                                    Click="OnEditProfileClicked"/>
+                        </Grid>
+                    </Grid>
+
+
+
+
+                    <!-- Row 2 (Two Blocks) -->
+                    <Rectangle Fill="Blue"
+                               Grid.Column="0" Grid.Row="1"/>
+                    <Rectangle Fill="Green"
+                               Grid.ColumnSpan="2"
+                               Margin="690,0,0,0" Grid.Row="1"/>
+
+                    <!-- Row 3 (Two Blocks) -->
+                    <Rectangle Fill="Yellow"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               Margin="0,463,0,0" Grid.RowSpan="2"/>
+                    <Rectangle Fill="Orange"
+                               Grid.Row="1"
+                               Grid.ColumnSpan="2"
+                               Margin="690,463,0,1" Grid.RowSpan="2"/>
+                </Grid>
             </Frame>
         </NavigationView>
-
-        <!-- Profile Content Area -->
-        <StackPanel Margin="10,10,10,0" VerticalAlignment="Top">
-            <Grid x:Name="MemberSection" Visibility="Collapsed">
-                <TextBlock Text="Member Section" FontSize="18" FontWeight="SemiBold" />
-            </Grid>
-            <Grid x:Name="TrainerSection" Visibility="Collapsed">
-                <TextBlock Text="Trainer Section" FontSize="18" FontWeight="SemiBold" />
-            </Grid>
-        </StackPanel>
     </Grid>
 </Page>
