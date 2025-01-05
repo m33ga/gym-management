@@ -3,14 +3,108 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GymManagement.UWP.Views.Profile"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:viewModels="using:GymManagement.UWP.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="#f9f9f9">
+>
+
+    <Page.Resources>
+        <Style TargetType="Grid">
+            <Setter Property="Background" Value="#F9F9F9" />
+        </Style>
+
+        <Style TargetType="NavigationViewItem">
+            <Setter Property="Foreground" Value="Gray" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </Page.Resources>
+
+    <Page.DataContext>
+        <viewModels:ProfileViewModel x:Name="ProfileViewModel" />
+    </Page.DataContext>
 
     <Grid>
-        <Frame x:Name="frmProfile" Padding="10, 0">
-            <TextBlock Text="This is my profile area"/>
-        </Frame>
+        <NavigationView x:Name="nvMain"
+                        IsSettingsVisible="False"
+                        IsBackButtonVisible="Collapsed"
+                        ItemInvoked="NvMain_OnItemInvoked"
+                        PaneDisplayMode="LeftCompact"
+                        IsPaneToggleButtonVisible="False"
+                        Foreground="Black">
+
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="White" />
+            </NavigationView.Resources>
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem x:Name="nvProfile"
+                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Tag="profile">
+                    <NavigationViewItem.ContentTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20">
+                                <Ellipse Fill="White" />
+                                <Image Source="ms-appx:///Assets/image.png"
+                                       Stretch="UniformToFill" />
+                            </Grid>
+                        </DataTemplate>
+                    </NavigationViewItem.ContentTemplate>
+                </NavigationViewItem>
+
+                <NavigationViewItem x:Name="nvNotifications"
+                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Tag="notifications">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Notification.png" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem x:Name="nvDashboard"
+                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Tag="dashboard">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Shortlist.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem x:Name="nvSchedule"
+                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Tag="schedule">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Schedule.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem x:Name="nvMealplan"
+                                    Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                    Tag="meal_plan">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Restaurant.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <NavigationView.PaneFooter>
+                <StackPanel>
+                    <NavigationViewItem x:Name="nvLogout"
+                                        Visibility="{x:Bind ProfileViewModel.IsProfileComplete, Mode=OneWay}"
+                                        Icon="NewWindow"
+                                        Tapped="NvLogout_OnTapped"/>
+                </StackPanel>
+            </NavigationView.PaneFooter>
+
+            <Frame x:Name="frmMain" Padding="10, 0">
+                <TextBlock Text="Setting Up the Profile Page :D" />
+            </Frame>
+        </NavigationView>
+
+        <!-- Profile Content Area -->
+        <StackPanel Margin="10,10,10,0" VerticalAlignment="Top">
+            <Grid x:Name="MemberSection" Visibility="Collapsed">
+                <TextBlock Text="Member Section" FontSize="18" FontWeight="SemiBold" />
+            </Grid>
+            <Grid x:Name="TrainerSection" Visibility="Collapsed">
+                <TextBlock Text="Trainer Section" FontSize="18" FontWeight="SemiBold" />
+            </Grid>
+        </StackPanel>
     </Grid>
 </Page>
