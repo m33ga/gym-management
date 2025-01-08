@@ -10,11 +10,11 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class ClassRepository : GenericRepository<Class>, IClassRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public ClassRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
 
         public async Task AddClassAsync(Class trainingClass)
@@ -97,5 +97,22 @@ namespace GymManagement.Infrastructure.Repository
                 c.ScheduledDate < endTime &&
                 startTime < c.ScheduledDate.AddMinutes(c.DurationInMinutes));
         }
+
+        public async Task<IEnumerable<object>> GetClassesByDateAsync(DateTime dateTime)
+        {
+            return await _dbContext.Classes
+               .Where(c => c.ScheduledDate.Date == dateTime.Date)
+               .ToListAsync();
+        }
+
+
+        public async Task<Class> GetClassByDateTimeAsync(DateTime scheduledDateTime)
+        {
+            return await _dbContext.Classes
+                .Where(c => c.ScheduledDate == scheduledDateTime)
+                .FirstOrDefaultAsync();
+        }
+
+
     }
 }

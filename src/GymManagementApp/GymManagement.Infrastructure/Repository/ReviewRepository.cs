@@ -10,11 +10,11 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class ReviewRepository : GenericRepository<Review>, IReviewRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public ReviewRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
 
         public async Task AddReviewAsync(Review review)

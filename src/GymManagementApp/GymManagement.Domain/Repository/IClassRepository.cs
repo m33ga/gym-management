@@ -32,5 +32,7 @@ namespace GymManagement.Domain.Repository
 
         // same as before (uow)
         Task SaveChangesAsync();
+        Task<IEnumerable<object>> GetClassesByDateAsync(DateTime dateTime);
+        Task<Class> GetClassByDateTimeAsync(DateTime dateTime);
     }
 }

@@ -1,59 +1,56 @@
 ﻿using GymManagement.Domain.Enums;
 using GymManagement.Domain.Models;
-using GymManagement.Domain.Repository;
 using GymManagement.Domain.Services;
+using GymManagement.Infrastructure;
+using GymManagement.Infrastructure.Repository;
 using System;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace GymManagement.Domain.ViewModels
+namespace GymManagement.UWP.ViewModels
 {
-    public class UserViewModel : INotifyPropertyChanged
+    public class UserViewModel : BindableBase
     {
         private readonly IAuthentificationService _authentificationService;
 
         private object _loggedUser; // Can hold Admin, Trainer, or Member
-        private readonly IAdminRepository adminRepository;
-        private readonly IMemberRepository memberRepository;
-        private readonly ITrainerRepository trainerRepository;
+        private bool _showError;
+        public Role Role1;
+        public string Email { get; set; }
+        public string Password { get; set; }
+
         public object LoggedUser
         {
             get => _loggedUser;
             set
             {
                 _loggedUser = value;
-                OnPropertyChanged(nameof(LoggedUser));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsLogged));
+                OnPropertyChanged(nameof(IsMember));
                 OnPropertyChanged(nameof(IsAdmin));
                 OnPropertyChanged(nameof(IsTrainer));
-                OnPropertyChanged(nameof(IsMember));
             }
+
         }
 
         public bool IsLogged => LoggedUser != null;
-
         public bool IsAdmin => LoggedUser is Admin;
-
         public bool IsTrainer => LoggedUser is Trainer;
-
         public bool IsMember => LoggedUser is Member;
-
-        private bool _showError;
 
         public bool ShowError
         {
             get => _showError;
-            set
-            {
-                _showError = value;
-                OnPropertyChanged(nameof(ShowError));
-            }
+            set => Set(ref _showError, value);
         }
-
-        public string Email { get; set; }
-        public string Password { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        public string FullName { get; set; }
+        public string Username { get; set; }
+        public string PhoneNumber { get; set; }
+        public float Weight { get; set; }
+        public float Height { get; set; }
+        public Membership MemberShip { get; set; }
+        public int RemainingWorkouts { get; set; }
 
         public UserViewModel(IAuthentificationService authentificationService)
         {
@@ -65,23 +62,83 @@ namespace GymManagement.Domain.ViewModels
             try
             {
                 var result = await _authentificationService.Authentificate(Email, Password);
-
-                if (result.IsAuthentificated)
+                using (var uow = new UnitOfWork())
                 {
-                    switch (result.UserRole)
+                    if (result.IsAuthentificated)
                     {
-                        case Role.Admin:
-                            LoggedUser = await adminRepository.GetAdminByEmailAsync(Email);
-                            break;
-                        case Role.Trainer:
-                            LoggedUser = await trainerRepository.GetTrainerByEmailAsync(Email);
-                            break;
-                        case Role.Member:
-                            LoggedUser = await memberRepository.GetMemberByEmailAsync(Email);
-                            break;
-                        default:
-                            LoggedUser = null;
-                            break;
+                        switch (result.UserRole)
+                        {
+                            case Role.Admin:
+                                LoggedUser = await uow.Admins.GetAdminByEmailAsync(Email);
+                                Debug.WriteLine($"LoggedUser set to: {LoggedUser}");
+                                break;
+                            case Role.Trainer:
+                                LoggedUser = await uow.Trainers.GetTrainerByEmailAsync(Email);
+                                Debug.WriteLine($"LoggedUser set to: {LoggedUser}");
+                                break;
+                            case Role.Member:
+                                LoggedUser = await uow.Members.GetMemberByEmailAsync(Email);
+                                Debug.WriteLine($"LoggedUser set to: {LoggedUser}");
+                                break;
+                            default:
+                                LoggedUser = null;
+                                break;
+                        }
+                    }
+
+                    ShowError = LoggedUser == null;
+                    return IsLogged;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError = true;
+                Console.WriteLine($"Error during login: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> DoRegisterAsync(Role role)
+        {
+            try
+            {
+                var registrationService = new RegistrationService();
+
+                var registrationResult = await registrationService.RegisterAsync(
+                    email: Email,
+                    password: Password,
+                    fullname: FullName,
+                    username: Username,
+                    phonenumber: PhoneNumber,
+                    role: role,
+                    weight: Weight,
+                    height: Height
+                );
+
+                if (!registrationResult.IsRegistered)
+                {
+                    ShowError = true;
+                    Console.WriteLine("Registration failed.");
+                    return false;
+                }
+
+                if (role == Role.Member)
+                {
+                    LoggedUser = registrationResult.Member;
+                    using (var uow = new UnitOfWork())
+                    {
+
+                        uow.Members.Create(registrationResult.Member);
+                        await uow.SaveChangesAsync();
+                    }
+                }
+                else if (role == Role.Trainer)
+                {
+                    LoggedUser = registrationResult.Trainer;
+                    using (var uow = new UnitOfWork())
+                    {
+
+                        uow.Trainers.Create(registrationResult.Trainer);
+                        await uow.SaveChangesAsync();
                     }
                 }
                 else
@@ -90,12 +147,27 @@ namespace GymManagement.Domain.ViewModels
                 }
 
                 ShowError = LoggedUser == null;
-                return IsLogged;
+
+                if (LoggedUser == null)
+                {
+                    Console.WriteLine("Failed to set the logged user.");
+                    return false;
+                }
+
+                Console.WriteLine("Registration successful.");
+                return true;
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Handle duplicate user registration exception
+                ShowError = true;
+                Console.WriteLine($"Error during registration: {ex.Message}");
+                return false;
             }
             catch (Exception ex)
             {
                 ShowError = true;
-                Console.WriteLine($"Error during login: {ex.Message}");
+                Console.WriteLine($"Unexpected error during registration: {ex.Message}");
                 return false;
             }
         }
@@ -105,11 +177,6 @@ namespace GymManagement.Domain.ViewModels
             LoggedUser = null;
             Email = string.Empty;
             Password = string.Empty;
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

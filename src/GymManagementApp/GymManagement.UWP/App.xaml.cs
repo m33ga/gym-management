@@ -1,4 +1,9 @@
-﻿using System;
+﻿using GymManagement.Domain.Repository;
+using GymManagement.Infrastructure;
+using GymManagement.Infrastructure.Repository;
+using GymManagement.UWP.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,7 +35,18 @@ namespace GymManagement.UWP
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            // Initialize AuthentificationService with the repositories
+            var authentificationService = new AuthentificationService();
+
+            // Initialize UserViewModel with the required dependencies
+            UserViewModel = new UserViewModel(authentificationService);
+
         }
+
+        public static UserViewModel UserViewModel { get; internal set; }
+        public static BookingViewModel BookingViewModel { get; internal set; }
+
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -39,11 +55,9 @@ namespace GymManagement.UWP
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-            if (rootFrame == null)
+            if (!(Window.Current.Content is Frame rootFrame))
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
