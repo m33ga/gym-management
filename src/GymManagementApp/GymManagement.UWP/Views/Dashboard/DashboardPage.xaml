@@ -159,7 +159,9 @@
                             IsClearEnabled="False" 
                             IsReadOnly="False" 
                             FontSize="96" 
-                            Width="110" />
+                            Width="110" 
+                            Value="{x:Bind ViewModel.CurrentRating, Mode=TwoWay}" 
+                            ValueChanged="RatingControl_OnValueChanged" />
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

@@ -23,6 +23,18 @@ namespace GymManagement.Infrastructure.Repository
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateAsync(Review review)
+        {
+            var existingReview = await _dbContext.Reviews.FindAsync(review.Id);
+            if (existingReview != null)
+            {
+                existingReview.UpdateReview(review.Rating);
+                _dbContext.Reviews.Update(existingReview);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+
+
         public override async Task<Review> FindOrCreateAsync(Review entity)
         {
             var review = await _dbContext.Reviews.FindAsync(entity.Id);

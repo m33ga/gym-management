@@ -1,6 +1,7 @@
 ﻿using GymManagement.Domain.Models;
 using GymManagement.Domain.Repository;
 using GymManagement.Domain.ViewModels;
+using GymManagement.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,12 +16,14 @@ namespace GymManagement.UWP.ViewModels
         private readonly IClassRepository _classRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly UserViewModel _userViewModel;
+        private readonly IReviewRepository _reviewRepository;
 
-        public DashboardViewModel(IClassRepository classRepository, IBookingRepository bookingRepository, UserViewModel userViewModel)
+        public DashboardViewModel(IClassRepository classRepository, IBookingRepository bookingRepository, UserViewModel userViewModel, IReviewRepository reviewRepository)
         {
             _classRepository = classRepository;
             _bookingRepository = bookingRepository;
             _userViewModel = userViewModel;
+            _reviewRepository = reviewRepository;
             LoadWorkoutsAsync();
         }
 
@@ -49,9 +52,39 @@ namespace GymManagement.UWP.ViewModels
             }
         }
 
+        private int _currentRating;
+        public int CurrentRating
+        {
+            get => _currentRating;
+            set => Set(ref _currentRating, value);
+        }
+
+        public async Task SaveRatingAsync()
+        {
+            if (SelectedWorkout != null && _userViewModel.LoggedUser is Member member)
+            {
+                var review = await _reviewRepository.GetReviewByMemberAndClassAsync(member.Id, SelectedWorkout.Id);
+                if (review == null)
+                {
+                    review = new Review(member.Id, SelectedWorkout.Id, CurrentRating, SelectedWorkout.Trainer.Id);
+                    await _reviewRepository.AddReviewAsync(review);
+                }
+                else
+                {
+                    review.UpdateReview(CurrentRating);
+                    await _reviewRepository.UpdateAsync(review);
+                }
+            }
+        }
+
         public async Task LoadWorkoutDetailsAsync(Class selectedWorkout)
         {
             SelectedWorkout = await _classRepository.GetByIdWithDetailsAsync(selectedWorkout.Id);
+            if (_userViewModel.LoggedUser is Member member)
+            {
+                var review = await _reviewRepository.GetReviewByMemberAndClassAsync(member.Id, selectedWorkout.Id);
+                CurrentRating = review?.Rating ?? 0;
+            }
         }
 
         private async Task LoadWorkoutsAsync()

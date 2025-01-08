@@ -38,7 +38,7 @@ namespace GymManagement.Domain.Models
         }
 
         // Methods
-        public void UpdateReview(int rating, string comment)
+        public void UpdateReview(int rating)
         {
             if (rating < 1 || rating > 5)
                 throw new ArgumentOutOfRangeException(nameof(rating), "Rating must be between 1 and 5.");

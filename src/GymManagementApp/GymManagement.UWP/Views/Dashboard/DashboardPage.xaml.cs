@@ -41,7 +41,7 @@ namespace GymManagement.UWP.Views.Dashboard
             var trainerRepository = new TrainerRepository(dbContext);
             var authentificationService = new AuthentificationService(adminRepository, memberRepository, trainerRepository); 
             var userViewModel = new UserViewModel(authentificationService);
-            ViewModel = new DashboardViewModel(new ClassRepository(dbContext), new BookingRepository(dbContext), userViewModel);
+            ViewModel = new DashboardViewModel(new ClassRepository(dbContext), new BookingRepository(dbContext), userViewModel, new ReviewRepository(dbContext));
 
             this.DataContext = ViewModel;
         }
@@ -70,6 +70,11 @@ namespace GymManagement.UWP.Views.Dashboard
                 RatingPanel.Visibility = Visibility.Collapsed;
             }
 
+        }
+
+        private async void RatingControl_OnValueChanged(RatingControl sender, object args)
+        {
+            await ViewModel.SaveRatingAsync();
         }
     }
 
