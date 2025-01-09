@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using GymManagement.Domain;
 using GymManagement.Domain.Models;
 using GymManagement.Domain.Repository;
+using Windows.Storage;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace GymManagement.UWP.ViewModels
 {
@@ -16,6 +18,8 @@ namespace GymManagement.UWP.ViewModels
         private float _height;
         private Membership _membership;
         private int _remainingWorkouts;
+        private string _profilePictureUri;
+        private byte[] _image;
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserViewModel _userViewModel;
@@ -66,6 +70,36 @@ namespace GymManagement.UWP.ViewModels
         {
             get => _remainingWorkouts;
             set => Set(ref _remainingWorkouts, value);
+        }
+
+        public byte[] Image
+        {
+            get => _image;
+            set
+            {
+                if (Set(ref _image, value))
+                {
+                    UpdateImageUri();
+                }
+            }
+        }
+
+        public string ProfilePictureUri
+        {
+            get => _profilePictureUri;
+            private set => Set(ref _profilePictureUri, value);
+        }
+
+        private async void UpdateImageUri()
+        {
+            if (Image != null)
+            {
+                ProfilePictureUri = await SaveImageToFile(Image);
+            }
+            else
+            {
+                ProfilePictureUri = null; // Handle no image case
+            }
         }
 
         public bool IsProfileComplete =>
@@ -124,6 +158,27 @@ namespace GymManagement.UWP.ViewModels
             }
         }
 
+        private async Task<string> SaveImageToFile(byte[] imageData)
+        {
+            // Create a unique file name
+            string fileName = $"ProfileImage_{Guid.NewGuid()}.png";
+            var storageFolder = ApplicationData.Current.LocalFolder;
+            var file = await storageFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+            // Write byte array to the file
+            using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                using (var outputStream = stream.GetOutputStreamAt(0))
+                {
+                    await outputStream.WriteAsync(imageData.AsBuffer());
+                    await outputStream.FlushAsync();
+                }
+            }
+
+            // Return the URI to the saved image file
+            return $"ms-appdata:///local/{fileName}";
+        }
+
         // Populate ProfileViewModel with data from the database
         private void PopulateProfile(dynamic user)
         {
@@ -135,10 +190,12 @@ namespace GymManagement.UWP.ViewModels
             Height = user.Height;
             Membership = user.Membership;
             RemainingWorkouts = user.RemainingWorkouts;
+            Image = user.Image; 
 
             OnPropertyChanged(nameof(FullName));
             OnPropertyChanged(nameof(Email));
             OnPropertyChanged(nameof(IsProfileComplete));
+            OnPropertyChanged(nameof(ProfilePictureUri)); 
         }
     }
 }
