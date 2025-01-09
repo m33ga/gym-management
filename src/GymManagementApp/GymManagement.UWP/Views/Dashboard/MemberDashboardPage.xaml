@@ -41,8 +41,15 @@
                         </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="models:Class">
-                                <TextBlock Text="{x:Bind Path=FormattedMemberWorkoutDetails}" />
-                            </DataTemplate>
+                                <StackPanel Orientation="Vertical" Spacing="5">
+                                    <TextBlock Text="{x:Bind FormattedMemberWorkoutDetails}" 
+                                               FontSize="16" 
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind Description}" 
+                                               FontSize="16" 
+                                               FontWeight="Light"/>
+                                </StackPanel>
+                                </DataTemplate>
                         </ListBox.ItemTemplate>
                             <!--<ListBoxItem Content="Workout on 07.11.2024 at 11:00 with trainer Ann Smith" />
                             <ListBoxItem Content="Workout on 08.11.2024 at 14:00 with trainer Ann Smith" />
@@ -61,6 +68,7 @@
                             
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
+                                    <Setter Property="Height" Value="Auto" />
                                     <Setter Property="Padding" Value="10" />
                                     <Setter Property="Margin" Value="5" />
                                     <Setter Property="BorderBrush" Value="White" />
@@ -72,7 +80,14 @@
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate x:DataType="models:Class">
-                                    <TextBlock Text="{x:Bind Path=FormattedMemberWorkoutDetails}" />
+                                    <StackPanel Orientation="Vertical" Spacing="5">
+                                        <TextBlock Text="{x:Bind FormattedMemberWorkoutDetails}" 
+                                                   FontSize="16" 
+                                                   FontWeight="SemiBold"/>
+                                        <TextBlock Text="{x:Bind Description}" 
+                                                   FontSize="16" 
+                                                   FontWeight="Light"/>
+                                    </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                             <!--<ListBoxItem Content="Workout on 07.11.2024 at 11:00 with trainer Ann Smith" />
