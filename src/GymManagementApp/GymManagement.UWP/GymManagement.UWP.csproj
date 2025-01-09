@@ -121,6 +121,7 @@
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\BytesToImageConverter.cs" />
+    <Compile Include="Converters\DateOnlyConverter.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -134,13 +135,16 @@
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Views\Booking\BookingManagementPage.xaml.cs">
-	    <DependentUpon>BookingManagementPage.xaml</DependentUpon>
+      <DependentUpon>BookingManagementPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Booking\ScheduleManagementPage.xaml.cs">
-	    <DependentUpon>ScheduleManagementPage.xaml</DependentUpon>
+      <DependentUpon>ScheduleManagementPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dashboard\DashboardPage.xaml.cs">
-	    <DependentUpon>DashboardPage.xaml</DependentUpon>
+    <Compile Include="Views\Dashboard\MemberDashboardPage.xaml.cs">
+      <DependentUpon>MemberDashboardPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dashboard\TrainerDashboardPage.xaml.cs">
+      <DependentUpon>TrainerDashboardPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Profile\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
@@ -188,10 +192,14 @@
     <Page Include="Views\Booking\ScheduleManagementPage.xaml">
       <SubType>Designer</SubType>
     </Page>
-	  <Page Include="Views\Dashboard\DashboardPage.xaml">
-		  <SubType>Designer</SubType>
-		  <Generator>MSBuild:Compile</Generator>
-	  </Page>
+    <Page Include="Views\Dashboard\MemberDashboardPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dashboard\TrainerDashboardPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Profile\ProfilePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -211,8 +219,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Booking\" />
-    <Folder Include="Views\Dashboard\" />
     <Folder Include="Views\MealPlan\" />
     <Folder Include="Views\Notifications\" />
   </ItemGroup>

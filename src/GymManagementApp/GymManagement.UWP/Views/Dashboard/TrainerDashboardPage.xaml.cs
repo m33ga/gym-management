@@ -1,7 +1,5 @@
-﻿using GymManagement.Domain.Models;
-using GymManagement.Domain.ViewModels;
+﻿using GymManagement.Infrastructure.Repository;
 using GymManagement.Infrastructure;
-using GymManagement.Infrastructure.Repository;
 using GymManagement.UWP.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,8 +14,8 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using GymManagement.Domain.Models;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -26,37 +24,26 @@ namespace GymManagement.UWP.Views.Dashboard
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class DashboardPage : Page
+    public sealed partial class TrainerDashboardPage : Page
     {
         public DashboardViewModel ViewModel { get; }
-
-        public DashboardPage()
+        public TrainerDashboardPage()
         {
             this.InitializeComponent();
-            UpcomingWorkoutsList.SelectedIndex = -1;
-            PastWorkoutsList.SelectedIndex = -1;
+            //UpcomingWorkoutsList.SelectedIndex = -1;
+            //PastWorkoutsList.SelectedIndex = -1;
             var dbContext = new GymManagementDbContext();
-            var adminRepository = new AdminRepository(dbContext);
-            var memberRepository = new MemberRepository(dbContext);
-            var trainerRepository = new TrainerRepository(dbContext);
-            var authentificationService = new AuthentificationService(adminRepository, memberRepository, trainerRepository); 
-            var userViewModel = new UserViewModel(authentificationService);
+            var userViewModel = App.UserViewModel;
             ViewModel = new DashboardViewModel(new ClassRepository(dbContext), new BookingRepository(dbContext), userViewModel, new ReviewRepository(dbContext));
 
             this.DataContext = ViewModel;
         }
 
 
-        private async void PastWorkoutsList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.AddedItems.Count > 0)
-            {
-                var selectedWorkout = e.AddedItems[0] as Class;
-                await ViewModel.LoadWorkoutDetailsAsync(selectedWorkout);
-                DefaultMessage.Visibility = Visibility.Collapsed;
-                WorkoutDetailsPanel.Visibility = Visibility.Visible;
-                RatingPanel.Visibility = Visibility.Visible;
-            }
+            base.OnNavigatedTo(e);
+            await ViewModel.LoadWorkoutsAsync();
         }
 
         private async void UpcomingWorkoutsList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -69,13 +56,18 @@ namespace GymManagement.UWP.Views.Dashboard
                 WorkoutDetailsPanel.Visibility = Visibility.Visible;
                 RatingPanel.Visibility = Visibility.Collapsed;
             }
-
         }
 
-        private async void RatingControl_OnValueChanged(RatingControl sender, object args)
+        private async void PastWorkoutsList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            await ViewModel.SaveRatingAsync();
+            if (e.AddedItems.Count > 0)
+            {
+                var selectedWorkout = e.AddedItems[0] as Class;
+                await ViewModel.LoadWorkoutDetailsAsync(selectedWorkout);
+                DefaultMessage.Visibility = Visibility.Collapsed;
+                WorkoutDetailsPanel.Visibility = Visibility.Visible;
+                RatingPanel.Visibility = Visibility.Visible;
+            }
         }
     }
-
 }
