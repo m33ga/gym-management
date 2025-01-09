@@ -22,6 +22,11 @@ namespace GymManagement.Domain.Repository
         Task<IList<Class>> GetUpcomingClassesByTrainerAsync(int trainerId);
         Task<IList<Class>> GetPastBookedClassesByTrainerAsync(int trainerId);
 
+        Task<IList<Class>> GetPastBookedClassesByMemberAsync(int memberId);
+        Task<IList<Class>> GetUpcomingBookedClassesByMemberAsync(int memberId);
+
+
+
         // check for overlapping schedules when adding a class
         Task<bool> HasScheduleConflictAsync(int trainerId, DateTime startTime, DateTime endTime);
 

@@ -20,11 +20,19 @@ namespace GymManagement.Domain.Models
         public Review Review { get; private set; }
         public Booking Booking { get; set; }
 
-        public string FormattedWorkoutDetails
+        public string FormattedTrainerWorkoutDetails
         {
             get
             {
-                return $"Workout on {ScheduledDate:MM.dd.yyyy} at {ScheduledDate:HH:mm} with trainer {Trainer?.FullName}";
+                return $"{Name} class on {ScheduledDate:MM.dd.yyyy} at {ScheduledDate:HH:mm} with member {Member?.FullName}";
+            }
+        }
+
+        public string FormattedMemberWorkoutDetails
+        {
+            get
+            {
+                return $"{Name} class on {ScheduledDate:MM.dd.yyyy} at {ScheduledDate:HH:mm} with trainer {Trainer?.FullName}";
             }
         }
 

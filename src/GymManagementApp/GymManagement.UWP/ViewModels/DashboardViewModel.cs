@@ -1,6 +1,6 @@
 ﻿using GymManagement.Domain.Models;
 using GymManagement.Domain.Repository;
-using GymManagement.Domain.ViewModels;
+using GymManagement.Domain.ViewModel;
 using GymManagement.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media;
 
 namespace GymManagement.UWP.ViewModels
 {
@@ -24,7 +25,7 @@ namespace GymManagement.UWP.ViewModels
             _bookingRepository = bookingRepository;
             _userViewModel = userViewModel;
             _reviewRepository = reviewRepository;
-            LoadWorkoutsAsync();
+            //Task.Run(async () => await LoadWorkoutsAsync());
         }
 
         private ObservableCollection<Class> _upcomingWorkouts;
@@ -49,6 +50,8 @@ namespace GymManagement.UWP.ViewModels
             {
                 _selectedWorkout = value;
                 OnPropertyChanged(nameof(SelectedWorkout));
+                OnPropertyChanged(nameof(FormattedTimeRange));
+                OnPropertyChanged(nameof(FormattedDate));
             }
         }
 
@@ -56,7 +59,21 @@ namespace GymManagement.UWP.ViewModels
         public int CurrentRating
         {
             get => _currentRating;
-            set => Set(ref _currentRating, value);
+            set
+            {
+                if (Set(ref _currentRating, value, nameof(CurrentRating)))
+                {
+                    OnPropertyChanged(nameof(RatingColor)); // Notify UI about the change in RatingColor
+                }
+            }
+        }
+
+        public Brush RatingColor
+        {
+            get
+            {
+                return CurrentRating > 0 ? new SolidColorBrush(Windows.UI.Colors.Blue) : new SolidColorBrush(Windows.UI.Colors.Transparent);
+            }
         }
 
         public async Task SaveRatingAsync()
@@ -83,17 +100,22 @@ namespace GymManagement.UWP.ViewModels
             if (_userViewModel.LoggedUser is Member member)
             {
                 var review = await _reviewRepository.GetReviewByMemberAndClassAsync(member.Id, selectedWorkout.Id);
-                CurrentRating = review?.Rating ?? 0;
+                CurrentRating = review?.Rating ?? -1;
+            }
+            else if (_userViewModel.LoggedUser is Trainer)
+            {
+                var review = await _reviewRepository.GetReviewByMemberAndClassAsync((int)selectedWorkout.MemberId, selectedWorkout.Id);
+                CurrentRating = review?.Rating ?? -1;
             }
         }
 
-        private async Task LoadWorkoutsAsync()
+        public async Task LoadWorkoutsAsync()
         {
             if (_userViewModel.IsMember)
             {
                 var memberId = ((Member)_userViewModel.LoggedUser).Id;
-                UpcomingWorkouts = new ObservableCollection<Class>(await _bookingRepository.GetUpcomingClassesByMemberAsync(memberId));
-                PastWorkouts = new ObservableCollection<Class>(await _bookingRepository.GetPastClassesByMemberAsync(memberId));
+                UpcomingWorkouts = new ObservableCollection<Class>(await _classRepository.GetUpcomingBookedClassesByMemberAsync(memberId));
+                PastWorkouts = new ObservableCollection<Class>(await _classRepository.GetPastBookedClassesByMemberAsync(memberId));
             }
             else if (_userViewModel.IsTrainer)
             {
@@ -101,7 +123,9 @@ namespace GymManagement.UWP.ViewModels
                 UpcomingWorkouts = new ObservableCollection<Class>(await _classRepository.GetUpcomingBookedClassesByTrainerAsync(trainerId));
                 PastWorkouts = new ObservableCollection<Class>(await _classRepository.GetPastBookedClassesByTrainerAsync(trainerId));
             }
+            //CurrentRating = 0;
         }
+
 
         public string FormattedTimeRange
         {
@@ -116,5 +140,14 @@ namespace GymManagement.UWP.ViewModels
                 return string.Empty;
             }
         }
+
+        public string FormattedDate
+        {
+            get
+            {
+                return SelectedWorkout?.ScheduledDate.ToString("dd-MMM-yyyy ddd") ?? string.Empty;
+            }
+        }
+
     }
 }

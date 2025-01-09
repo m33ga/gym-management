@@ -45,6 +45,7 @@ namespace GymManagement.Infrastructure.Repository
         {
             return await _dbContext.Classes
                 .Include(c => c.Trainer)
+                .Include(c => c.Member)
                 .Include(c => c.Booking)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
@@ -83,12 +84,31 @@ namespace GymManagement.Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<IList<Class>> GetBookedClassesByTrainerAsync(int trainerId)
+        public async Task<IList<Class>> GetPastBookedClassesByMemberAsync(int memberId)
         {
             return await _dbContext.Classes
-                .Where(c => c.TrainerId == trainerId && !c.IsAvailable)
+                .Include(c => c.Trainer)
+                .Where(c => c.MemberId == memberId && !c.IsAvailable && c.ScheduledDate.AddMinutes(c.DurationInMinutes) < DateTime.Now)
+                .OrderByDescending(c => c.ScheduledDate)
                 .ToListAsync();
         }
+
+        public async Task<IList<Class>> GetUpcomingBookedClassesByMemberAsync(int memberId)
+        {
+            return await _dbContext.Classes
+                .Include(c => c.Trainer)
+                .Where(c => c.MemberId == memberId && !c.IsAvailable && c.ScheduledDate > DateTime.Now)
+                .OrderBy(c => c.ScheduledDate)
+                .ToListAsync();
+        }
+
+
+        //public async Task<IList<Class>> GetBookedClassesByTrainerAsync(int trainerId)
+        //{
+        //    return await _dbContext.Classes
+        //        .Where(c => c.TrainerId == trainerId && !c.IsAvailable)
+        //        .ToListAsync();
+        //}
 
         public async Task<bool> HasScheduleConflictAsync(int trainerId, DateTime startTime, DateTime endTime)
         {

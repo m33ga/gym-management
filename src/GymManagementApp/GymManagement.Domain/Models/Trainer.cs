@@ -33,7 +33,7 @@ namespace GymManagement.Domain.Models
             Reviews = new HashSet<Review>();
         }
 
-        public Trainer(string fullName, string password, string email, string username, string phoneNumber, string bio, byte[] image = null)
+        public Trainer(string fullName, string password, string email, string username, string phoneNumber, byte[] image = null)
         {
             if (string.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("Full name is required.", nameof(fullName));
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Password is required.", nameof(password));
@@ -48,7 +48,6 @@ namespace GymManagement.Domain.Models
             Username = username;
             PhoneNumber = phoneNumber;
             Image = image;
-            Bio = bio;
 
             Classes = new HashSet<Class>();
             MealPlans = new HashSet<MealPlan>();

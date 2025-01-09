@@ -147,9 +147,9 @@ namespace GymManagement.Infrastructure
             if (!Trainers.Any())
             {
                 var trainer1 = new Trainer("John Doe", PasswordUtils.PasswordUtils.HashPassword("password1"), "john@ex.com",
-                     "johndoe", "+123456789", "Professional trainer");
+                     "johndoe", "+123456789");
                 var trainer2 = new Trainer("Jane Smith", PasswordUtils.PasswordUtils.HashPassword("password2"), "jane@ex.com",
-                     "janesmith", "+987654321", "10 years of experience");
+                     "janesmith", "+987654321");
 
                 Trainers.AddRange(trainer1, trainer2);
                 SaveChanges();
