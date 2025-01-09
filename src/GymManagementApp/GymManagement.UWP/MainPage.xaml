@@ -1,0 +1,103 @@
+﻿<Page 
+    x:Class="GymManagement.UWP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GymManagement.UWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="using:GymManagement.UWP.ViewModels"
+    mc:Ignorable="d">
+    
+    <Page.Resources>
+
+        <Style TargetType="Grid">
+            <Setter Property="Background" Value="#F9F9F9" />
+        </Style>
+
+        <Style TargetType="NavigationViewItem">
+            <Setter Property="Foreground" Value="Gray" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <NavigationView x:Name="nvMain" 
+                        IsSettingsVisible="False" 
+                        IsBackButtonVisible="Collapsed" 
+                        ItemInvoked="NvMain_OnItemInvoked"
+                        PaneDisplayMode="LeftCompact" 
+                        IsPaneToggleButtonVisible="False"
+                        Foreground="Black"
+                        Loaded="NvMain_OnLoaded">
+
+
+            <NavigationView.Resources>
+
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="White" />
+            </NavigationView.Resources>
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem x:Name="nvProfile"
+                                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
+                                    Tag="profile">
+                    <NavigationViewItem.ContentTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20">
+
+                                <Ellipse Fill="White" />
+
+                                <Image Source="ms-appx:///Assets/image.png"
+                                       Stretch="UniformToFill" />
+                            </Grid>
+                        </DataTemplate>
+                    </NavigationViewItem.ContentTemplate>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="nvNotifications"
+                                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
+                                    Tag="notifications">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Notification.png" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="nvDashboard"
+                                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
+                                    Tag="dashboard">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Shortlist.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="nvSchedule"
+                                   Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
+                                    Tag="schedule">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Schedule.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="nvMealplan"
+                                    Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
+                                    Tag="meal_plan">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Restaurant.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                
+                
+
+
+            </NavigationView.MenuItems>
+
+            <NavigationView.PaneFooter>
+                <StackPanel>
+                    <NavigationViewItem x:Name="nvLogout"
+                                        Visibility="{x:Bind UserViewModel.IsLogged, Mode=OneWay}"
+                                        Icon="NewWindow"
+                                        Tapped="NvLogout_OnTapped"/>
+                </StackPanel>
+            </NavigationView.PaneFooter>
+
+            <Frame x:Name="frmMain" Padding="10, 0">
+                <TextBlock Text="This is my content area"/>
+            </Frame>
+        </NavigationView>
+    </Grid>
+</Page>

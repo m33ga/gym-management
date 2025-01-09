@@ -10,19 +10,17 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class BookingRepository : GenericRepository<Booking>, IBookingRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public BookingRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
 
         public async Task AddBookingAsync(Booking booking)
         {
             // Find the class to book
-            var classToBook = await _dbContext.Classes.FindAsync(booking.ClassId);
-            if (classToBook == null)
-                throw new InvalidOperationException("Class not found.");
+            var classToBook = await _dbContext.Classes.FindAsync(booking.ClassId) ?? throw new InvalidOperationException("Class not found.");
 
             // Find the member for the booking
             var member = await _dbContext.Members.FindAsync(booking.MemberId);
@@ -71,6 +69,26 @@ namespace GymManagement.Infrastructure.Repository
             return await _dbContext.Bookings
                 .Where(b => b.MemberId == memberId)
                 .Select(b => b.Class)
+                .ToListAsync();
+        }
+
+        public async Task<IList<Class>> GetPastClassesByMemberAsync(int memberId)
+        {
+            return await _dbContext.Bookings
+                .Where(b => b.MemberId == memberId &&
+                            b.Class.ScheduledDate.AddMinutes(b.Class.DurationInMinutes) < DateTime.Now)
+                .Select(b => b.Class)
+                .Include(c => c.Trainer)
+                .ToListAsync();
+        }
+
+        public async Task<IList<Class>> GetUpcomingClassesByMemberAsync(int memberId)
+        {
+            return await _dbContext.Bookings
+                .Where(b => b.MemberId == memberId &&
+                        b.Class.ScheduledDate > DateTime.Now)
+                .Select(b => b.Class)
+                .Include(c => c.Trainer)
                 .ToListAsync();
         }
     }

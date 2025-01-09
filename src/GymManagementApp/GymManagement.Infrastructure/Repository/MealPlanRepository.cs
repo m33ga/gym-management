@@ -9,11 +9,11 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class MealPlanRepository : GenericRepository<MealPlan>, IMealPlanRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public MealPlanRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
 
         public async Task AddMealPlanAsync(MealPlan mealPlan)

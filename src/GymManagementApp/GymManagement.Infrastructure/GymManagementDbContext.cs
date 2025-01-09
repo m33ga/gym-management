@@ -6,6 +6,7 @@ using GymManagement.Domain.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using GymManagement.Infrastructure.PasswordUtils;
 using System.Linq;
+using System.Globalization;
 
 namespace GymManagement.Infrastructure
 {
@@ -73,7 +74,10 @@ namespace GymManagement.Infrastructure
                 .WithMany(m => m.Bookings)
                 .HasForeignKey(b => b.MemberId)
                 .IsRequired(false);
-
+           
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => new { b.ClassId, b.MemberId })
+                .IsUnique();
             //Class
             modelBuilder.Entity<Class>()
                 .HasOne(c => c.Trainer)
@@ -81,9 +85,9 @@ namespace GymManagement.Infrastructure
                 .HasForeignKey(c => c.TrainerId);
 
             modelBuilder.Entity<Class>()
-                .HasMany(c => c.Reviews)
+                .HasOne(c => c.Review)
                 .WithOne(r => r.Class)
-                .HasForeignKey(r => r.ClassId)
+                .HasForeignKey<Review>(r => r.ClassId)
                 .IsRequired(false);
 
             //Meal
@@ -178,10 +182,15 @@ namespace GymManagement.Infrastructure
             {
                 var trainer1 = Trainers.First();
                 var trainer2 = Trainers.Skip(1).First();
-                var class1 = new Class("Yoga", "Morning Yoga Training", DateTime.Now.AddDays(1), 60, trainer1);
-                var class2 = new Class("Pilates", "Evening Pilates Training", DateTime.Now.AddDays(1), 60, trainer2);
-                var class3 = new Class("Zumba", "Afternoon Zumba Training", DateTime.Now.AddDays(2), 60, trainer1);
-                var class4 = new Class("Crossfit", "Morning Crossfit Training", DateTime.Now.AddDays(2), 60, trainer2);
+
+                var dates = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm");
+                DateTime parsedDate = DateTime.ParseExact(dates, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+
+                var class1 = new Class("Yoga", "Morning Yoga Training", parsedDate, 60, trainer1);
+                var class2 = new Class("Pilates", "Evening Pilates Training", parsedDate.AddDays(1), 60, trainer2);
+                var class3 = new Class("Zumba", "Afternoon Zumba Training", parsedDate.AddHours(2), 60, trainer1);
+                var class4 = new Class("Crossfit", "Morning Crossfit Training", parsedDate.AddHours(-7), 60, trainer2);
+
                 Classes.AddRange(class1, class2, class3, class4);
                 SaveChanges();
             }

@@ -18,5 +18,8 @@ namespace GymManagement.Domain.Repository
         Task<IList<Booking>> GetBookingsByMemberAsync(int memberId);
 
         Task<IList<Class>> GetClassesByMemberAsync(int memberId);
+
+        Task<IList<Class>> GetPastClassesByMemberAsync(int memberId);
+        Task<IList<Class>> GetUpcomingClassesByMemberAsync(int memberId);
     }
 }

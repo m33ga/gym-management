@@ -9,17 +9,32 @@ namespace GymManagement.Domain.Models
     {
         // Properties
         public string Name { get; private set; }
-        public string Description { get; private set; } 
+        public string Description { get; private set; }
         public DateTime ScheduledDate { get; private set; } // Date and time the class is scheduled
         public int DurationInMinutes { get; private set; } // Duration of the class in minutes
-        public int TrainerId { get; private set; } 
+        public int TrainerId { get; private set; }
         public Trainer Trainer { get; private set; } // Navigation property for the Trainer
         public bool IsAvailable { get; set; }
         public int? MemberId { get; private set; } // Member who booked the class (if any) nullable
         public Member Member { get; private set; } // Navigation property for the Member
-        public ICollection<Review> Reviews { get; private set; }
+        public Review Review { get; private set; }
         public Booking Booking { get; set; }
 
+        public string FormattedTrainerWorkoutDetails
+        {
+            get
+            {
+                return $"{Name} class on {ScheduledDate:MM.dd.yyyy} at {ScheduledDate:HH:mm} with member {Member?.FullName}";
+            }
+        }
+
+        public string FormattedMemberWorkoutDetails
+        {
+            get
+            {
+                return $"{Name} class on {ScheduledDate:MM.dd.yyyy} at {ScheduledDate:HH:mm} with trainer {Trainer?.FullName}";
+            }
+        }
 
 
         // Constructors
@@ -49,11 +64,15 @@ namespace GymManagement.Domain.Models
         // Methods
         public void BookClass(int? memberId)
         {
-            if (!IsAvailable) throw new InvalidOperationException("Class is already booked.");
-            if (memberId == null) IsAvailable = true ;
+            if (!IsAvailable)
+                throw new InvalidOperationException("Class is already booked.");
 
+            if (memberId == null)
+                throw new InvalidOperationException("Invalid member ID. Booking cannot proceed.");
+
+            // Assign the member ID and mark the class as unavailable
             MemberId = memberId;
-            if(memberId != null) IsAvailable = false;
+            IsAvailable = false;
         }
         public void CancelBooking()
         {

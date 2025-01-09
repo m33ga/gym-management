@@ -9,11 +9,11 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class MembershipRepository : GenericRepository<Membership>, IMembershipRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public MembershipRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
 
         public async Task AddMembershipAsync(Membership membership)

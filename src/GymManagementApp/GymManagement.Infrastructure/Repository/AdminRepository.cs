@@ -9,11 +9,11 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class AdminRepository : GenericRepository<Admin>, IAdminRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public AdminRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
 
         // Get all admins

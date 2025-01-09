@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(GymManagementDbContext))]
-    [Migration("20241129171145_IniatialCreate")]
-    partial class IniatialCreate
+    [Migration("20250104152253_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -442,7 +442,7 @@ namespace GymManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GymManagement.Domain.Models.Trainer", null)
+                    b.HasOne("GymManagement.Domain.Models.Trainer", "Trainer")
                         .WithMany("Reviews")
                         .HasForeignKey("TrainerId")
                         .OnDelete(DeleteBehavior.Cascade)
