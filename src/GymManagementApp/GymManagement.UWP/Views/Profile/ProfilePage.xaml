@@ -5,13 +5,11 @@
     xmlns:local="using:GymManagement.UWP.Views.Profile"
     xmlns:viewModels="using:GymManagement.UWP.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:converters="using:GymManagement.UWP.Converters">
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
+>
 
     <Page.Resources>
         <ResourceDictionary>
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-
             <Style x:Key="BaseGridStyle" TargetType="Grid">
                 <Setter Property="Background" Value="#F9F9F9" />
             </Style>
@@ -20,6 +18,15 @@
                 <Setter Property="Foreground" Value="Gray" />
                 <Setter Property="Background" Value="Transparent" />
             </Style>
+
+            <Style TargetType="TextBox">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="#F9F9F9"/>
+                <Setter Property="BorderBrush" Value="Gray"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CornerRadius" Value="5"/>
+                <Setter Property="Padding" Value="10"/>
+            </Style>
         </ResourceDictionary>
     </Page.Resources>
 
@@ -27,85 +34,14 @@
 
 
     <Grid>
-        <NavigationView x:Name="nvMain"
-                IsSettingsVisible="False"
-                IsBackButtonVisible="Collapsed"
-                ItemInvoked="NvMain_OnItemInvoked"
-                PaneDisplayMode="LeftCompact"
-                IsPaneToggleButtonVisible="{Binding IsPaneOpen, Mode=TwoWay}"
-                Foreground="Black">
 
-            <!-- VisualStateManager for dynamic UI changes based on user role is here -->
-
-            <NavigationView.Resources>
-                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="White" />
-            </NavigationView.Resources>
-
-            <!-- NavigationView.MenuItems structure -->
-            <NavigationView.MenuItems>
-                <NavigationViewItem x:Name="nvProfile"
-                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
-                                    Tag="profile">
-                    <NavigationViewItem.ContentTemplate>
-                        <DataTemplate>
-                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20">
-                                <Ellipse Fill="White" />
-                                <Image Source="ms-appx:///Assets/image.png"
-                                       Stretch="UniformToFill" />
-                            </Grid>
-                        </DataTemplate>
-                    </NavigationViewItem.ContentTemplate>
-                </NavigationViewItem>
-
-                <NavigationViewItem x:Name="nvNotifications"
-                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
-                                    Tag="notifications">
-                    <NavigationViewItem.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/Notification.png" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-
-                <NavigationViewItem x:Name="nvDashboard"
-                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
-                                    Tag="dashboard">
-                    <NavigationViewItem.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/Shortlist.png"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-
-                <NavigationViewItem x:Name="nvSchedule"
-                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
-                                    Tag="schedule">
-                    <NavigationViewItem.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/Schedule.png"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-
-                <NavigationViewItem x:Name="nvMealplan"
-                                    Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
-                                    Tag="meal_plan">
-                    <NavigationViewItem.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/Restaurant.png"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-            </NavigationView.MenuItems>
-
-            <NavigationView.PaneFooter>
-                <StackPanel>
-                    <NavigationViewItem x:Name="nvLogout"
-                                        Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
-                                        Icon="NewWindow"
-                                        Tapped="NvLogout_OnTapped"/>
-                </StackPanel>
-            </NavigationView.PaneFooter>
-
-            <!-- Main Content Area -->
-            <Frame x:Name="frmMain" Padding="40, 40" Background="#F5F5F5">
-                <Border Background="White" 
+        <!-- Main Content Area -->
+        <Frame x:Name="frmMain" Padding="40, 40" Background="#F5F5F5">
+            <Border Background="White" 
                     CornerRadius="20"
                     Padding="40">
-                    <Grid>
-                        <Grid.RowDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <!-- Header -->
                         <RowDefinition Height="*"/>
@@ -115,57 +51,195 @@
                     </Grid.RowDefinitions>
 
                     <!-- Profile Header with WinUI 2.x -->
-                    <StackPanel Grid.Row="0"
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center"
-                                Margin="20">
-                        <PersonPicture Width="100"
-                                       Height="100"
-                                       ProfilePicture="{Binding ProfilePictureUri}"
-                                       DisplayName="{Binding FullName}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       CornerRadius="50"/>  
+                    <Grid Grid.Row="0"
+                              Margin="20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- For PersonPicture -->
+                            <ColumnDefinition Width="*"/>
+                            <!-- For Text Info -->
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- For Edit Button -->
+                        </Grid.ColumnDefinitions>
 
-                        <StackPanel Margin="20,0,0,0">
-                                <TextBlock Text="{Binding FullName}"
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <PersonPicture Width="100"
+                                               Height="100"
+                                               ProfilePicture="{Binding ProfilePictureUri}"
+                                               DisplayName="{Binding FullName}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               CornerRadius="50"/>
+
+                            <Button x:Name="UploadButton"
+                                    Visibility="Collapsed"
+                                    Content="Upload"
+                                    Command="{Binding UploadImageCommand}"
+                                    Background="#0078D7"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    FontSize="14"
+                                    CornerRadius="5"
+                                    Margin="10,0,0,0"
+                                    Padding="10"
+                                    VerticalAlignment="Center"/>
+                        </StackPanel>
+
+
+                        <StackPanel Grid.Column="1" 
+                                        Margin="20,0,20,0">
+                            <TextBlock Text="{Binding FullName}"
                                            FontSize="26"
                                            FontWeight="Bold"
-                                           Foreground="Black"/>     
-                                <TextBlock Text="{Binding Email}"
+                                           Foreground="Black"/>
+                            <TextBlock Text="{Binding Email}"
                                            FontSize="16"
                                            Foreground="Gray"
                                            Margin="0,5,0,0"/>
-                            </StackPanel>
-                            <Button Content="Edit"
-                                    HorizontalAlignment="Right"
-                                    Margin="10" Padding="10"
-                                    VerticalAlignment="Center"/>
-                    </StackPanel>
+                        </StackPanel>
 
+                        <Button Content="{Binding ButtonContent}"
+                                Command="{Binding ToggleEditCommand}"
+                                Grid.Column="2"
+                                Margin="10"
+                                Padding="10"
+                                VerticalAlignment="Center"
+                                Background="#0078D7"
+                                Foreground="White"
+                                BorderThickness="0"
+                                FontSize="14"
+                                CornerRadius="5"
+                                Width="100"/>
+                    </Grid>
 
                     <!-- Dynamic Content Based on User Role -->
-                    <StackPanel Grid.Row="1" 
-                                Visibility="{Binding IsMember, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <!-- Member Specific Details -->
-                        <TextBlock Text="Member View"/>
+                    <StackPanel x:Name="MemberSection" Grid.Row="1" Visibility="Collapsed" Margin="20">
+                        <!-- Details Section -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- Full Name and Username -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Height and Weight -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Email and Phone Number -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Membership Info -->
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <!-- Left Column -->
+                                <ColumnDefinition Width="*"/>
+                                <!-- Right Column -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Row 1: Full Name and Username -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="10">
+                                <TextBlock Text="Full Name" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="FullNameTextBox" Text="{Binding FullName, Mode=TwoWay}" IsReadOnly="True"
+                                         PlaceholderText="Current Name"/>
+
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="10">
+                                <TextBlock Text="Username" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="UsernameTextBox" Text="{Binding Username, Mode=TwoWay}" IsReadOnly="True"
+                                         PlaceholderText="Current Username"/>
+                            </StackPanel>
+
+                            <!-- Row 2: Height and Weight -->
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="10">
+                                <TextBlock Text="Height (cm)" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="HeightTextBox" Text="{Binding Height, Mode=TwoWay}" IsReadOnly="True"
+                                PlaceholderText="Height in cm"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
+                                <TextBlock Text="Weight (kg)" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="WeightTextBox" Text="{Binding Weight, Mode=TwoWay}" IsReadOnly="True"
+                                         PlaceholderText="Weight in kg"/>
+                            </StackPanel>
+
+                            <!-- Row 3: Email and Phone Number -->
+                            <StackPanel Grid.Row="2" Grid.Column="0" Margin="10">
+                                <TextBlock Text="Email" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="EmailTextBox" Text="{Binding Email, Mode=TwoWay}" IsReadOnly="True" 
+                                         PlaceholderText="Current Email"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Row="2" Grid.Column="1" Margin="10">
+                                <TextBlock Text="Phone Number" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="PhoneNumberTextBox" Text="{Binding PhoneNumber, Mode=TwoWay}" IsReadOnly="True"
+                                         PlaceholderText="Current Phone Number"/>
+                            </StackPanel>
+
+                            <!-- Row 4: Membership Details -->
+                            <Grid Grid.Row="3" Grid.ColumnSpan="2" Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- Membership Info -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- Remaining Workouts -->
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Membership Info -->
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Current Gym Membership:" FontSize="16" FontWeight="SemiBold" Foreground="Gray" Margin="0,0,0,10"/>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="ms-appx:///Assets/SilverMembership.png" Width="30" Height="30" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding Membership.Name}" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Membership.Description}" FontSize="14" Foreground="Gray"/>
+                                </StackPanel>
+
+                                <!-- Remaining Workouts -->
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <Border Background="#F5F5F5" Padding="20" CornerRadius="10" BorderBrush="Gray" BorderThickness="1">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding RemainingWorkouts}" FontSize="26" FontWeight="Bold" Foreground="Black" TextAlignment="Center"/>
+                                            <TextBlock Text="Remaining available bookings this month" FontSize="14" Foreground="Gray" TextAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="1" 
-                                Visibility="{Binding IsTrainer, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel x:Name="TrainerSection" Grid.Row="1" 
+                                Visibility="{Binding IsTrainer, Mode=OneWay}">
                         <!-- Trainer Specific Details -->
                         <TextBlock Text="Trainer View"/>
                     </StackPanel>
 
                     <!-- Additional Info/Footer -->
-                    <StackPanel Grid.Row="2" HorizontalAlignment="Center">
-                        <TextBlock Text="Footer Info" FontSize="14"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10">
+                        <TextBlock Text="Database Path: " FontWeight="Bold" />
+                        <TextBlock x:Name="DatabasePathTextBlock" Text="Loading..." />
                     </StackPanel>
                 </Grid>
-                </Border>
-            </Frame>
-
-        </NavigationView>
+            </Border>
+        </Frame>
     </Grid>
 </Page>
