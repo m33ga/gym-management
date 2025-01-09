@@ -2,6 +2,7 @@
 using GymManagement.Domain.Models;
 using GymManagement.Domain.Services;
 using GymManagement.Infrastructure;
+using GymManagement.Infrastructure.PasswordUtils;
 using GymManagement.Infrastructure.Repository;
 using System;
 using System.Diagnostics;
