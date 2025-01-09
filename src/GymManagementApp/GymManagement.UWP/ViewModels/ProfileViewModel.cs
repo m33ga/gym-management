@@ -5,6 +5,15 @@ using GymManagement.Domain.Models;
 using GymManagement.Domain.Repository;
 using Windows.Storage;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
+using System.Windows.Input;
+using System.IO;
+using System.Diagnostics;
+using GymManagement.UWP.Helpers;
+using GymManagement.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace GymManagement.UWP.ViewModels
 {
@@ -21,8 +30,68 @@ namespace GymManagement.UWP.ViewModels
         private string _profilePictureUri;
         private byte[] _image;
 
+        public ICommand UploadImageCommand { get; }
+        public ICommand ToggleEditCommand { get; }
+        public ICommand SaveChangesCommand { get; }
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserViewModel _userViewModel;
+
+        public bool IsMember => UserRole == Role.Member;
+        public bool IsTrainer => UserRole == Role.Trainer;
+        public bool IsAdmin => UserRole == Role.Admin;
+
+        private Role _userRole;
+
+        private bool _isEditing;
+        public bool IsEditing
+        {
+            get => _isEditing;
+            set
+            {
+                if (Set(ref _isEditing, value))
+                {
+                    OnPropertyChanged(nameof(ButtonContent));
+                }
+            }
+        }
+        public string ButtonContent => IsEditing ? "Save" : "Edit";
+
+        public ProfileViewModel(IUnitOfWork unitOfWork, UserViewModel userViewModel)
+        {
+            _unitOfWork = unitOfWork;
+            _userViewModel = userViewModel;
+
+            ToggleEditCommand = new RelayCommand(ToggleEditMode);
+            UploadImageCommand = new RelayCommand(async () => await UploadImageAsync());
+            SaveChangesCommand = new RelayCommand(async () => await SaveChangesAsync());
+
+            LoadProfileFromDatabase();
+        }
+
+        private async void ToggleEditMode()
+        {
+            if (IsEditing)
+            {
+                // Save changes to the database when exiting edit mode
+                await SaveChangesAsync();
+            }
+
+            // Toggle the editing mode
+            IsEditing = !IsEditing;
+
+            // Show/hide Upload button dynamically based on editing mode
+            OnPropertyChanged(nameof(IsEditing));
+        }
+
+
+
+        public Role UserRole
+        {
+            get => _userRole;
+            set => Set(ref _userRole, value);
+        }
+
 
         public string FullName
         {
@@ -110,13 +179,67 @@ namespace GymManagement.UWP.ViewModels
             Weight > 0 &&
             Height > 0;
 
-        public ProfileViewModel(IUnitOfWork unitOfWork, UserViewModel userViewModel)
+        private async Task UploadImageAsync()
         {
-            _unitOfWork = unitOfWork;
-            _userViewModel = userViewModel;
+            try
+            {
+                // Open file picker
+                var picker = new FileOpenPicker
+                {
+                    ViewMode = PickerViewMode.Thumbnail,
+                    SuggestedStartLocation = PickerLocationId.PicturesLibrary
+                };
+                picker.FileTypeFilter.Add(".png");
+                picker.FileTypeFilter.Add(".jpg");
+                picker.FileTypeFilter.Add(".jpeg");
 
-            LoadProfileFromDatabase();
+                // Let the user pick a file
+                StorageFile file = await picker.PickSingleFileAsync();
+                if (file != null)
+                {
+                    // Read the file as a byte array
+                    using (IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read))
+                    {
+                        var buffer = new byte[stream.Size];
+                        using (var reader = new DataReader(stream))
+                        {
+                            await reader.LoadAsync((uint)stream.Size);
+                            reader.ReadBytes(buffer);
+                        }
+
+                        // Save the image to the local folder and update the URI
+                        ProfilePictureUri = await SaveImageToFile(buffer);
+
+                        // Update the image in the database
+                        Image = buffer;
+                        await SaveImageToDatabase(buffer);
+                    }
+
+                    // Notify the UI to refresh
+                    OnPropertyChanged(nameof(ProfilePictureUri));
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors
+                Debug.WriteLine($"Error uploading image: {ex.Message}");
+            }
         }
+
+        private async Task SaveImageToDatabase(byte[] imageData)
+        {
+            if (_userViewModel.LoggedUser is Member member)
+            {
+                member.Image = imageData; // Assign image data to the user
+                await _unitOfWork.Members.SaveChangesAsync(); // Commit the changes to the database
+            }
+            else if (_userViewModel.LoggedUser is Trainer trainer)
+            {
+                trainer.Image = imageData;
+                await _unitOfWork.Trainers.SaveChangesAsync();
+            }
+        }
+
 
         // Fetch user profile from the database
         private async void LoadProfileFromDatabase()
@@ -179,6 +302,7 @@ namespace GymManagement.UWP.ViewModels
             return $"ms-appdata:///local/{fileName}";
         }
 
+
         // Populate ProfileViewModel with data from the database
         private void PopulateProfile(dynamic user)
         {
@@ -190,12 +314,87 @@ namespace GymManagement.UWP.ViewModels
             Height = user.Height;
             Membership = user.Membership;
             RemainingWorkouts = user.RemainingWorkouts;
-            Image = user.Image; 
+            Image = user.Image;
+
+            if (user is Member) UserRole = Role.Member;
+            else if (user is Trainer) UserRole = Role.Trainer;
+            else if (user is Admin) UserRole = Role.Admin;
+
+            OnPropertyChanged(nameof(IsMember));
+            OnPropertyChanged(nameof(IsTrainer));
+            OnPropertyChanged(nameof(IsAdmin));
 
             OnPropertyChanged(nameof(FullName));
             OnPropertyChanged(nameof(Email));
             OnPropertyChanged(nameof(IsProfileComplete));
             OnPropertyChanged(nameof(ProfilePictureUri)); 
+        }
+
+        private async Task SaveChangesAsync()
+        {
+            try
+            {
+                if (_userViewModel.LoggedUser is Member member)
+                {
+                    // Fetch the existing member by email
+                    var existingMember = await _unitOfWork.Members.GetMemberByEmailAsync(member.Email);
+                    if (existingMember == null)
+                    {
+                        Debug.WriteLine($"Member with email {member.Email} not found in the database.");
+                        return;
+                    }
+
+                    // Update properties
+                    existingMember.FullName = FullName;
+                    existingMember.Username = Username;
+                    existingMember.Email = Email;
+                    existingMember.PhoneNumber = PhoneNumber;
+                    existingMember.Weight = Weight;
+                    existingMember.Height = Height;
+
+                    // Update image if provided
+                    if (Image != null)
+                    {
+                        existingMember.Image = Image;
+                    }
+
+                    // Attach the entity and mark it as modified
+                    _unitOfWork.AttachAsModified(existingMember);
+                }
+                else if (_userViewModel.LoggedUser is Trainer trainer)
+                {
+                    // Fetch the existing trainer by email
+                    var existingTrainer = await _unitOfWork.Trainers.GetTrainerByEmailAsync(trainer.Email);
+                    if (existingTrainer == null)
+                    {
+                        Debug.WriteLine($"Trainer with email {trainer.Email} not found in the database.");
+                        return;
+                    }
+
+                    // Update properties
+                    existingTrainer.FullName = FullName;
+                    existingTrainer.Username = Username;
+                    existingTrainer.Email = Email;
+                    existingTrainer.PhoneNumber = PhoneNumber;
+
+                    // Update image if provided
+                    if (Image != null)
+                    {
+                        existingTrainer.Image = Image;
+                    }
+
+                    // Attach the entity and mark it as modified
+                    _unitOfWork.AttachAsModified(existingTrainer);
+                }
+
+                // Commit changes to the database
+                Debug.WriteLine("Saving changes to the database...");
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error saving changes: {ex.Message}");
+            }
         }
     }
 }
