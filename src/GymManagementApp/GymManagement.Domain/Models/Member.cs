@@ -8,19 +8,19 @@ namespace GymManagement.Domain.Models
     public class Member : Entity
     {
         // Properties
-        public string FullName { get; private set; }
-        public string Email { get; private set; }
-        public string Password { get; private set; }
-        public string Username { get; private set; }
-        public string PhoneNumber { get; private set; }
-        public float Weight { get; private set; }
-        public float Height { get; private set; }
-        public int RemainingWorkouts { get; private set; }
-        public byte[] Image { get; private set; } // For profile picture
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Username { get; set; }
+        public string PhoneNumber { get; set; }
+        public float Weight { get; set; }
+        public float Height { get; set; }
+        public int RemainingWorkouts { get; set; }
+        public byte[] Image { get; set; } // For profile picture
 
         // Relationships
-        public int MembershipId { get; private set; }
-        public Membership Membership { get; private set; }
+        public int MembershipId { get; set; }
+        public Membership Membership { get; set; }
 
         public ICollection<Notification> Notifications { get; private set; }
         public ICollection<Review> Reviews { get; private set; }
