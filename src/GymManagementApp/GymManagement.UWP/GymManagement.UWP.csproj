@@ -139,6 +139,9 @@
     <Compile Include="Views\Booking\ScheduleManagementPage.xaml.cs">
       <DependentUpon>ScheduleManagementPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Notifications\NotificationsPage.xaml.cs">
+      <DependentUpon>NotificationsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Profile\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>
@@ -186,6 +189,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Notifications\NotificationsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Profile\ProfilePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -207,7 +214,6 @@
   <ItemGroup>
     <Folder Include="Views\Dashboard\" />
     <Folder Include="Views\MealPlan\" />
-    <Folder Include="Views\Notifications\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GymManagement.Domain\GymManagement.Domain.csproj">
