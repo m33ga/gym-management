@@ -38,12 +38,16 @@ namespace GymManagement.UWP
             this.InitializeComponent();
             this.Suspending += OnSuspending;
 
-            // Initialize UnitOfWork with DbContext
-            UnitOfWork = new UnitOfWork(new AppDbContext());
+            // Initialize dependencies
+            var dbContext = new GymManagementDbContext();
+            UnitOfWork = new UnitOfWork(dbContext);
 
-            // Initialize UserViewModel
-            var authentificationService = new AuthentificationService();
+            // Pass UnitOfWork to AuthentificationService
+            var authentificationService = new AuthentificationService(UnitOfWork);
             UserViewModel = new UserViewModel(authentificationService);
+
+            ProfileViewModel = new ProfileViewModel(UnitOfWork, UserViewModel);
+            //BookingViewModel = new BookingViewModel(UnitOfWork);
         }
 
         public static UserViewModel UserViewModel { get; internal set; }
