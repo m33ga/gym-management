@@ -5,33 +5,43 @@
     xmlns:local="using:GymManagement.UWP.Views.Profile"
     xmlns:viewModels="using:GymManagement.UWP.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:converters="using:GymManagement.UWP.Converters">
 
     <Page.Resources>
-        <Style TargetType="Grid">
-            <Setter Property="Background" Value="#F9F9F9" />
-        </Style>
+        <ResourceDictionary>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
-        <Style TargetType="NavigationViewItem">
-            <Setter Property="Foreground" Value="Gray" />
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
+            <Style x:Key="BaseGridStyle" TargetType="Grid">
+                <Setter Property="Background" Value="#F9F9F9" />
+            </Style>
+
+            <Style TargetType="NavigationViewItem">
+                <Setter Property="Foreground" Value="Gray" />
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+        </ResourceDictionary>
     </Page.Resources>
+
+
 
 
     <Grid>
         <NavigationView x:Name="nvMain"
-                        IsSettingsVisible="False"
-                        IsBackButtonVisible="Collapsed"
-                        ItemInvoked="NvMain_OnItemInvoked"
-                        PaneDisplayMode="LeftCompact"
-                        IsPaneToggleButtonVisible="False"
-                        Foreground="Black">
+                IsSettingsVisible="False"
+                IsBackButtonVisible="Collapsed"
+                ItemInvoked="NvMain_OnItemInvoked"
+                PaneDisplayMode="LeftCompact"
+                IsPaneToggleButtonVisible="{Binding IsPaneOpen, Mode=TwoWay}"
+                Foreground="Black">
+
+            <!-- VisualStateManager for dynamic UI changes based on user role is here -->
 
             <NavigationView.Resources>
                 <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="White" />
             </NavigationView.Resources>
 
+            <!-- NavigationView.MenuItems structure -->
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Name="nvProfile"
                                     Visibility="{x:Bind ViewModel.IsProfileComplete, Mode=OneWay}"
@@ -89,108 +99,73 @@
                 </StackPanel>
             </NavigationView.PaneFooter>
 
-            <!-- Main Content Area with Custom Grid Layout -->
-            <Frame x:Name="frmMain" Padding="40, 40">
-                <Grid Margin="0">
-                    <!-- Grid Layout -->
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="228*" />
-                        <RowDefinition Height="463*" />
-                        <RowDefinition Height="229*" />
+            <!-- Main Content Area -->
+            <Frame x:Name="frmMain" Padding="40, 40" Background="#F5F5F5">
+                <Border Background="White" 
+                    CornerRadius="20"
+                    Padding="40">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Header -->
+                        <RowDefinition Height="*"/>
+                        <!-- Content -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Footer -->
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
 
-                    <!-- Row 1 (Full Width) -->
-                    <!--<Rectangle Fill="Red"
-                               Grid.Row="0"
-                               Grid.ColumnSpan="2"
-                               Margin="0,10,0,0"/>-->
+                    <!-- Profile Header with WinUI 2.x -->
+                    <StackPanel Grid.Row="0"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Margin="20">
+                        <PersonPicture Width="100"
+                                       Height="100"
+                                       ProfilePicture="{Binding ProfilePictureUri}"
+                                       DisplayName="{Binding FullName}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       CornerRadius="50"/>  
 
-                    <!-- Profile Section (Row 1) -->
-                    <Grid Grid.Row="0"
-                          Grid.ColumnSpan="2"
-                          Background="White"
-                          Height="250"
-                          Margin="0,20,20,421" Grid.RowSpan="2">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <Grid CornerRadius="10"
-                              Background="White"
-                              Height="200"
-                              VerticalAlignment="Center"
-                              Padding="30" Grid.ColumnSpan="2" Margin="1,0,0,0" HorizontalAlignment="Left" Width="1379">
-
-                            <!-- Left Section: Profile Picture and User Info -->
-                            <StackPanel Orientation="Horizontal"
-                                        VerticalAlignment="Center"
-                                        Margin="0,0,0,0"
-                                        Grid.Column="0">
-
-                                <!-- Profile Picture -->
-                                <PersonPicture Width="100"
-                                               Height="100"
-                                               ProfilePicture="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png"
-                                               DisplayName="Alexa Rawles"
-                                               HorizontalAlignment="Center"
-                                               CornerRadius="50"
-                                               Margin="0,0,20,0"/>
-
-                                <!-- User Info -->
-                                <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding FullName}"
-                                               FontSize="26"
-                                               FontWeight="Bold"
-                                               Foreground="Black"/>
-                                    <TextBlock Text="{Binding Email}"
-                                               FontSize="16"
-                                               Foreground="Gray"
-                                               Margin="0,5,0,0"/>
-                                </StackPanel>
+                        <StackPanel Margin="20,0,0,0">
+                                <TextBlock Text="{Binding FullName}"
+                                           FontSize="26"
+                                           FontWeight="Bold"
+                                           Foreground="Black"/>     
+                                <TextBlock Text="{Binding Email}"
+                                           FontSize="16"
+                                           Foreground="Gray"
+                                           Margin="0,5,0,0"/>
                             </StackPanel>
-
-                            <!-- Right Section: Edit Button -->
                             <Button Content="Edit"
-                                    Width="100"
-                                    Height="40"
-                                    Foreground="White"
-                                    Background="#0078D7"
                                     HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                                    CornerRadius="5"
-                                    Grid.Column="1"
-                                    Margin="0,0,40,0"
-                                    Click="OnEditProfileClicked"/>
-                        </Grid>
-                    </Grid>
+                                    Margin="10" Padding="10"
+                                    VerticalAlignment="Center"/>
+                    </StackPanel>
 
 
+                    <!-- Dynamic Content Based on User Role -->
+                    <StackPanel Grid.Row="1" 
+                                Visibility="{Binding IsMember, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <!-- Member Specific Details -->
+                        <TextBlock Text="Member View"/>
+                    </StackPanel>
 
+                    <StackPanel Grid.Row="1" 
+                                Visibility="{Binding IsTrainer, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <!-- Trainer Specific Details -->
+                        <TextBlock Text="Trainer View"/>
+                    </StackPanel>
 
-                    <!-- Row 2 (Two Blocks) -->
-                    <Rectangle Fill="Blue"
-                               Grid.Column="0" Grid.Row="1"/>
-                    <Rectangle Fill="Green"
-                               Grid.ColumnSpan="2"
-                               Margin="690,0,0,0" Grid.Row="1"/>
-
-                    <!-- Row 3 (Two Blocks) -->
-                    <Rectangle Fill="Yellow"
-                               Grid.Row="1"
-                               Grid.Column="0"
-                               Margin="0,463,0,0" Grid.RowSpan="2"/>
-                    <Rectangle Fill="Orange"
-                               Grid.Row="1"
-                               Grid.ColumnSpan="2"
-                               Margin="690,463,0,1" Grid.RowSpan="2"/>
+                    <!-- Additional Info/Footer -->
+                    <StackPanel Grid.Row="2" HorizontalAlignment="Center">
+                        <TextBlock Text="Footer Info" FontSize="14"/>
+                    </StackPanel>
                 </Grid>
+                </Border>
             </Frame>
+
         </NavigationView>
     </Grid>
 </Page>
