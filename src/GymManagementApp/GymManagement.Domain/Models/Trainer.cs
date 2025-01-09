@@ -93,5 +93,13 @@ namespace GymManagement.Domain.Models
 
             Classes.Add(newClass);
         }
+
+        public string ImageBase64
+        {
+            get
+            {
+                return Image != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(Image)}" : null;
+            }
+        }
     }
 }
