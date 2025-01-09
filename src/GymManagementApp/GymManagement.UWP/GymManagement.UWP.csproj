@@ -121,7 +121,6 @@
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\BytesToImageConverter.cs" />
-    <Compile Include="Converters\DateOnlyConverter.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

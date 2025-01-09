@@ -57,7 +57,14 @@ namespace GymManagement.UWP
 
                         break;
                     case "dashboard":
-                        frmMain.Navigate(typeof(DashboardPage));
+                        if (UserViewModel.IsMember)
+                        {
+                            frmMain.Navigate(typeof(MemberDashboardPage));
+                        }
+                        if (UserViewModel.IsTrainer)
+                        {
+                            frmMain.Navigate(typeof(TrainerDashboardPage));
+                        }
                         break;
                     case "schedule":
                         
@@ -89,6 +96,9 @@ namespace GymManagement.UWP
         }
 
 
-
+        private void NvMain_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            nvMain.IsPaneOpen = false;
+        }
     }
 }
