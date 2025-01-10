@@ -19,14 +19,14 @@
                     ItemsSource="{Binding Notifications}"
                     SelectedItem="{Binding SelectedNotification, Mode=TwoWay}"
                     Margin="0,0,0,10"
-                    Background="Transparent">
+                    Background="#f9f9f9">
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Border BorderBrush="Gray" BorderThickness="1" Margin="0,0,0,10" Padding="10" CornerRadius="10">
                                 <StackPanel>
-                                    <TextBlock Text="Upcoming Workout" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
-                                    <TextBlock Text="{Binding Text}" FontSize="14" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Upcoming Workout" FontWeight="Bold" Foreground="Black" FontSize="16" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{Binding Text}" Foreground="Black" FontSize="14" Margin="0,0,0,5"/>
                                     <Button 
                                         Content="Mark as Read" 
                                         Command="{Binding DataContext.MarkAsReadCommand, ElementName=NotificationsPageRoot}" 
