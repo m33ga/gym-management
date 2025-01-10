@@ -30,14 +30,14 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid>
+    <Grid >
 
         <!-- Main Content Area -->
         <Frame x:Name="frmMain" Padding="40, 40" Background="#F5F5F5">
             <Border Background="White" 
                     CornerRadius="20"
                     Padding="40">
-                <Grid>
+                <Grid CornerRadius="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <!-- Header -->

@@ -40,30 +40,30 @@ namespace GymManagement.UWP.Views.Profile
                 }
             };
 
-            DisplayDatabaseInfo();
+            //DisplayDatabaseInfo();
             // Set initial visibility
             UpdateEditingMode();
         }
 
-        private void DisplayDatabaseInfo()
-        {
-            try
-            {
-                // Get the database path from UnitOfWork
-                string dbPath = App.UnitOfWork.GetDbPath();
+        //private void DisplayDatabaseInfo()
+        //{
+        //    try
+        //    {
+        //        // Get the database path from UnitOfWork
+        //        string dbPath = App.UnitOfWork.GetDbPath();
 
-                // Update the TextBlock
-                DatabasePathTextBlock.Text = dbPath;
+        //        // Update the TextBlock
+        //        DatabasePathTextBlock.Text = dbPath;
 
-                // Optionally log the path
-                Debug.WriteLine($"Database Path: {dbPath}");
-            }
-            catch (Exception ex)
-            {
-                DatabasePathTextBlock.Text = "Error retrieving database info.";
-                Debug.WriteLine($"Error fetching database info: {ex.Message}");
-            }
-        }
+        //        // Optionally log the path
+        //        Debug.WriteLine($"Database Path: {dbPath}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        DatabasePathTextBlock.Text = "Error retrieving database info.";
+        //        Debug.WriteLine($"Error fetching database info: {ex.Message}");
+        //    }
+        //}
 
 
         private void UpdateEditingMode()
