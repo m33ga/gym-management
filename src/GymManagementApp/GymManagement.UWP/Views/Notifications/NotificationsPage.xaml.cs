@@ -26,7 +26,7 @@ namespace GymManagement.UWP.Views.Notifications
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            ViewModel.StopTimer(); // Зупиняємо таймер при переході зі сторінки
+            ViewModel.StopTimer(); 
             base.OnNavigatedFrom(e);
         }
     }

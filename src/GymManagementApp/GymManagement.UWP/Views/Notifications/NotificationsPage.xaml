@@ -11,15 +11,15 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- ScrollViewer для прокручування сповіщень -->
+       
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <Grid Background="White" Padding="10" CornerRadius="10">
-                <!-- ListView для відображення сповіщень -->
+                
                 <ListView
                     ItemsSource="{Binding Notifications}"
                     SelectedItem="{Binding SelectedNotification, Mode=TwoWay}"
                     Margin="0,0,0,10"
-                    Background="#f9f9f9">
+                    Background="Transparent">
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -52,7 +52,7 @@
             </Grid>
         </ScrollViewer>
 
-        <!-- Кнопка для позначення всіх сповіщень як прочитаних -->
+        
         <Button
             Grid.Row="1"
             Content="Mark all as Read"
