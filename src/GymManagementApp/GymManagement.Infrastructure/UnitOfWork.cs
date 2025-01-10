@@ -11,9 +11,11 @@ namespace GymManagement.Infrastructure
     {
         private readonly GymManagementDbContext _dbContext;
 
-        public UnitOfWork()
+        //public DbContext Context => _dbContext;
+
+        public UnitOfWork(GymManagementDbContext dbContext)
         {
-            _dbContext = new GymManagementDbContext();
+            _dbContext = dbContext;
 
             // Ensure database is created
             _dbContext.Database.EnsureCreated();
@@ -61,6 +63,13 @@ namespace GymManagement.Infrastructure
         {
             return _dbContext.DbPath;
         }
+
+        public void AttachAsModified<TEntity>(TEntity entity) where TEntity : class
+        {
+            _dbContext.Attach(entity);
+            _dbContext.Entry(entity).State = EntityState.Modified;
+        }
+
     }
 }
 

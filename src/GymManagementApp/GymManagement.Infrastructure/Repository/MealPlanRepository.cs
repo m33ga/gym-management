@@ -55,5 +55,16 @@ namespace GymManagement.Infrastructure.Repository
             return entity;
         }
 
+        public async Task<MealPlan> GetMealPlanByDayAsync(string day, int userId)
+        {
+            return await _dbContext.MealPlans
+                .Include(mp => mp.Meals)
+                .FirstOrDefaultAsync(mp => mp.Meals.Any(m => m.DayOfWeek == int.Parse(day))
+                                            && (mp.MemberId == userId || mp.TrainerId == userId));
+
+
+        }
+
+
     }
 }

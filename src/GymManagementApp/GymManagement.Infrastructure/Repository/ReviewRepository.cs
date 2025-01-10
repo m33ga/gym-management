@@ -63,5 +63,15 @@ namespace GymManagement.Infrastructure.Repository
         {
             return await GetReviewsByTrainerAsync(trainerId);            
         }
+
+        public async Task<double> GetAverageRatingByTrainerIdAsync(int trainerId)
+        {
+            var reviews = await _dbContext.Reviews
+                                          .Where(r => r.TrainerId == trainerId)
+                                          .ToListAsync();
+
+            return reviews.Any() ? reviews.Average(r => r.Rating) : 0;
+        }
+
     }
 }

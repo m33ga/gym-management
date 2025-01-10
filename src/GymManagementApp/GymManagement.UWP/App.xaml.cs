@@ -1,4 +1,5 @@
-﻿using GymManagement.Domain.Repository;
+﻿using GymManagement.Domain;
+using GymManagement.Domain.Repository;
 using GymManagement.Infrastructure;
 using GymManagement.Infrastructure.Repository;
 using GymManagement.UWP.ViewModels;
@@ -31,22 +32,29 @@ namespace GymManagement.UWP
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
+        public static IUnitOfWork UnitOfWork { get; private set; }
         public App()
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
 
-            // Initialize AuthentificationService with the repositories
-            var authentificationService = new AuthentificationService();
+            // Initialize dependencies
+            var dbContext = new GymManagementDbContext();
+            UnitOfWork = new UnitOfWork(dbContext);
 
-            // Initialize UserViewModel with the required dependencies
+            // Pass UnitOfWork to AuthentificationService
+            var authentificationService = new AuthentificationService(UnitOfWork);
             UserViewModel = new UserViewModel(authentificationService);
 
+            ProfileViewModel = new ProfileViewModel(UnitOfWork, UserViewModel);
+            //BookingViewModel = new BookingViewModel(UnitOfWork);
         }
 
         public static UserViewModel UserViewModel { get; internal set; }
         public static BookingViewModel BookingViewModel { get; internal set; }
         public static ScheduleViewModel ScheduleViewModel { get; internal set; }
+
+        public static ProfileViewModel ProfileViewModel { get; internal set; }
 
 
         /// <summary>
