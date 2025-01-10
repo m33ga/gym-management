@@ -37,6 +37,7 @@ namespace GymManagement.Domain.Models
             TrainerId = trainerId;
         }
 
+
         public void MarkAsRead()
         {
             if (Status == "Read")
