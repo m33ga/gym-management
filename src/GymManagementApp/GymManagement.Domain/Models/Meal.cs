@@ -9,13 +9,13 @@ namespace GymManagement.Domain.Models
     public class Meal : Entity
     {
         // Properties
-        public string Name { get; private set; } // E.g., "Breakfast - Monday"
-        public MealType Type { get; private set; } // Enum: Breakfast, Lunch, Dinner
-        public int DayOfWeek { get; private set; } // 0 = Sunday, 1 = Monday, etc.
-        public int TotalCalories { get; private set; } // Total calories for this meal
-        public ICollection<MealIngredient> Ingredients { get; private set; }
-        public MealPlan MealPlan { get; private set; }
-        public int MealPlanId { get; private set; }
+        public string Name { get; set; } // E.g., "Breakfast - Monday"
+        public MealType Type { get; set; } // Enum: Breakfast, Lunch, Dinner
+        public int DayOfWeek { get; set; } // 0 = Sunday, 1 = Monday, etc.
+        public int TotalCalories { get; set; } // Total calories for this meal
+        public ICollection<MealIngredient> Ingredients { get; set; }
+        public MealPlan MealPlan { get; set; }
+        public int MealPlanId { get; set; }
 
 
         // Constructors

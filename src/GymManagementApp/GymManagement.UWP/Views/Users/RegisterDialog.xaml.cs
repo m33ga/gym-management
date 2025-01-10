@@ -38,8 +38,7 @@ namespace GymManagement.UWP.Views.Users
             try
             {
                 // Check if a role is selected
-                var selectedRole = RoleComboBox.SelectedItem as ComboBoxItem;
-                if (selectedRole == null)
+                if (!(RoleComboBox.SelectedItem is ComboBoxItem selectedRole))
                 {
                     await ShowErrorDialog("Please select a role (Member or Trainer).");
                     return;

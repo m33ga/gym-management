@@ -27,16 +27,24 @@ namespace GymManagement.UWP.Views.Booking
     /// </summary>
     public sealed partial class BookingManagementPage : Page
     {
-        public BookingViewModel ViewModel { get; }
+        public BookingViewModel ViewModel { get; set; }
 
         public BookingManagementPage()
         {
             this.InitializeComponent();
-            UnitOfWork unitOfWork = new UnitOfWork();
-            AuthentificationService auth = new AuthentificationService();
-            ViewModel = new BookingViewModel(unitOfWork,auth);
+
+            // Initialize DbContext
+            var dbContext = new GymManagementDbContext();
+
+            // Initialize UnitOfWork with the DbContext
+            var unitOfWork = new UnitOfWork(dbContext);
+
+            // Initialize AuthentificationService with UnitOfWork
+            var auth = new AuthentificationService(unitOfWork);
+
+            // Initialize BookingViewModel
+            ViewModel = new BookingViewModel(unitOfWork, auth);
             DataContext = ViewModel;
-            
         }
 
 

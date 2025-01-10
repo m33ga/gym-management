@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="using:GymManagement.UWP.ViewModels"
     mc:Ignorable="d">
-    
+
     <Page.Resources>
 
         <Style TargetType="Grid">
@@ -28,7 +28,7 @@
                         PaneDisplayMode="LeftCompact" 
                         IsPaneToggleButtonVisible="False"
                         Foreground="Black"
-                        >
+                        Loaded="NvMain_OnLoaded">
 
 
             <NavigationView.Resources>
@@ -80,8 +80,8 @@
                         <BitmapIcon UriSource="ms-appx:///Assets/Restaurant.png"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                
-                
+
+
 
 
             </NavigationView.MenuItems>

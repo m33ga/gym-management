@@ -9,18 +9,19 @@ namespace GymManagement.Domain.Models
     public class Trainer : Entity
     {
         // Properties
-        public string FullName { get; private set; }
-        public string Password { get; private set; }
-        public string Email { get; private set; }
-        public string Username { get; private set; }
-        public string PhoneNumber { get; private set; }
-        public byte[] Image { get; private set; } // profile picture
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public string Password { get; set; }
+        public string Email { get; set; }
+        public string Username { get; set; }
+        public string PhoneNumber { get; set; }
+        public byte[] Image { get; set; } // profile picture
 
         // Navigation Properties
-        public ICollection<Class> Classes { get; private set; }
-        public ICollection<MealPlan> MealPlans { get; private set; }
-        public ICollection<Notification> Notifications { get; private set; }
-        public ICollection<Review> Reviews { get; private set; }
+        public ICollection<Class> Classes { get; set; }
+        public ICollection<MealPlan> MealPlans { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+        public ICollection<Review> Reviews { get; set; }
 
         // Constructors
         private Trainer()
@@ -39,6 +40,7 @@ namespace GymManagement.Domain.Models
             if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
             if (string.IsNullOrWhiteSpace(username)) throw new ArgumentException("Username is required.", nameof(username));
             if (string.IsNullOrWhiteSpace(phoneNumber)) throw new ArgumentException("Phone number is required.", nameof(phoneNumber));
+            
 
             FullName = fullName;
             Password = password; // Hashing should happen in the application layer.
@@ -92,6 +94,14 @@ namespace GymManagement.Domain.Models
             }
 
             Classes.Add(newClass);
+        }
+
+        public string ImageBase64
+        {
+            get
+            {
+                return Image != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(Image)}" : null;
+            }
         }
     }
 }

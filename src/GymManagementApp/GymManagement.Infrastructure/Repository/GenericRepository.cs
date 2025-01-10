@@ -9,8 +9,8 @@ namespace GymManagement.Infrastructure.Repository
 {
     public abstract class GenericRepository<T> : IRepository<T> where T : Entity
     {
-        private readonly GymManagementDbContext _dbContext;
-        private readonly DbSet<T> _dbSet;
+        protected readonly GymManagementDbContext _dbContext;
+        protected readonly DbSet<T> _dbSet;
 
         public GenericRepository(GymManagementDbContext dbContext)
         {
