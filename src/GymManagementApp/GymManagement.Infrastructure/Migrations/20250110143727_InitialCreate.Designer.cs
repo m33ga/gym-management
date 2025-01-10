@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(GymManagementDbContext))]
-    [Migration("20250104152253_InitialCreate")]
+    [Migration("20250110143727_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,6 +65,9 @@ namespace GymManagement.Infrastructure.Migrations
                         .IsUnique();
 
                     b.HasIndex("MemberId");
+
+                    b.HasIndex("ClassId", "MemberId")
+                        .IsUnique();
 
                     b.ToTable("Bookings");
                 });
@@ -298,9 +301,6 @@ namespace GymManagement.Infrastructure.Migrations
                     b.Property<int>("ClassId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Comment")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("DateSubmitted")
                         .HasColumnType("TEXT");
 
@@ -315,7 +315,8 @@ namespace GymManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassId");
+                    b.HasIndex("ClassId")
+                        .IsUnique();
 
                     b.HasIndex("MemberId");
 
@@ -329,6 +330,9 @@ namespace GymManagement.Infrastructure.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
@@ -433,8 +437,8 @@ namespace GymManagement.Infrastructure.Migrations
             modelBuilder.Entity("GymManagement.Domain.Models.Review", b =>
                 {
                     b.HasOne("GymManagement.Domain.Models.Class", "Class")
-                        .WithMany("Reviews")
-                        .HasForeignKey("ClassId");
+                        .WithOne("Review")
+                        .HasForeignKey("GymManagement.Domain.Models.Review", "ClassId");
 
                     b.HasOne("GymManagement.Domain.Models.Member", "Member")
                         .WithMany("Reviews")

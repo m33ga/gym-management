@@ -101,10 +101,10 @@ namespace GymManagement.UWP.ViewModels
             try
             {
                 var registrationService = new RegistrationService();
-                var hashedpassword = PasswordUtils.HashPassword(Password);
+                var pass = PasswordUtils.HashPassword(Password);
                 var registrationResult = await registrationService.RegisterAsync(
                     email: Email,
-                    password: hashedpassword,
+                    password: pass,
                     fullname: FullName,
                     username: Username,
                     phonenumber: PhoneNumber,
