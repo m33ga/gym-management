@@ -28,7 +28,7 @@
                         PaneDisplayMode="LeftCompact" 
                         IsPaneToggleButtonVisible="False"
                         Foreground="Black"
-                        >
+                        Loaded="NvMain_OnLoaded">
 
 
             <NavigationView.Resources>

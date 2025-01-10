@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using GymManagement.UWP.Views.Dashboard;
 using GymManagement.UWP.Views.Profile;
 using GymManagement.UWP.Views.Users;
 using GymManagement.UWP.ViewModels;
@@ -59,7 +60,14 @@ namespace GymManagement.UWP
 
                         break;
                     case "dashboard":
-
+                        if (UserViewModel.IsMember)
+                        {
+                            frmMain.Navigate(typeof(MemberDashboardPage));
+                        }
+                        if (UserViewModel.IsTrainer)
+                        {
+                            frmMain.Navigate(typeof(TrainerDashboardPage));
+                        }
                         break;
                     case "schedule":
                         
@@ -91,6 +99,9 @@ namespace GymManagement.UWP
         }
 
 
-
+        private void NvMain_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            nvMain.IsPaneOpen = false;
+        }
     }
 }

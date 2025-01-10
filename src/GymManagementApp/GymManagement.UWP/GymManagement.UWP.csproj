@@ -141,6 +141,12 @@
     <Compile Include="Views\Booking\ScheduleManagementPage.xaml.cs">
       <DependentUpon>ScheduleManagementPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dashboard\MemberDashboardPage.xaml.cs">
+      <DependentUpon>MemberDashboardPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dashboard\TrainerDashboardPage.xaml.cs">
+      <DependentUpon>TrainerDashboardPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Profile\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>
@@ -186,6 +192,13 @@
     </Page>
     <Page Include="Views\Booking\ScheduleManagementPage.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dashboard\MemberDashboardPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dashboard\TrainerDashboardPage.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Profile\ProfilePage.xaml">
@@ -213,7 +226,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Dashboard\" />
     <Folder Include="Views\MealPlan\" />
     <Folder Include="Views\Notifications\" />
   </ItemGroup>

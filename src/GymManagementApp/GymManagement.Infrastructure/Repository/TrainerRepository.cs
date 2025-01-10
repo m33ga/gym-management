@@ -9,11 +9,11 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class TrainerRepository : GenericRepository<Trainer>, ITrainerRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public TrainerRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
         public async Task<Trainer> GetByIdWithDetailsAsync(int id)
         {

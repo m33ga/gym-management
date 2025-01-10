@@ -11,6 +11,9 @@ namespace GymManagement.Domain.Repository
     {
         Task AddReviewAsync(Review review);
 
+        Task UpdateAsync(Review review);
+
+
         // get all reviews for a specific trainer (for the aggregate review score)
         Task<IList<Review>> GetReviewsByTrainerAsync(int trainerId);
 
