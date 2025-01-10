@@ -165,6 +165,7 @@
     <Content Include="Assets\5.scale-200.png" />
     <Content Include="Assets\5.scale-400.png" />
     <Content Include="Assets\image.png" />
+    <Content Include="Assets\logo.png" />
     <Content Include="Assets\Schedule.png" />
     <Content Include="Assets\Notification.png" />
     <Content Include="Assets\Restaurant.png" />
