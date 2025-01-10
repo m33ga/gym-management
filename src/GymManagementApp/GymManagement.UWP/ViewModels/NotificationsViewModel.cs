@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GymManagement.Domain.Models;
@@ -18,14 +19,45 @@ namespace GymManagement.UWP.ViewModels
             _unitOfWork = unitOfWork;
             Notifications = new ObservableCollection<Notification>();
 
+            // Команда для позначення як прочитаного
             MarkAsReadCommand = new RelayCommand(
                 execute: async () => await MarkAsReadAsync(),
                 canExecute: () => SelectedNotification != null && SelectedNotification.Status == "Unread"
             );
 
-            // Завантаження даних
-            Task task = LoadNotificationsAsync();
+            // Додавання тестових даних
+            AddTestNotifications();
         }
+
+        // Додавання тестових даних
+        private void AddTestNotifications()
+        {
+            Notifications.Add(new Notification(
+                text: "test 1",
+                date: DateTime.Now,
+                status: "Unread",
+                adminId: 1,
+                memberId: 2
+            ));
+
+            Notifications.Add(new Notification(
+                text: "test 2",
+                date: DateTime.Now.AddMinutes(-10),
+                status: "Unread",
+                adminId: 1,
+                memberId: 2
+            ));
+
+            Notifications.Add(new Notification(
+                text: "test 3 (Read)",
+                date: DateTime.Now.AddHours(-1),
+                status: "Read",
+                adminId: 1,
+                memberId: 2
+            ));
+        }
+
+
 
         // Колекція для зберігання сповіщень
         public ObservableCollection<Notification> Notifications { get; }

@@ -52,9 +52,12 @@ namespace GymManagement.UWP
                     case "profile":
                         frmMain.Navigate(typeof(ProfilePage));
                         break;
-                    case "notifications":
 
+                    case "notifications":
+                    
+                        frmMain.Navigate(typeof(Views.Notifications.NotificationsPage)); 
                         break;
+                        
                     case "dashboard":
 
                         break;
