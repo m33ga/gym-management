@@ -2,7 +2,11 @@
     x:Class="GymManagement.UWP.Views.Notifications.NotificationsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewModels="using:GymManagement.UWP.ViewModels" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" d:DataContext="{d:DesignInstance Type=viewModels:NotificationsViewModel}"
+    xmlns:viewModels="using:GymManagement.UWP.ViewModels" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance Type=viewModels:NotificationsViewModel, IsDesignTimeCreatable=True}"
     x:Name="NotificationsPageRoot">
 
     <Grid Padding="20">
@@ -11,10 +15,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-       
+        <!-- Notifications List -->
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <Grid Background="White" Padding="10" CornerRadius="10">
-                
                 <ListView
                     ItemsSource="{Binding Notifications}"
                     SelectedItem="{Binding SelectedNotification, Mode=TwoWay}"
@@ -52,7 +55,7 @@
             </Grid>
         </ScrollViewer>
 
-        
+        <!-- Mark All as Read Button -->
         <Button
             Grid.Row="1"
             Content="Mark all as Read"
