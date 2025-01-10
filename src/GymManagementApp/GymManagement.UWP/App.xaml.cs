@@ -46,6 +46,7 @@ namespace GymManagement.UWP
 
         public static UserViewModel UserViewModel { get; internal set; }
         public static BookingViewModel BookingViewModel { get; internal set; }
+        public static ScheduleViewModel ScheduleViewModel { get; internal set; }
 
 
         /// <summary>

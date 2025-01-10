@@ -132,6 +132,7 @@
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\MealPlanViewModel.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
+    <Compile Include="ViewModels\ScheduleViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Views\Booking\BookingManagementPage.xaml.cs">
       <DependentUpon>BookingManagementPage.xaml</DependentUpon>

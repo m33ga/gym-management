@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GymManagement.Infrastructure;
+using GymManagement.UWP.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +27,9 @@ namespace GymManagement.UWP.Views.Booking
         public ScheduleManagementPage()
         {
             this.InitializeComponent();
+            var uow = new UnitOfWork();
+            var viewModel = App.ScheduleViewModel;
+            DataContext = viewModel;
         }
     }
 }

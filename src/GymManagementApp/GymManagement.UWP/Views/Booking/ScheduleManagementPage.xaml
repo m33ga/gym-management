@@ -3,12 +3,40 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GymManagement.UWP.Views.Booking"
+    xmlns:viewmodels="using:GymManagement.UWP.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    d:DataContext="{d:DesignInstance Type=viewmodels:ScheduleViewModel}">
 
-    <Grid>
+    <Grid Padding="20">
+        <StackPanel Spacing="10">
+            <TextBox Header="Class Name"
+                     Text="{Binding ClassName, Mode=TwoWay}" />
+            <TextBox Header="Class Description"
+                     Text="{Binding ClassDescription, Mode=TwoWay}" />
+            <DatePicker Header="Scheduled Date"
+                        Date="{Binding ScheduledDate, Mode=TwoWay}" />
+            <ComboBox Header="Scheduled Time"
+                      ItemsSource="{Binding AvailableTimeSlots}"
+                      SelectedItem="{Binding ScheduledTime, Mode=TwoWay}" />
+            <TextBox Header="Duration (minutes)"
+                     Text="{Binding DurationInMinutes, Mode=TwoWay}" />
 
+            <Button Content="Create Class"
+                    Command="{Binding CreateClassCommand}" />
+
+            <ListView Header="Scheduled Classes"
+                      ItemsSource="{Binding ScheduledClasses}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding ScheduledDate}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
     </Grid>
 </Page>
