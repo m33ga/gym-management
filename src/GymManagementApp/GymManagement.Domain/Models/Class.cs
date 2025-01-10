@@ -17,9 +17,24 @@ namespace GymManagement.Domain.Models
         public bool IsAvailable { get; set; }
         public int? MemberId { get; private set; } // Member who booked the class (if any) nullable
         public Member Member { get; private set; } // Navigation property for the Member
-        public ICollection<Review> Reviews { get; private set; }
+        public Review Review { get; private set; }
         public Booking Booking { get; set; }
 
+        public string FormattedTrainerWorkoutDetails
+        {
+            get
+            {
+                return $"{Name} class on {ScheduledDate:MM.dd.yyyy} at {ScheduledDate:HH:mm} with member {Member?.FullName}";
+            }
+        }
+
+        public string FormattedMemberWorkoutDetails
+        {
+            get
+            {
+                return $"{Name} class on {ScheduledDate:MM.dd.yyyy} at {ScheduledDate:HH:mm} with trainer {Trainer?.FullName}";
+            }
+        }
 
 
         // Constructors

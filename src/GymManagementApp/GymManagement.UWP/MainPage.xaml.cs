@@ -12,12 +12,15 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using GymManagement.UWP.Views.Dashboard;
 using GymManagement.UWP.Views.Profile;
 using GymManagement.UWP.Views.Users;
 using GymManagement.UWP.ViewModels;
 using GymManagement.Infrastructure.Repository;
 using GymManagement.Domain.Services;
 using GymManagement.UWP.Views.Booking;
+using GymManagement.UWP.Views.MealPlans;
+using YourNamespace.Views.MealPlans;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -36,12 +39,15 @@ namespace GymManagement.UWP
             this.InitializeComponent();
        
             UserViewModel = App.UserViewModel;
-            
+
             if (UserViewModel.IsLogged == true)
             {
-                frmMain.Navigate(typeof(ProfilePage));  
+                frmMain.Navigate(typeof(ProfilePage));
             }
-            frmMain.Navigate(typeof(LoginDialog));
+            else
+            {
+                frmMain.Navigate(typeof(LoginDialog));
+            }
         }
         private void NvMain_OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
@@ -56,7 +62,14 @@ namespace GymManagement.UWP
 
                         break;
                     case "dashboard":
-
+                        if (UserViewModel.IsMember)
+                        {
+                            frmMain.Navigate(typeof(MemberDashboardPage));
+                        }
+                        if (UserViewModel.IsTrainer)
+                        {
+                            frmMain.Navigate(typeof(TrainerDashboardPage));
+                        }
                         break;
                     case "schedule":
                         
@@ -74,10 +87,15 @@ namespace GymManagement.UWP
                         }
                         break;
                     case "meal_plan":
-
+                        if (UserViewModel.IsMember)
+                        {
+                            frmMain.Navigate(typeof(MealPlanMemberPage));
+                        }
+                        if (UserViewModel.IsTrainer)
+                        {
+                            frmMain.Navigate(typeof(MealPlanTrainerPage));
+                        }
                         break;
-                    
-
                 }
             }
         }
@@ -88,6 +106,9 @@ namespace GymManagement.UWP
         }
 
 
-
+        private void NvMain_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            nvMain.IsPaneOpen = false;
+        }
     }
 }

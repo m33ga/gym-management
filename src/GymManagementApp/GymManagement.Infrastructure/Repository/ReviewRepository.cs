@@ -10,11 +10,11 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class ReviewRepository : GenericRepository<Review>, IReviewRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public ReviewRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
 
         public async Task AddReviewAsync(Review review)
@@ -22,6 +22,18 @@ namespace GymManagement.Infrastructure.Repository
             await _dbContext.Reviews.AddAsync(review);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task UpdateAsync(Review review)
+        {
+            var existingReview = await _dbContext.Reviews.FindAsync(review.Id);
+            if (existingReview != null)
+            {
+                existingReview.UpdateReview(review.Rating);
+                _dbContext.Reviews.Update(existingReview);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+
 
         public override async Task<Review> FindOrCreateAsync(Review entity)
         {
@@ -51,5 +63,15 @@ namespace GymManagement.Infrastructure.Repository
         {
             return await GetReviewsByTrainerAsync(trainerId);            
         }
+
+        public async Task<double> GetAverageRatingByTrainerIdAsync(int trainerId)
+        {
+            var reviews = await _dbContext.Reviews
+                                          .Where(r => r.TrainerId == trainerId)
+                                          .ToListAsync();
+
+            return reviews.Any() ? reviews.Average(r => r.Rating) : 0;
+        }
+
     }
 }

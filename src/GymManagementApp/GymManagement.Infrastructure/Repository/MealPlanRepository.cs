@@ -9,11 +9,11 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class MealPlanRepository : GenericRepository<MealPlan>, IMealPlanRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public MealPlanRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
 
         public async Task AddMealPlanAsync(MealPlan mealPlan)
@@ -54,6 +54,17 @@ namespace GymManagement.Infrastructure.Repository
             await _dbContext.MealPlans.AddAsync(entity);
             return entity;
         }
+
+        public async Task<MealPlan> GetMealPlanByDayAsync(string day, int userId)
+        {
+            return await _dbContext.MealPlans
+                .Include(mp => mp.Meals)
+                .FirstOrDefaultAsync(mp => mp.Meals.Any(m => m.DayOfWeek == int.Parse(day))
+                                            && (mp.MemberId == userId || mp.TrainerId == userId));
+
+
+        }
+
 
     }
 }

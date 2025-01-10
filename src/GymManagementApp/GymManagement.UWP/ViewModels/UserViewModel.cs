@@ -63,7 +63,7 @@ namespace GymManagement.UWP.ViewModels
             try
             {
                 var result = await _authentificationService.Authentificate(Email, Password);
-                using (var uow = new UnitOfWork())
+                using (var uow = new UnitOfWork(new GymManagementDbContext()))
                 {
                     if (result.IsAuthentificated)
                     {
@@ -71,15 +71,12 @@ namespace GymManagement.UWP.ViewModels
                         {
                             case Role.Admin:
                                 LoggedUser = await uow.Admins.GetAdminByEmailAsync(Email);
-                                Debug.WriteLine($"LoggedUser set to: {LoggedUser}");
                                 break;
                             case Role.Trainer:
                                 LoggedUser = await uow.Trainers.GetTrainerByEmailAsync(Email);
-                                Debug.WriteLine($"LoggedUser set to: {LoggedUser}");
                                 break;
                             case Role.Member:
                                 LoggedUser = await uow.Members.GetMemberByEmailAsync(Email);
-                                Debug.WriteLine($"LoggedUser set to: {LoggedUser}");
                                 break;
                             default:
                                 LoggedUser = null;
@@ -98,6 +95,7 @@ namespace GymManagement.UWP.ViewModels
                 return false;
             }
         }
+
         public async Task<bool> DoRegisterAsync(Role role)
         {
             try
@@ -122,45 +120,31 @@ namespace GymManagement.UWP.ViewModels
                     return false;
                 }
 
-                if (role == Role.Member)
+                using (var uow = new UnitOfWork(new GymManagementDbContext()))
                 {
-                    LoggedUser = registrationResult.Member;
-                    using (var uow = new UnitOfWork())
+                    if (role == Role.Member)
                     {
-
+                        LoggedUser = registrationResult.Member;
                         uow.Members.Create(registrationResult.Member);
-                        await uow.SaveChangesAsync();
                     }
-                }
-                else if (role == Role.Trainer)
-                {
-                    LoggedUser = registrationResult.Trainer;
-                    using (var uow = new UnitOfWork())
+                    else if (role == Role.Trainer)
                     {
-
+                        LoggedUser = registrationResult.Trainer;
                         uow.Trainers.Create(registrationResult.Trainer);
-                        await uow.SaveChangesAsync();
                     }
-                }
-                else
-                {
-                    LoggedUser = null;
+                    else
+                    {
+                        LoggedUser = null;
+                    }
+
+                    await uow.SaveChangesAsync();
                 }
 
                 ShowError = LoggedUser == null;
-
-                if (LoggedUser == null)
-                {
-                    Console.WriteLine("Failed to set the logged user.");
-                    return false;
-                }
-
-                Console.WriteLine("Registration successful.");
-                return true;
+                return IsLogged;
             }
             catch (InvalidOperationException ex)
             {
-                // Handle duplicate user registration exception
                 ShowError = true;
                 Console.WriteLine($"Error during registration: {ex.Message}");
                 return false;

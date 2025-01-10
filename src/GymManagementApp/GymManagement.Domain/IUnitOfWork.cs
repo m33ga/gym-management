@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using GymManagement.Domain.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Domain
 {
@@ -21,10 +22,14 @@ namespace GymManagement.Domain
         INotificationRepository Notifications { get; }
         IReviewRepository Reviews { get; }
         ITrainerRepository Trainers { get; }
+        //public DbContext Context { get; }
+
 
         Task SaveChangesAsync();
 
         // Optional: Expose database path
-        string GetDbPath();
+        string GetDbPath(); 
+        void AttachAsModified<TEntity>(TEntity entity) where TEntity : class;
+
     }
 }

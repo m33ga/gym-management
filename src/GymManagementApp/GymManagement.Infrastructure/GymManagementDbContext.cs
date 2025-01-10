@@ -85,9 +85,9 @@ namespace GymManagement.Infrastructure
                 .HasForeignKey(c => c.TrainerId);
 
             modelBuilder.Entity<Class>()
-                .HasMany(c => c.Reviews)
+                .HasOne(c => c.Review)
                 .WithOne(r => r.Class)
-                .HasForeignKey(r => r.ClassId)
+                .HasForeignKey<Review>(r => r.ClassId)
                 .IsRequired(false);
 
             //Meal

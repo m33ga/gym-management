@@ -1,25 +1,24 @@
 ﻿using System;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
 namespace GymManagement.UWP.Converters
 {
-    public class BoolToVisibilityConverter : IValueConverter
+    public class BoolToNegateConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value is bool boolValue)
             {
-                return boolValue ? Visibility.Visible : Visibility.Collapsed;
+                return !boolValue; // Negates the boolean value
             }
-            return Visibility.Collapsed;
+            return false; // Default to false if input is invalid
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            if (value is Visibility visibility)
+            if (value is bool boolValue)
             {
-                return visibility == Visibility.Visible;
+                return !boolValue; // Negates the boolean value back
             }
             return false;
         }

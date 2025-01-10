@@ -9,11 +9,11 @@ namespace GymManagement.Infrastructure.Repository
 {
     public class NotificationRepository : GenericRepository<Notification>, INotificationRepository
     {
-        private readonly GymManagementDbContext _dbContext;
+        //private readonly GymManagementDbContext _dbContext;
 
         public NotificationRepository(GymManagementDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
         }
 
         public async Task AddNotificationAsync(Notification notification)
