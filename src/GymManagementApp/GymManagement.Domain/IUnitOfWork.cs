@@ -25,6 +25,8 @@ namespace GymManagement.Domain
         Task SaveChangesAsync();
 
         // Optional: Expose database path
-        string GetDbPath();
+        string GetDbPath(); 
+        void AttachAsModified<TEntity>(TEntity entity) where TEntity : class;
+
     }
 }
