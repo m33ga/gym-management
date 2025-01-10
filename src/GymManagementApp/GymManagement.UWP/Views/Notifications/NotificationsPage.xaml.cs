@@ -1,10 +1,8 @@
-﻿using GymManagement.Domain.Services;
-using GymManagement.Infrastructure;
-using GymManagement.Infrastructure.Repository;
+﻿using GymManagement.Infrastructure;
 using GymManagement.UWP.ViewModels;
 using System;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation; // Add this for navigation
+using Windows.UI.Xaml.Navigation;
 
 namespace GymManagement.UWP.Views.Notifications
 {
@@ -20,11 +18,16 @@ namespace GymManagement.UWP.Views.Notifications
             this.DataContext = ViewModel;
         }
 
-        // Use OnNavigatedTo to load notifications when the page is navigated to
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            await ViewModel.LoadNotificationsAsync(); // Wait for the async method to complete
+            await ViewModel.LoadNotificationsAsync();
             base.OnNavigatedTo(e);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            ViewModel.StopTimer(); // Зупиняємо таймер при переході зі сторінки
+            base.OnNavigatedFrom(e);
         }
     }
 }

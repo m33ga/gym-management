@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GymManagement.Domain.Models;
@@ -12,17 +13,22 @@ namespace GymManagement.UWP.ViewModels
     {
         private readonly UnitOfWork _unitOfWork;
         private Notification _selectedNotification;
+        private Timer _timer; // Таймер для періодичної перевірки
+        private bool _isLoading; // Запобігає накладенню запитів під час виконання
 
         public NotificationsViewModel(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             Notifications = new ObservableCollection<Notification>();
 
-            // Команда для позначення як прочитаного
+            // Ініціалізація команди для позначення сповіщення як прочитаного
             MarkAsReadCommand = new RelayCommand(
                 execute: async () => await MarkAsReadAsync(),
                 canExecute: () => SelectedNotification != null && SelectedNotification.Status == "Unread"
             );
+
+            // Налаштування таймера для перевірки нових сповіщень
+            _timer = new Timer(async _ => await LoadNotificationsAsync(), null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
         }
 
         // Колекція для зберігання сповіщень
@@ -43,19 +49,36 @@ namespace GymManagement.UWP.ViewModels
         public ICommand MarkAsReadCommand { get; }
 
         // Метод для завантаження сповіщень із бази даних
-        public async Task LoadNotificationsAsync() // Changed to public for access
+        public async Task LoadNotificationsAsync()
         {
-            var userViewModel = App.UserViewModel;
-            if (userViewModel.LoggedUser is Member member)
-            {
-                // Отримуємо непрочитані сповіщення для користувача
-                var notifications = await _unitOfWork.Notifications.GetUnreadNotificationsByMemberAsync(member.Id);
+            if (_isLoading) return; // Перевірка, чи метод вже виконується
+            _isLoading = true;
 
-                Notifications.Clear();
-                foreach (var notification in notifications)
+            try
+            {
+                var userViewModel = App.UserViewModel;
+                if (userViewModel.LoggedUser is Member member)
                 {
-                    Notifications.Add(notification);
+                    // Отримуємо непрочитані сповіщення для користувача
+                    var newNotifications = await _unitOfWork.Notifications.GetUnreadNotificationsByMemberAsync(member.Id);
+
+                    foreach (var notification in newNotifications)
+                    {
+                        if (!Notifications.Contains(notification)) // Перевірка на дублікати
+                        {
+                            Notifications.Add(notification);
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Обробка помилок, якщо необхідно
+                System.Diagnostics.Debug.WriteLine($"Error loading notifications: {ex.Message}");
+            }
+            finally
+            {
+                _isLoading = false; // Завершення виконання
             }
         }
 
@@ -64,17 +87,31 @@ namespace GymManagement.UWP.ViewModels
         {
             if (SelectedNotification == null) return;
 
-            // Оновлюємо статус у базі даних
-            await _unitOfWork.Notifications.MarkAsReadAsync(SelectedNotification.Id);
+            try
+            {
+                // Оновлення статусу у базі даних
+                await _unitOfWork.Notifications.MarkAsReadAsync(SelectedNotification.Id);
 
-            // Викликаємо метод моделі для зміни статусу
-            SelectedNotification.MarkAsRead();
+                // Виклик методу моделі для зміни статусу
+                SelectedNotification.MarkAsRead();
 
-            // Оновлюємо стан колекції
-            Notifications[Notifications.IndexOf(SelectedNotification)] = SelectedNotification;
+                // Оновлення стану колекції
+                Notifications[Notifications.IndexOf(SelectedNotification)] = SelectedNotification;
 
-            // Оновлюємо стан команди
-            (MarkAsReadCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                // Оновлення стану команди
+                (MarkAsReadCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            }
+            catch (Exception ex)
+            {
+                // Обробка помилок, якщо необхідно
+                System.Diagnostics.Debug.WriteLine($"Error marking notification as read: {ex.Message}");
+            }
+        }
+
+        // Метод для зупинки таймера при закритті
+        public void StopTimer()
+        {
+            _timer?.Dispose();
         }
     }
 }
