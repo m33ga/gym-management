@@ -68,30 +68,56 @@ namespace GymManagement.UWP.Views.Profile
 
         private void UpdateEditingMode()
         {
-            // Toggle IsReadOnly based on IsEditing
+            // Member section fields
             FullNameTextBox.IsReadOnly = !ViewModel.IsEditing;
             UsernameTextBox.IsReadOnly = !ViewModel.IsEditing;
             EmailTextBox.IsReadOnly = !ViewModel.IsEditing;
             PhoneNumberTextBox.IsReadOnly = !ViewModel.IsEditing;
-            HeightTextBox.IsReadOnly = !ViewModel.IsEditing;
-            WeightTextBox.IsReadOnly = !ViewModel.IsEditing;
 
-            // Change appearance of fields when in edit mode
+            // Trainer section fields
+            TrainerFullNameTextBox.IsReadOnly = !ViewModel.IsEditing;
+            TrainerUsernameTextBox.IsReadOnly = !ViewModel.IsEditing;
+            TrainerEmailTextBox.IsReadOnly = !ViewModel.IsEditing;
+            TrainerPhoneNumberTextBox.IsReadOnly = !ViewModel.IsEditing;
+
+            // Handle height and weight visibility for members
+            if (ViewModel.IsMember)
+            {
+                HeightTextBox.IsReadOnly = !ViewModel.IsEditing;
+                WeightTextBox.IsReadOnly = !ViewModel.IsEditing;
+                HeightTextBox.Visibility = Visibility.Visible;
+                WeightTextBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                HeightTextBox.Visibility = Visibility.Collapsed;
+                WeightTextBox.Visibility = Visibility.Collapsed;
+            }
+
+            // Change background color for editing mode
             var backgroundColor = ViewModel.IsEditing ? Windows.UI.Colors.White : Windows.UI.Colors.LightGray;
+
+            // Member section
             FullNameTextBox.Background = new SolidColorBrush(backgroundColor);
             UsernameTextBox.Background = new SolidColorBrush(backgroundColor);
             EmailTextBox.Background = new SolidColorBrush(backgroundColor);
             PhoneNumberTextBox.Background = new SolidColorBrush(backgroundColor);
-            HeightTextBox.Background = new SolidColorBrush(backgroundColor);
-            WeightTextBox.Background = new SolidColorBrush(backgroundColor);
 
-            // Ensure visibility settings for specific roles
+            // Trainer section
+            TrainerFullNameTextBox.Background = new SolidColorBrush(backgroundColor);
+            TrainerUsernameTextBox.Background = new SolidColorBrush(backgroundColor);
+            TrainerEmailTextBox.Background = new SolidColorBrush(backgroundColor);
+            TrainerPhoneNumberTextBox.Background = new SolidColorBrush(backgroundColor);
+
+            // Upload button visibility in edit mode
+            UploadButton.Visibility = ViewModel.IsEditing ? Visibility.Visible : Visibility.Collapsed;
+
+            // Role-based visibility
             MemberSection.Visibility = ViewModel.IsMember ? Visibility.Visible : Visibility.Collapsed;
             TrainerSection.Visibility = ViewModel.IsTrainer ? Visibility.Visible : Visibility.Collapsed;
-
-            // Ensure the Upload button is only visible in edit mode
-            UploadButton.Visibility = ViewModel.IsEditing ? Visibility.Visible : Visibility.Collapsed;
         }
+
+
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {

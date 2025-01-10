@@ -74,18 +74,21 @@ namespace GymManagement.UWP.ViewModels
 
         private async void ToggleEditMode()
         {
+            Debug.WriteLine($"Toggling edit mode. Current IsEditing: {IsEditing}");
+
             if (IsEditing)
             {
-                // Save changes to the database when exiting edit mode
+                // Save changes when exiting edit mode
                 await SaveChangesAsync();
             }
 
-            // Toggle the editing mode
             IsEditing = !IsEditing;
 
-            // Show/hide Upload button dynamically based on editing mode
+            Debug.WriteLine($"New IsEditing: {IsEditing}");
+
             OnPropertyChanged(nameof(IsEditing));
         }
+
 
         public Role UserRole
         {
@@ -474,11 +477,23 @@ namespace GymManagement.UWP.ViewModels
             Username = user.Username;
             Email = user.Email;
             PhoneNumber = user.PhoneNumber;
-            Weight = user.Weight;
-            Height = user.Height;
-            Membership = user.Membership;
-            RemainingWorkouts = user.RemainingWorkouts;
 
+            // Exclude weight and height for trainers
+            if (user is Member)
+            {
+                Weight = user.Weight;
+                Height = user.Height;
+                RemainingWorkouts = user.RemainingWorkouts;
+            }
+
+            if (user is Trainer)
+            {
+                UserRole = Role.Trainer;
+                RemainingWorkouts = 0; // Trainers do not have this property
+            }
+            
+            if (user is Admin) UserRole = Role.Admin;
+            
             // Convert byte[] to BitmapImage for ProfilePicture
             if (user.Image != null)
             {
@@ -493,10 +508,6 @@ namespace GymManagement.UWP.ViewModels
             {
                 ProfilePictureBitmap = null; // No image, fallback to default behavior
             }
-
-            if (user is Member) UserRole = Role.Member;
-            else if (user is Trainer) UserRole = Role.Trainer;
-            else if (user is Admin) UserRole = Role.Admin;
 
             OnPropertyChanged(nameof(IsMember));
             OnPropertyChanged(nameof(IsTrainer));
@@ -537,23 +548,22 @@ namespace GymManagement.UWP.ViewModels
                 }
                 else if (_userViewModel.LoggedUser is Trainer trainer)
                 {
-                    // Fetch the existing trainer by email
                     var existingTrainer = await _unitOfWork.Trainers.GetTrainerByEmailAsync(trainer.Email);
                     if (existingTrainer == null)
                     {
-                        Debug.WriteLine($"Trainer with email {trainer.Email} not found in the database.");
+                        Debug.WriteLine($"Trainer with email {trainer.Email} not found.");
                         return;
                     }
 
-                    // Update properties
+                    // Update trainer's properties
                     existingTrainer.FullName = FullName;
                     existingTrainer.Username = Username;
                     existingTrainer.Email = Email;
                     existingTrainer.PhoneNumber = PhoneNumber;
-                    existingTrainer.Image = trainer.Image;
 
-                    // Attach the entity and mark it as modified
+                    // Attach and save
                     _unitOfWork.AttachAsModified(existingTrainer);
+                    await _unitOfWork.SaveChangesAsync();
                 }
 
                 // Commit changes to the database

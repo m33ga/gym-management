@@ -214,9 +214,9 @@
                                 <!-- Remaining Workouts -->
                                 <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Border Background="#F5F5F5" Padding="20" CornerRadius="10" BorderBrush="Gray" BorderThickness="1">
-                                        <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="{Binding RemainingWorkouts}" FontSize="26" FontWeight="Bold" Foreground="Black" TextAlignment="Center"/>
-                                            <TextBlock Text="Remaining available bookings this month" FontSize="14" Foreground="Gray" TextAlignment="Center"/>
+                                        <StackPanel x:Name="RemainingWorkoutsBox" Visibility="{Binding IsMember, Mode=TwoWay}">
+                                            <TextBlock Text="Remaining available bookings this month" />
+                                            <TextBlock Text="{Binding RemainingWorkouts}" />
                                         </StackPanel>
                                     </Border>
                                 </StackPanel>
@@ -224,17 +224,73 @@
                         </Grid>
                     </StackPanel>
 
-                    <StackPanel x:Name="TrainerSection" Grid.Row="1" 
-                                Visibility="{Binding IsTrainer, Mode=OneWay}">
-                        <!-- Trainer Specific Details -->
-                        <TextBlock Text="Trainer View"/>
+                    <StackPanel x:Name="TrainerSection" Grid.Row="1" Visibility="Collapsed" Margin="20">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- Full Name and Username -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Email and Phone Number -->
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <!-- Left Column -->
+                                <ColumnDefinition Width="*"/>
+                                <!-- Right Column -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Full Name -->
+                            <!-- Row 1: Full Name and Username -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="10">
+                                <TextBlock Text="Full Name" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="TrainerFullNameTextBox" Text="{Binding FullName, Mode=TwoWay}" IsReadOnly="True"
+                                         PlaceholderText="Current Name"/>
+
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="10">
+                                <TextBlock Text="Username" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="TrainerUsernameTextBox" Text="{Binding Username, Mode=TwoWay}" IsReadOnly="True"
+                                         PlaceholderText="Current Username"/>
+                            </StackPanel>
+                            <!-- Row 3: Email and Phone Number -->
+                            <StackPanel Grid.Row="2" Grid.Column="0" Margin="10">
+                                <TextBlock Text="Email" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="TrainerEmailTextBox" Text="{Binding Email, Mode=TwoWay}" IsReadOnly="True" 
+                                         PlaceholderText="Current Email"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.Column="1" Margin="10">
+                                <TextBlock Text="Phone Number" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="Gray" 
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="TrainerPhoneNumberTextBox" Text="{Binding PhoneNumber, Mode=TwoWay}" IsReadOnly="True"
+                                         PlaceholderText="Current Phone Number"/>
+                            </StackPanel>
+                        </Grid>
                     </StackPanel>
 
+
+
                     <!-- Additional Info/Footer -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10">
+                    <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10">
                         <TextBlock Text="Database Path: " FontWeight="Bold" />
                         <TextBlock x:Name="DatabasePathTextBlock" Text="Loading..." />
-                    </StackPanel>
+                    </StackPanel>-->
                 </Grid>
             </Border>
         </Frame>
