@@ -10,17 +10,31 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- ListView to display notifications -->
-        <ListView
-             ItemsSource="{Binding Notifications}"
-    SelectedItem="{Binding SelectedNotification, Mode=TwoWay}"
-    DisplayMemberPath="Text"
-    Margin="0,0,0,10" />
+        <!-- ScrollViewer to enable scrolling of notifications -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <!-- ListView to display notifications -->
+            <ListView
+                ItemsSource="{Binding Notifications}"
+                SelectedItem="{Binding SelectedNotification, Mode=TwoWay}"
+                Margin="0,0,0,10">
 
-        <!-- Button to mark as read -->
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding Text}" />
+                            <!-- Button to mark as read -->
+                            <Button Content="Mark as Read" Command="{Binding DataContext.MarkAsReadCommand, ElementName=Page}" CommandParameter="{Binding}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollViewer>
+
+        <!-- Button to mark all notifications as read -->
         <Button
             Grid.Row="1"
-            Content="Mark as Read"
-            Command="{Binding MarkAsReadCommand}" />
+            Content="Mark all as Read"
+            Command="{Binding MarkAllAsReadCommand}" />
     </Grid>
 </Page>
