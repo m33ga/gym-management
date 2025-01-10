@@ -5,12 +5,10 @@ namespace GymManagement.Domain.Models
 {
     public class Notification : Entity
     {
-        // Властивості
-        public string Text { get; private set; }
-        public DateTime Date { get; private set; }
-        public string Status { get; private set; } // "Unread", "Read"
+        public string Text { get; set; }
+        public DateTime Date { get; set; }
+        public string Status { get; set; } 
 
-        // Відносини
         public int? AdminId { get; private set; }
         public Admin Admin { get; private set; }
 
@@ -20,11 +18,7 @@ namespace GymManagement.Domain.Models
         public int? TrainerId { get; private set; }
         public Trainer Trainer { get; private set; }
 
-        // Конструктори
-        private Notification()
-        {
-            // Для EF Core
-        }
+        private Notification() { } // For EF Core
 
         public Notification(string text, DateTime date, string status, int? adminId, int? memberId = null, int? trainerId = null)
         {
@@ -43,7 +37,6 @@ namespace GymManagement.Domain.Models
             TrainerId = trainerId;
         }
 
-        // Методи
         public void MarkAsRead()
         {
             if (Status == "Read")
@@ -61,3 +54,4 @@ namespace GymManagement.Domain.Models
         }
     }
 }
+
