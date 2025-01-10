@@ -37,12 +37,15 @@ namespace GymManagement.UWP
             this.InitializeComponent();
        
             UserViewModel = App.UserViewModel;
-            
+
             if (UserViewModel.IsLogged == true)
             {
-                frmMain.Navigate(typeof(ProfilePage));  
+                frmMain.Navigate(typeof(ProfilePage));
             }
-            frmMain.Navigate(typeof(LoginDialog));
+            else
+            {
+                frmMain.Navigate(typeof(LoginDialog));
+            }
         }
         private void NvMain_OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
