@@ -119,6 +119,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\AverageRatingConverter.cs" />
     <Compile Include="Converters\BoolToEditSaveConverter.cs" />
     <Compile Include="Converters\BoolToNegateConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\MealPlanViewModel.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
+    <Compile Include="ViewModels\ScheduleViewModel.cs" />
     <Compile Include="ViewModels\MealPlanTrainerViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Views\Booking\BookingManagementPage.xaml.cs">
@@ -170,6 +172,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\DefaultBreakfast.png" />
+    <Content Include="Assets\DefaultDinner.png" />
+    <Content Include="Assets\DefaultLunch.png" />
     <Content Include="Assets\image.png" />
     <Content Include="Assets\Schedule.png" />
     <Content Include="Assets\Notification.png" />

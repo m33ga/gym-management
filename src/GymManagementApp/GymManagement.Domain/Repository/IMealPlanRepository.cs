@@ -21,5 +21,6 @@ namespace GymManagement.Domain.Repository
         Task<MealPlan> GetByIdWithDetailsAsync(int id);
 
         Task SaveChangesAsync();
+        Task<MealPlan> GetMealPlanByDayAsync(string day, int userId);
     }
 }

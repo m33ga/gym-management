@@ -2,6 +2,7 @@
 using GymManagement.Domain.Models;
 using GymManagement.Domain.Services;
 using GymManagement.Infrastructure;
+using GymManagement.Infrastructure.PasswordUtils;
 using GymManagement.Infrastructure.Repository;
 using System;
 using System.Diagnostics;
@@ -100,10 +101,10 @@ namespace GymManagement.UWP.ViewModels
             try
             {
                 var registrationService = new RegistrationService(new UnitOfWork(new GymManagementDbContext()));
-
+                var pass = PasswordUtils.HashPassword(Password);
                 var registrationResult = await registrationService.RegisterAsync(
                     email: Email,
-                    password: Password,
+                    password: pass,
                     fullname: FullName,
                     username: Username,
                     phonenumber: PhoneNumber,

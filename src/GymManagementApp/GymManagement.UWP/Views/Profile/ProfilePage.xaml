@@ -201,25 +201,29 @@
                                     <!-- Remaining Workouts -->
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Membership Info -->
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Current Gym Membership:" FontSize="16" FontWeight="SemiBold" Foreground="Gray" Margin="0,0,0,10"/>
-                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Image Source="ms-appx:///Assets/SilverMembership.png" Width="30" Height="30" Margin="0,0,10,0"/>
-                                        <TextBlock Text="{Binding Membership.Name}" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                    <TextBlock Text="{Binding Membership.Description}" FontSize="14" Foreground="Gray"/>
-                                </StackPanel>
-
                                 <!-- Remaining Workouts -->
-                                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                    <Border Background="#F5F5F5" Padding="20" CornerRadius="10" BorderBrush="Gray" BorderThickness="1">
-                                        <StackPanel x:Name="RemainingWorkoutsBox" Visibility="{Binding IsMember, Mode=TwoWay}">
-                                            <TextBlock Text="Remaining available bookings this month" />
-                                            <TextBlock Text="{Binding RemainingWorkouts}" />
+                                <!-- Remaining Workouts -->
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                                    <Border Background="#FFFFFF" Padding="20" CornerRadius="15" BorderBrush="Gray" BorderThickness="1">
+                                        <StackPanel x:Name="RemainingWorkoutsBox" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="Remaining Available Workouts" 
+                                                       FontSize="16" 
+                                                       FontWeight="SemiBold" 
+                                                       Foreground="Gray" 
+                                                       TextAlignment="Center" 
+                                                       Margin="0,0,0,10"/>  
+                                            <TextBlock Text="{Binding RemainingWorkouts}" 
+                                                       FontSize="24" 
+                                                       FontWeight="Bold" 
+                                                       Foreground="#0078D4" 
+                                                       HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Border>
                                 </StackPanel>
+
+
+
                             </Grid>
                         </Grid>
                     </StackPanel>
@@ -232,6 +236,7 @@
                                 <!-- Full Name and Username -->
                                 <RowDefinition Height="Auto"/>
                                 <!-- Email and Phone Number -->
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -281,6 +286,28 @@
                                 <TextBox x:Name="TrainerPhoneNumberTextBox" Text="{Binding PhoneNumber, Mode=TwoWay}" IsReadOnly="True"
                                          PlaceholderText="Current Phone Number"/>
                             </StackPanel>
+
+                            <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Left" Margin="20,150,20,0">
+                                <!-- Average Rating Section -->
+                                <Border Background="#FFFFFF" Padding="20" CornerRadius="10" BorderBrush="Gray" BorderThickness="1">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Average Rating" 
+                                                   FontSize="16" 
+                                                   FontWeight="SemiBold" 
+                                                   Foreground="Gray" 
+                                                   TextAlignment="Center" 
+                                                   Margin="0,0,0,10"/>
+                                        <TextBlock Text="{Binding FormattedAverageRating}" 
+                                                   FontSize="24" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="#0078D4" 
+                                                   TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Border> 
+                            </StackPanel>
+
+
+
                         </Grid>
                     </StackPanel>
 

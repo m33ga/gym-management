@@ -33,18 +33,23 @@ namespace GymManagement.UWP.ViewModels
         private string _profilePictureUri;
         private byte[] _image;
 
+
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserViewModel _userViewModel;
+        private readonly DbContext _dbContext;
+        private double _averageRating;
+        private BitmapImage _profilePictureBitmap;
+
         public ICommand UploadImageCommand { get; }
         public ICommand ToggleEditCommand { get; }
         public ICommand SaveChangesCommand { get; }
 
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly UserViewModel _userViewModel;
-
+        private Role _userRole;
         public bool IsMember => UserRole == Role.Member;
         public bool IsTrainer => UserRole == Role.Trainer;
         public bool IsAdmin => UserRole == Role.Admin;
+        public string FormattedAverageRating => AverageRating.ToString("F1");
 
-        private Role _userRole;
 
         private bool _isEditing;
         public bool IsEditing
@@ -151,8 +156,6 @@ namespace GymManagement.UWP.ViewModels
             set => Set(ref _image, value);
         }
 
-
-        private BitmapImage _profilePictureBitmap;
         public BitmapImage ProfilePictureBitmap
         {
             get => _profilePictureBitmap;
@@ -162,6 +165,18 @@ namespace GymManagement.UWP.ViewModels
                 OnPropertyChanged(nameof(ProfilePictureBitmap));
             }
         }
+        public double AverageRating
+        {
+            get => _averageRating;
+            set
+            {
+                if (Set(ref _averageRating, value))
+                {
+                    OnPropertyChanged(nameof(FormattedAverageRating)); // Notify UI of formatted value change
+                }
+            }
+        }
+
 
         public bool IsProfileComplete =>
             !string.IsNullOrWhiteSpace(FullName) &&
@@ -173,44 +188,102 @@ namespace GymManagement.UWP.ViewModels
 
         //private async Task UploadImageAsync()
         //{
-        //    var picker = new FileOpenPicker();
-        //    picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+        //    var picker = new FileOpenPicker
+        //    {
+        //        SuggestedStartLocation = PickerLocationId.PicturesLibrary
+        //    };
         //    picker.FileTypeFilter.Add(".jpg");
         //    picker.FileTypeFilter.Add(".png");
 
         //    var file = await picker.PickSingleFileAsync();
         //    if (file != null)
         //    {
-        //        // Convert image to byte array
-        //        byte[] imageBytes;
-        //        using (var stream = await file.OpenStreamForReadAsync())
-        //        using (var memoryStream = new MemoryStream())
+        //        try
         //        {
-        //            await stream.CopyToAsync(memoryStream);
-        //            imageBytes = memoryStream.ToArray();
-        //        }
+        //            using (var stream = await file.OpenAsync(FileAccessMode.Read))
+        //            {
+        //                var decoder = await BitmapDecoder.CreateAsync(stream);
 
-        //        // Update the user's image property
-        //        if (_userViewModel.LoggedUser is Member member)
-        //        {
-        //            member.Image = imageBytes;
-        //            await SaveChangesAsync(); // Save changes to the database
-        //        }
-        //        else if (_userViewModel.LoggedUser is Trainer trainer)
-        //        {
-        //            trainer.Image = imageBytes;
-        //            await SaveChangesAsync(); // Save changes to the database
-        //        }
+        //                // Resize the image
+        //                const uint targetWidth = 100;
+        //                const uint targetHeight = 100;
 
-        //        // Update ProfilePictureBitmap for display
-        //        using (var imageStream = new MemoryStream(imageBytes))
-        //        {
-        //            var bitmapImage = new BitmapImage();
-        //            await bitmapImage.SetSourceAsync(imageStream.AsRandomAccessStream());
-        //            ProfilePictureBitmap = bitmapImage;
-        //        }
+        //                var transform = new BitmapTransform
+        //                {
+        //                    ScaledWidth = targetWidth,
+        //                    ScaledHeight = targetHeight
+        //                };
 
-        //        Debug.WriteLine("Image uploaded and saved as byte array.");
+        //                var pixelData = await decoder.GetPixelDataAsync(
+        //                    BitmapPixelFormat.Bgra8,
+        //                    BitmapAlphaMode.Premultiplied,
+        //                    transform,
+        //                    ExifOrientationMode.RespectExifOrientation,
+        //                    ColorManagementMode.DoNotColorManage
+        //                );
+
+        //                byte[] resizedImageBytes;
+        //                using (var resizedStream = new InMemoryRandomAccessStream())
+        //                {
+        //                    var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, resizedStream);
+        //                    encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied,
+        //                                         targetWidth, targetHeight, decoder.DpiX, decoder.DpiY, pixelData.DetachPixelData());
+        //                    await encoder.FlushAsync();
+
+        //                    resizedImageBytes = new byte[resizedStream.Size];
+        //                    using (var dataReader = new DataReader(resizedStream.GetInputStreamAt(0)))
+        //                    {
+        //                        await dataReader.LoadAsync((uint)resizedStream.Size);
+        //                        dataReader.ReadBytes(resizedImageBytes);
+        //                    }
+        //                }
+
+        //                // Save to the local folder
+        //                string localImagePath;
+        //                if (_userViewModel.LoggedUser is Member member)
+        //                {
+        //                    localImagePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{member.Email}_ProfilePicture.jpg");
+        //                    await File.WriteAllBytesAsync(localImagePath, resizedImageBytes);
+
+        //                    // Save to the database
+        //                    member.Image = resizedImageBytes;
+        //                    _unitOfWork.AttachAsModified(member);
+        //                    await _unitOfWork.SaveChangesAsync();
+        //                    Debug.WriteLine($"Saving image to path: {localImagePath}");
+        //                }
+        //                else if (_userViewModel.LoggedUser is Trainer trainer)
+        //                {
+        //                    localImagePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{trainer.Email}_ProfilePicture.jpg");
+        //                    await File.WriteAllBytesAsync(localImagePath, resizedImageBytes);
+
+        //                    // Save to the database
+        //                    trainer.Image = resizedImageBytes;
+        //                    _unitOfWork.AttachAsModified(trainer);
+        //                    await _unitOfWork.SaveChangesAsync();
+        //                }
+        //                else
+        //                {
+        //                    throw new InvalidOperationException("Logged user is neither a Member nor a Trainer.");
+        //                }
+
+        //                // Update UI
+        //                await CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+        //                {
+        //                    var bitmapImage = new BitmapImage();
+        //                    using (var memoryStream = new MemoryStream(resizedImageBytes))
+        //                    {
+        //                        await bitmapImage.SetSourceAsync(memoryStream.AsRandomAccessStream());
+        //                        ProfilePictureBitmap = bitmapImage;
+        //                    }
+        //                });
+
+        //                Debug.WriteLine("Image uploaded, resized, saved locally, and saved to the database.");
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Debug.WriteLine($"Error uploading image: {ex.Message}");
+        //        }
         //    }
         //    else
         //    {
@@ -232,9 +305,12 @@ namespace GymManagement.UWP.ViewModels
             {
                 try
                 {
+                    Debug.WriteLine("File selected. Starting image processing...");
+
                     using (var stream = await file.OpenAsync(FileAccessMode.Read))
                     {
                         var decoder = await BitmapDecoder.CreateAsync(stream);
+                        Debug.WriteLine($"Decoder created. Original Width: {decoder.PixelWidth}, Height: {decoder.PixelHeight}");
 
                         // Resize the image
                         const uint targetWidth = 100;
@@ -254,6 +330,8 @@ namespace GymManagement.UWP.ViewModels
                             ColorManagementMode.DoNotColorManage
                         );
 
+                        Debug.WriteLine("Image resized successfully.");
+
                         byte[] resizedImageBytes;
                         using (var resizedStream = new InMemoryRandomAccessStream())
                         {
@@ -270,27 +348,53 @@ namespace GymManagement.UWP.ViewModels
                             }
                         }
 
+                        Debug.WriteLine($"Image resized byte array prepared. Length: {resizedImageBytes.Length}");
+
                         // Save to the local folder
                         string localImagePath;
                         if (_userViewModel.LoggedUser is Member member)
                         {
                             localImagePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{member.Email}_ProfilePicture.jpg");
-                            await File.WriteAllBytesAsync(localImagePath, resizedImageBytes);
+                            Debug.WriteLine($"Saving image for Member to: {localImagePath}");
 
-                            // Save to the database
-                            member.Image = resizedImageBytes;
-                            _unitOfWork.AttachAsModified(member);
-                            await _unitOfWork.SaveChangesAsync();
+                            try
+                            {
+                                await File.WriteAllBytesAsync(localImagePath, resizedImageBytes);
+                                Debug.WriteLine("Image saved to local folder for Member successfully.");
+
+                                // Save to the database
+                                member.Image = resizedImageBytes;
+                                _unitOfWork.AttachAsModified(member);
+                                await _unitOfWork.SaveChangesAsync();
+                                Debug.WriteLine("Member entity updated and saved to database.");
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Error saving image for Member: {ex.Message}");
+                                throw;
+                            }
                         }
                         else if (_userViewModel.LoggedUser is Trainer trainer)
                         {
                             localImagePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{trainer.Email}_ProfilePicture.jpg");
-                            await File.WriteAllBytesAsync(localImagePath, resizedImageBytes);
+                            Debug.WriteLine($"Saving image for Trainer to: {localImagePath}");
 
-                            // Save to the database
-                            trainer.Image = resizedImageBytes;
-                            _unitOfWork.AttachAsModified(trainer);
-                            await _unitOfWork.SaveChangesAsync();
+                            try
+                            {
+                                await File.WriteAllBytesAsync(localImagePath, resizedImageBytes);
+                                Debug.WriteLine("Image saved to local folder for Trainer successfully.");
+
+                                // Save to the database
+                                trainer.Image = resizedImageBytes;
+                                _unitOfWork.AttachAsModified(trainer);
+                                await _unitOfWork.SaveChangesAsync();
+                                Debug.WriteLine("Trainer entity updated and saved to database.");
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Error saving image for Trainer: {ex.Message}");
+                                throw;
+                            }
                         }
                         else
                         {
@@ -298,6 +402,7 @@ namespace GymManagement.UWP.ViewModels
                         }
 
                         // Update UI
+                        Debug.WriteLine("Updating UI with the new image.");
                         await CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                         {
                             var bitmapImage = new BitmapImage();
@@ -306,14 +411,15 @@ namespace GymManagement.UWP.ViewModels
                                 await bitmapImage.SetSourceAsync(memoryStream.AsRandomAccessStream());
                                 ProfilePictureBitmap = bitmapImage;
                             }
+                            Debug.WriteLine("UI updated successfully with new profile picture.");
                         });
 
-                        Debug.WriteLine("Image uploaded, resized, saved locally, and saved to the database.");
+                        Debug.WriteLine("Image uploaded, resized, saved locally, and updated in the UI.");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error uploading image: {ex.Message}");
+                    Debug.WriteLine($"Error during image upload process: {ex.Message}");
                 }
             }
             else
@@ -431,6 +537,8 @@ namespace GymManagement.UWP.ViewModels
                     if (fetchedTrainer != null)
                     {
                         PopulateProfile(fetchedTrainer);
+                        // Fetch average rating
+                        AverageRating = await _unitOfWork.Reviews.GetAverageRatingByTrainerIdAsync(fetchedTrainer.Id);
                     }
                 }
                 else if (_userViewModel.LoggedUser is Admin admin)
@@ -484,6 +592,7 @@ namespace GymManagement.UWP.ViewModels
                 Weight = user.Weight;
                 Height = user.Height;
                 RemainingWorkouts = user.RemainingWorkouts;
+                Membership = user.Membership;
             }
 
             if (user is Trainer)
@@ -514,11 +623,10 @@ namespace GymManagement.UWP.ViewModels
             OnPropertyChanged(nameof(IsAdmin));
             OnPropertyChanged(nameof(FullName));
             OnPropertyChanged(nameof(Email));
+            OnPropertyChanged(nameof(Membership));
             OnPropertyChanged(nameof(IsProfileComplete));
             OnPropertyChanged(nameof(ProfilePictureBitmap));
         }
-
-
 
         private async Task SaveChangesAsync()
         {
@@ -575,5 +683,7 @@ namespace GymManagement.UWP.ViewModels
                 Debug.WriteLine($"Error saving changes: {ex.Message}");
             }
         }
+
+
     }
 }

@@ -11,6 +11,8 @@ namespace GymManagement.Infrastructure
     {
         private readonly GymManagementDbContext _dbContext;
 
+        //public DbContext Context => _dbContext;
+
         public UnitOfWork(GymManagementDbContext dbContext)
         {
             _dbContext = dbContext;

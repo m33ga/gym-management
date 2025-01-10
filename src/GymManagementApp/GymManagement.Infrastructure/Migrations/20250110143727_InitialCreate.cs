@@ -50,7 +50,8 @@ namespace GymManagement.Infrastructure.Migrations
                     Email = table.Column<string>(nullable: true),
                     Username = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
-                    Image = table.Column<byte[]>(nullable: true)
+                    Image = table.Column<byte[]>(nullable: true),
+                    Bio = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -217,7 +218,6 @@ namespace GymManagement.Infrastructure.Migrations
                     ClassId = table.Column<int>(nullable: false),
                     MemberId = table.Column<int>(nullable: false),
                     Rating = table.Column<int>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
                     DateSubmitted = table.Column<DateTime>(nullable: false),
                     TrainerId = table.Column<int>(nullable: false)
                 },
@@ -301,6 +301,12 @@ namespace GymManagement.Infrastructure.Migrations
                 column: "MemberId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bookings_ClassId_MemberId",
+                table: "Bookings",
+                columns: new[] { "ClassId", "MemberId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Classes_MemberId",
                 table: "Classes",
                 column: "MemberId");
@@ -353,7 +359,8 @@ namespace GymManagement.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_ClassId",
                 table: "Reviews",
-                column: "ClassId");
+                column: "ClassId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_MemberId",
