@@ -167,7 +167,11 @@ namespace GymManagement.UWP.ViewModels
 
                 var booking = new Booking( member.Id, cls.Id, DateTime.Now);
                 Debug.WriteLine(booking.Id);
+                var notif_mr = new Notification($"You have a class on {cls.ScheduledDate}, with a trainer {cls.Trainer.FullName}",DateTime.Now,"Unread", null,member.Id);
+                var notif_tr = new Notification($"You have a booked class on {cls.ScheduledDate}, with a member {member.FullName}", DateTime.Now, "Unread", null , null ,cls.TrainerId);
                 await _unitOfWork.Bookings.AddBookingAsync(booking);
+                await _unitOfWork.Notifications.AddNotificationAsync(notif_mr);
+                await _unitOfWork.Notifications.AddNotificationAsync(notif_tr);
                 Debug.WriteLine(booking.Id);
                 Debug.WriteLine(booking.ClassId);
                 Debug.WriteLine(booking.MemberId);

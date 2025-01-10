@@ -46,7 +46,7 @@
 
                                 <Ellipse Fill="White" />
 
-                                <Image Source="ms-appx:///Assets/image.png"
+                                <Image Source="ms-appx:///Assets/logo.png"
                                        Stretch="UniformToFill" />
                             </Grid>
                         </DataTemplate>
