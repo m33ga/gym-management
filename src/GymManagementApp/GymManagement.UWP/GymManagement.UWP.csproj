@@ -147,6 +147,12 @@
     <Compile Include="Views\Dashboard\TrainerDashboardPage.xaml.cs">
       <DependentUpon>TrainerDashboardPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MealPlans\MealPlanMember.xaml.cs">
+      <DependentUpon>MealPlanMember.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MealPlans\MealPlanTrainer.xaml.cs">
+      <DependentUpon>MealPlanTrainer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Profile\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>
