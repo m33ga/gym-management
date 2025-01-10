@@ -30,9 +30,6 @@
         </ResourceDictionary>
     </Page.Resources>
 
-
-
-
     <Grid>
 
         <!-- Main Content Area -->
@@ -65,7 +62,7 @@
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <PersonPicture Width="100"
                                                Height="100"
-                                               ProfilePicture="{Binding ProfilePictureUri}"
+                                               ProfilePicture="{Binding ProfilePictureBitmap}"
                                                DisplayName="{Binding FullName}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"

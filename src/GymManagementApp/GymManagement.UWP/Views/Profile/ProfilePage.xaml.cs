@@ -93,6 +93,16 @@ namespace GymManagement.UWP.Views.Profile
             UploadButton.Visibility = ViewModel.IsEditing ? Visibility.Visible : Visibility.Collapsed;
         }
 
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            if (DataContext is ProfileViewModel viewModel)
+            {
+                await viewModel.LoadProfilePictureAsync();
+            }
+        }
+
         private void NvMain_OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
             if (args.InvokedItemContainer is NavigationViewItem selectedItem)
