@@ -11,7 +11,7 @@
     <AssemblyName>GymManagement.UWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22000.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -134,6 +134,7 @@
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\MealPlanViewModel.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
+    <Compile Include="ViewModels\MealPlanTrainerViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Views\Booking\BookingManagementPage.xaml.cs">
       <DependentUpon>BookingManagementPage.xaml</DependentUpon>
@@ -150,8 +151,8 @@
     <Compile Include="Views\MealPlans\MealPlanMember.xaml.cs">
       <DependentUpon>MealPlanMember.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MealPlans\MealPlanTrainer.xaml.cs">
-      <DependentUpon>MealPlanTrainer.xaml</DependentUpon>
+    <Compile Include="Views\MealPlans\MealPlanTrainerPage.xaml.cs">
+      <DependentUpon>MealPlanTrainerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Profile\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
@@ -211,7 +212,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MealPlans\MealPlanTrainer.xaml">
+    <Page Include="Views\MealPlans\MealPlanTrainerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
