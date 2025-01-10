@@ -19,7 +19,8 @@ namespace GymManagement.UWP.ViewModels
         private int _durationInMinutes;
         private string _className;
         private string _classDescription;
-
+        public DateTimeOffset MinDate => DateTimeOffset.Now;
+        public DateTimeOffset MaxDate => DateTimeOffset.Now.AddMonths(3);
         public ScheduleViewModel(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -183,7 +184,7 @@ namespace GymManagement.UWP.ViewModels
                 var newClass = new Class(ClassName, ClassDescription, scheduledDateTime, DurationInMinutes, trainer);
                 await _unitOfWork.Classes.AddClassAsync(newClass);
                 await _unitOfWork.SaveChangesAsync();
-
+                ScheduledClasses.Add(newClass);
                 await ShowDialogAsync("Success", "Class successfully scheduled!");
 
                 // Clear inputs after successful creation
@@ -191,6 +192,7 @@ namespace GymManagement.UWP.ViewModels
                 ClassDescription = string.Empty;
                 ScheduledDate = null;
                 SelectedTimeSlot = string.Empty;
+                DurationInMinutes = 0;
             }
             catch (Exception ex)
             {
