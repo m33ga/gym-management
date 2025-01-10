@@ -119,6 +119,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\AverageRatingConverter.cs" />
     <Compile Include="Converters\BoolToEditSaveConverter.cs" />
     <Compile Include="Converters\BoolToNegateConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
