@@ -38,7 +38,7 @@
         Description="GymManagement.UWP"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets\5.png"  BackgroundColor="#f9f9f9"/>
       </uap:VisualElements>
     </Application>
   </Applications>

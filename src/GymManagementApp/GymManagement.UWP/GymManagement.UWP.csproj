@@ -158,6 +158,12 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\5.png" />
+    <Content Include="Assets\5.scale-100.png" />
+    <Content Include="Assets\5.scale-125.png" />
+    <Content Include="Assets\5.scale-150.png" />
+    <Content Include="Assets\5.scale-200.png" />
+    <Content Include="Assets\5.scale-400.png" />
     <Content Include="Assets\image.png" />
     <Content Include="Assets\Schedule.png" />
     <Content Include="Assets\Notification.png" />
