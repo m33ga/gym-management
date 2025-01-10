@@ -1,5 +1,4 @@
-﻿
-using GymManagement.Domain.Models;
+﻿using GymManagement.Domain.Models;
 using GymManagement.Infrastructure;
 using GymManagement.UWP.Helpers;
 using System;
@@ -16,8 +15,8 @@ namespace GymManagement.UWP.ViewModels
     {
         private readonly UnitOfWork _unitOfWork;
         private DateTimeOffset? _scheduledDate;
-        private string _scheduledTime;
-        private int durationInMinutes;
+        private string _selectedTimeSlot;
+        private int _durationInMinutes;
         private string _className;
         private string _classDescription;
 
@@ -26,15 +25,19 @@ namespace GymManagement.UWP.ViewModels
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
             ScheduledClasses = new ObservableCollection<Class>();
+            AvailableTimeSlots = new ObservableCollection<string>();
             CreateClassCommand = new RelayCommand(
                 execute: async () => await CreateClassAsync(),
                 canExecute: CanCreateClass
             );
 
-            Task task = LoadScheduledClassesAsync();
+            // Load initial data
+            Task.Run(() => LoadScheduledClassesAsync());
         }
 
         public ObservableCollection<Class> ScheduledClasses { get; }
+
+        public ObservableCollection<string> AvailableTimeSlots { get; }
 
         public DateTimeOffset? ScheduledDate
         {
@@ -43,28 +46,33 @@ namespace GymManagement.UWP.ViewModels
             {
                 Set(ref _scheduledDate, value);
                 (CreateClassCommand as RelayCommand)?.RaiseCanExecuteChanged();
+
+                // Trigger loading of available time slots when the date changes
+                if (_scheduledDate.HasValue)
+                {
+                    _ = LoadAvailableTimeSlotsAsync();
+                }
             }
         }
 
-        public string ScheduledTime
+        public string SelectedTimeSlot
         {
-            get => _scheduledTime;
+            get => _selectedTimeSlot;
             set
             {
-                Set(ref _scheduledTime, value);
+                Set(ref _selectedTimeSlot, value);
                 (CreateClassCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
 
         public int DurationInMinutes
         {
-            get => durationInMinutes;
+            get => _durationInMinutes;
             set
             {
-                Set(ref durationInMinutes, value);
+                Set(ref _durationInMinutes, value);
                 (CreateClassCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
-
         }
 
         public string ClassName
@@ -97,7 +105,6 @@ namespace GymManagement.UWP.ViewModels
                 await ShowDialogAsync("Error", $"Failed to load scheduled classes: {ex.Message}");
             }
         }
-        public ObservableCollection<string> AvailableTimeSlots { get; }
 
         public async Task LoadAvailableTimeSlotsAsync()
         {
@@ -105,28 +112,49 @@ namespace GymManagement.UWP.ViewModels
 
             try
             {
-                // Clear the current time slots
                 AvailableTimeSlots.Clear();
+                Debug.WriteLine($"Loading available time slots for date: {ScheduledDate}");
 
-                // Load all classes scheduled on the selected date
+                // Load classes scheduled on the selected date
                 var classesOnSelectedDate = (await _unitOfWork.Classes.GetClassesByDateAsync(ScheduledDate.Value.DateTime))
-    .Cast<Class>();
+                    .Cast<Class>();
 
-                // Generate time slots for the entire day (e.g., 12:00 PM to 8:00 PM)
-                var allTimeSlots = Enumerable.Range(12, 8)
-                                             .Select(hour => new TimeSpan(hour, 0, 0).ToString(@"hh\:mm"))
+                Debug.WriteLine($"Found {classesOnSelectedDate.Count()} scheduled classes.");
+
+                // Generate time slots for the entire day (e.g., 12 PM to 8 PM)
+                var allTimeSlots = Enumerable.Range(12, 8) // 12 PM to 8 PM
+                                             .Select(hour => $"{hour:D2}:00") // Ensure consistent format
                                              .ToList();
 
-                // Filter out time slots already taken
-                
+                Debug.WriteLine($"Generated all time slots: {string.Join(", ", allTimeSlots)}");
+
+                // Get time slots already taken
                 var takenTimeSlots = classesOnSelectedDate
-                    .Select(cls => cls.ScheduledDate.ToString("HH:mm"))
+                    .Select(cls =>
+                    {
+                        try
+                        {
+                            return cls.ScheduledDate.ToString("HH:mm"); // Format each scheduled date
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Error formatting ScheduledDate: {ex.Message}");
+                            return string.Empty;
+                        }
+                    })
+                    .Where(slot => !string.IsNullOrEmpty(slot))
                     .ToList();
 
+                Debug.WriteLine($"Taken time slots: {string.Join(", ", takenTimeSlots)}");
+
+                // Add available time slots
                 foreach (var slot in allTimeSlots)
                 {
                     if (!takenTimeSlots.Contains(slot))
+                    {
                         AvailableTimeSlots.Add(slot);
+                        Debug.WriteLine($"Added available slot: {slot}");
+                    }
                 }
             }
             catch (Exception ex)
@@ -134,27 +162,27 @@ namespace GymManagement.UWP.ViewModels
                 Debug.WriteLine($"Error loading available time slots: {ex.Message}");
             }
         }
+
         private bool CanCreateClass()
         {
-            return ScheduledDate != null && !string.IsNullOrEmpty(ScheduledTime) && !string.IsNullOrEmpty(ClassName);
+            return ScheduledDate != null && !string.IsNullOrEmpty(SelectedTimeSlot) && !string.IsNullOrEmpty(ClassName);
         }
 
         public async Task CreateClassAsync()
         {
             try
             {
-                if (ScheduledDate == null || !TimeSpan.TryParse(ScheduledTime, out var time))
+                if (ScheduledDate == null || !TimeSpan.TryParse(SelectedTimeSlot, out var time))
                 {
                     await ShowDialogAsync("Error", "Please provide a valid date and time.");
                     return;
                 }
-                var userviewmodel = App.UserViewModel;
-                var scheduledDateTime = ScheduledDate.Value.Date + time;
-                Trainer trainer = (Trainer)userviewmodel.LoggedUser;
 
-                var newClass = new Class(ClassName, ClassDescription, scheduledDateTime, durationInMinutes, trainer);
+                var scheduledDateTime = ScheduledDate.Value.Date + time;
+                Trainer trainer = await _unitOfWork.Trainers.GetTrainerByEmailAsync(App.UserViewModel.Email);
+                var newClass = new Class(ClassName, ClassDescription, scheduledDateTime, DurationInMinutes, trainer);
                 await _unitOfWork.Classes.AddClassAsync(newClass);
-                ScheduledClasses.Add(newClass);
+                await _unitOfWork.SaveChangesAsync();
 
                 await ShowDialogAsync("Success", "Class successfully scheduled!");
 
@@ -162,7 +190,7 @@ namespace GymManagement.UWP.ViewModels
                 ClassName = string.Empty;
                 ClassDescription = string.Empty;
                 ScheduledDate = null;
-                ScheduledTime = string.Empty;
+                SelectedTimeSlot = string.Empty;
             }
             catch (Exception ex)
             {
@@ -183,4 +211,3 @@ namespace GymManagement.UWP.ViewModels
         }
     }
 }
-

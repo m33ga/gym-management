@@ -10,33 +10,20 @@
     d:DataContext="{d:DesignInstance Type=viewmodels:ScheduleViewModel}">
 
     <Grid Padding="20">
-        <StackPanel Spacing="10">
-            <TextBox Header="Class Name"
+        <StackPanel>
+            <CalendarView 
+                          SelectedDatesChanged="CalendarView_SelectedDatesChanged" />
+            <ComboBox Header="Available Time Slots"
+          ItemsSource="{Binding AvailableTimeSlots}"
+          SelectedItem="{Binding SelectedTimeSlot, Mode=TwoWay}" />
+            <TextBox Header="Class Name" 
                      Text="{Binding ClassName, Mode=TwoWay}" />
-            <TextBox Header="Class Description"
+            <TextBox Header="Class Description" 
                      Text="{Binding ClassDescription, Mode=TwoWay}" />
-            <DatePicker Header="Scheduled Date"
-                        Date="{Binding ScheduledDate, Mode=TwoWay}" />
-            <ComboBox Header="Scheduled Time"
-                      ItemsSource="{Binding AvailableTimeSlots}"
-                      SelectedItem="{Binding ScheduledTime, Mode=TwoWay}" />
-            <TextBox Header="Duration (minutes)"
-                     Text="{Binding DurationInMinutes, Mode=TwoWay}" />
-
-            <Button Content="Create Class"
+            <TextBox Header="Class duration in minutes"
+                     Text="{Binding DurationInMinutes, Mode=TwoWay}"/>
+            <Button Content="Schedule Class" 
                     Command="{Binding CreateClassCommand}" />
-
-            <ListView Header="Scheduled Classes"
-                      ItemsSource="{Binding ScheduledClasses}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}" />
-                            <TextBlock Text="{Binding ScheduledDate}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
         </StackPanel>
     </Grid>
 </Page>
