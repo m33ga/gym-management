@@ -99,7 +99,7 @@
                 <!-- Footer Section -->
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                     <Button Content="Download PDF"
-                            Command="{Binding DownloadPdfCommand}"
+                            Click="OnPrintMealsClick" 
                             Background="#0078D7"
                             Foreground="White"
                             FontSize="16"

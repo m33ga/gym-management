@@ -170,6 +170,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\DefaultBreakfast.png" />
+    <Content Include="Assets\DefaultDinner.png" />
+    <Content Include="Assets\DefaultLunch.png" />
     <Content Include="Assets\image.png" />
     <Content Include="Assets\Schedule.png" />
     <Content Include="Assets\Notification.png" />
